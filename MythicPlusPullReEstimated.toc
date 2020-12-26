@@ -1,0 +1,16 @@
+## Interface: 90002
+## Title: Mythic Plus Pull ReEstimated
+## Version: @project-version@
+## Notes: Tracks and displays % progress gained from individual mobs or entire pulls in Mythic+ dungeons. /mpp for options
+## Author: Numy
+## SavedVariables: MMPEDB
+
+#@do-not-package@
+#extractData.lua
+#@end-do-not-package@
+
+Libs\embeds.xml
+
+MythicPlusPullReEstimated.lua
+
+Data\Shadowlands.lua
