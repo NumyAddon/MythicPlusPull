@@ -59,6 +59,9 @@ MMPE.defaultSettings = {
 
     nameplateUpdateRate = 200, -- Rate (in milliseconds) at which we update the progress we get from the current pull, as estimated by active name plates you're in combat with. Also the update rate of getting new values for nameplate text overlay if enabled.
 
+    offsetx = 0, -- extra offset for nameplate text
+    offsety = 0,
+
     enableNameplateText = true,
     nameplateTextColor = "FFFFFF",
 }
@@ -562,7 +565,9 @@ end
 function MMPE:UpdateNameplatePosition(unit)
     local nameplate = C_NamePlate.GetNamePlateForUnit(unit)
     if nameplate and nameplate.UnitFrame and nameplate.UnitFrame.unitExists and self.activeNameplates[unit] ~= nil then
-        self.activeNameplates[unit]:SetPoint("LEFT", nameplate.UnitFrame.name, "LEFT", nameplate.UnitFrame.name:GetWidth(), 0)
+        local offsetx = self:GetSetting('offsetx')
+        local offsety = self:GetSetting('offsety')
+        self.activeNameplates[unit]:SetPoint("LEFT", nameplate.UnitFrame.name, "LEFT", nameplate.UnitFrame.name:GetWidth() + offsetx, 0 + offsety)
     else
         self:RemoveNameplateText(unit)
         self:DebugPrint("Unit", unit, "does not seem to exist. Why are we trying to update it?")
@@ -658,6 +663,18 @@ function MMPE:Command(args)
 
     if args[1] == "toggle" then
         self:Print("MythicPlusPullEstimator toggled ".. (self:ToggleSetting("enabled") and "ON" or "OFF"))
+
+    elseif args[1] == "offsetx" then
+        if args[2] then
+            self:SetSetting("offsetx", args[2])
+        end
+        self:Print("X offset for nameplates is now ", self:GetSetting('offsetx'))
+
+    elseif args[1] == "offsety" then
+        if args[2] then
+            self:SetSetting("offsety", args[2])
+        end
+        self:Print("Y offset for nameplates is now ", self:GetSetting('offsety'))
 
     elseif args[1] == "reset" then
         self.currentPullFrame:SetPoint("CENTER", UIParent, 50, 50)
