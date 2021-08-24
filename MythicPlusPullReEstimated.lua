@@ -754,6 +754,8 @@ function MMPE:Command(args)
         self:Print("/mpp dbinfo (Shows how many unique mobs you've recorded)")
         self:Print("/mpp combatonly (Toggles only showing the current pull estimate while you or one of your party members are in combat)")
         self:Print("/mpp nameplates (Toggles nameplate text overlay on/off)")
+        self:Print("/mpp offsetx (allows you to change the left/right offset for nameplate text)")
+        self:Print("/mpp offsety (allows you to change the up/down offset for nameplate text)")
         self:Print("/mpp wipesettings (Resets all settings to default (but not mob data!))")
     end
 end
