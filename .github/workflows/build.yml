@@ -9,10 +9,6 @@ jobs:
 
     runs-on: ubuntu-latest
 
-    env:
-      CF_API_KEY: ${{ secrets.CF_API_KEY }}
-      GITHUB_OAUTH: ${{ secrets.GH_OAUTH }}
-
     steps:
       - uses: actions/checkout@v2
 
@@ -21,3 +17,7 @@ jobs:
 
       - name: Create Retail Package
         uses: BigWigsMods/packager@master
+        env:
+          CF_API_KEY: ${{ secrets.CF_API_KEY }}
+          GITHUB_OAUTH: ${{ secrets.GITHUB_TOKEN }}
+          WAGO_API_TOKEN: ${{ secrets.WAGO_API_TOKEN }}
