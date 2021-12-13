@@ -1,17 +1,9 @@
--- upvalue the globals
-local _G = getfenv(0)
-local LibStub = _G.LibStub
+local _, ns = ...
 
-local name = ...
+local data = {};
+tinsert(ns.data, data)
 
--- /run MMPE = LibStub('AceAddon-3.0'):GetAddon("MythicPlusPullReEstimated");
-local MMPE = LibStub('AceAddon-3.0'):GetAddon(name);
-if not MMPE then return end
-
-MMPE.data = MMPE.data or {}
-MMPEData = MMPE.data
-
-function MMPEData:GetNPCData()
+function data:GetNPCData()
     return {
         [164501] = {
             ["name"] = "Mistcaller",
@@ -37,13 +29,13 @@ function MMPEData:GetNPCData()
             ["name"] = "Spinemaw Gorger",
             ["count"] = 4,
         },
-        [167117] = {
-            ["name"] = "Spinemaw Larva",
-            ["count"] = 1,
+        [164567] = {
+            ["name"] = "Ingra Maloch",
+            ["count"] = 0,
         },
-        [168934] = {
-            ["name"] = "Enraged Spirit",
-            ["count"] = 8,
+        [162049] = {
+            ["name"] = "Vestige of Doubt",
+            ["count"] = 4,
         },
         [164185] = {
             ["name"] = "Echelon",
@@ -61,9 +53,9 @@ function MMPEData:GetNPCData()
             ["name"] = "Mueh'zala",
             ["count"] = 0,
         },
-        [167533] = {
-            ["name"] = "Advent Nevermore",
-            ["count"] = 20,
+        [164218] = {
+            ["name"] = "Lord Chamberlain",
+            ["count"] = 0,
         },
         [170147] = {
             ["name"] = "Volatile Memory",
@@ -73,9 +65,9 @@ function MMPEData:GetNPCData()
             ["name"] = "Unstable Canister",
             ["count"] = 0,
         },
-        [165111] = {
-            ["name"] = "Drust Spiteclaw",
-            ["count"] = 2,
+        [173016] = {
+            ["name"] = "Corpse Collector",
+            ["count"] = 4,
         },
         [168968] = {
             ["name"] = "Plaguebound Fallen",
@@ -85,9 +77,9 @@ function MMPEData:GetNPCData()
             ["name"] = "Drust Soulcleaver",
             ["count"] = 4,
         },
-        [167534] = {
-            ["name"] = "Rek the Hardened",
-            ["count"] = 20,
+        [162689] = {
+            ["name"] = "Surgeon Stitchflesh",
+            ["count"] = 0,
         },
         [169861] = {
             ["name"] = "Ickor Bileflesh",
@@ -97,9 +89,9 @@ function MMPEData:GetNPCData()
             ["name"] = "Nefarious Darkspeaker",
             ["count"] = 6,
         },
-        [170690] = {
-            ["name"] = "Diseased Horror",
-            ["count"] = 4,
+        [171455] = {
+            ["name"] = "Stonewall Gargon",
+            ["count"] = 1,
         },
         [164857] = {
             ["name"] = "Spriggan Mendbender",
@@ -113,9 +105,9 @@ function MMPEData:GetNPCData()
             ["name"] = "Drust Harvester",
             ["count"] = 4,
         },
-        [170850] = {
-            ["name"] = "Raging Bloodhorn",
-            ["count"] = 7,
+        [173655] = {
+            ["name"] = "Mistveil Matriarch",
+            ["count"] = 16,
         },
         [170882] = {
             ["name"] = "Bone Magus",
@@ -123,7 +115,7 @@ function MMPEData:GetNPCData()
         },
         [168396] = {
             ["name"] = "Plaguebelcher",
-            ["count"] = 12,
+            ["count"] = 0,
         },
         [168747] = {
             ["name"] = "Venomfang",
@@ -141,9 +133,9 @@ function MMPEData:GetNPCData()
             ["name"] = "Mistveil Gorgegullet",
             ["count"] = 16,
         },
-        [169927] = {
-            ["name"] = "Putrid Butcher",
-            ["count"] = 5,
+        [168907] = {
+            ["name"] = "Slime Tentacle",
+            ["count"] = 10,
         },
         [162309] = {
             ["name"] = "Kul'tharok",
@@ -157,13 +149,25 @@ function MMPEData:GetNPCData()
             ["name"] = "Forsworn Vanguard",
             ["count"] = 4,
         },
-        [168844] = {
-            ["name"] = "Lakesis",
-            ["count"] = 12,
+        [165529] = {
+            ["name"] = "Depraved Collector",
+            ["count"] = 4,
+        },
+        [167534] = {
+            ["name"] = "Rek the Hardened",
+            ["count"] = 20,
         },
         [168717] = {
             ["name"] = "Forsworn Justicar",
             ["count"] = 4,
+        },
+        [163862] = {
+            ["name"] = "Defender of Many Eyes",
+            ["count"] = 8,
+        },
+        [170850] = {
+            ["name"] = "Raging Bloodhorn",
+            ["count"] = 7,
         },
         [162693] = {
             ["name"] = "Nalthor the Rimebinder",
@@ -173,6 +177,14 @@ function MMPEData:GetNPCData()
             ["name"] = "Globgrog",
             ["count"] = 0,
         },
+        [174197] = {
+            ["name"] = "Battlefield Ritualist",
+            ["count"] = 4,
+        },
+        [163891] = {
+            ["name"] = "Rotmarrow Slime",
+            ["count"] = 6,
+        },
         [164861] = {
             ["name"] = "Spriggan Barkbinder",
             ["count"] = 2,
@@ -181,9 +193,13 @@ function MMPEData:GetNPCData()
             ["name"] = "Zolramus Necromancer",
             ["count"] = 8,
         },
-        [162689] = {
-            ["name"] = "Surgeon Stitchflesh",
-            ["count"] = 0,
+        [174210] = {
+            ["name"] = "Blighted Sludge-Spewer",
+            ["count"] = 4,
+        },
+        [163458] = {
+            ["name"] = "Forsworn Castigator",
+            ["count"] = 4,
         },
         [166264] = {
             ["name"] = "Spare Parts",
@@ -201,65 +217,65 @@ function MMPEData:GetNPCData()
             ["name"] = "Maniacal Soulbinder",
             ["count"] = 4,
         },
-        [168942] = {
-            ["name"] = "Death Speaker",
-            ["count"] = 6,
+        [162057] = {
+            ["name"] = "Chamber Sentinel",
+            ["count"] = 7,
         },
         [163619] = {
             ["name"] = "Zolramus Bonecarver",
             ["count"] = 4,
         },
-        [165946] = {
-            ["name"] = "Mordretha, the Endless Empress",
-            ["count"] = 0,
+        [164926] = {
+            ["name"] = "Drust Boughbreaker",
+            ["count"] = 6,
         },
         [171333] = {
             ["name"] = "Atal'ai Devoted",
             ["count"] = 2,
         },
-        [165824] = {
-            ["name"] = "Nar'zudah",
-            ["count"] = 15,
+        [167533] = {
+            ["name"] = "Advent Nevermore",
+            ["count"] = 20,
         },
-        [171455] = {
-            ["name"] = "Stonewall Gargon",
-            ["count"] = 1,
+        [167536] = {
+            ["name"] = "Harugia the Bloodthirsty",
+            ["count"] = 20,
         },
         [163524] = {
             ["name"] = "Kyrian Dark-Praetor",
             ["count"] = 5,
         },
-        [169696] = {
-            ["name"] = "Mire Soldier",
-            ["count"] = 8,
+        [163501] = {
+            ["name"] = "Forsworn Skirmisher",
+            ["count"] = 4,
         },
         [162058] = {
             ["name"] = "Ventunax",
             ["count"] = 0,
         },
-        [163620] = {
-            ["name"] = "Rotspew",
-            ["count"] = 6,
+        [167955] = {
+            ["name"] = "Sanguine Cadet",
+            ["count"] = 1,
         },
-        [174197] = {
-            ["name"] = "Battlefield Ritualist",
+        [167731] = {
+            ["name"] = "Separation Assistant",
             ["count"] = 4,
         },
-        [173016] = {
-            ["name"] = "Corpse Collector",
-            ["count"] = 4,
+        [169927] = {
+            ["name"] = "Putrid Butcher",
+            ["count"] = 5,
         },
-        [162051] = {
-            ["name"] = "Frenzied Ghoul",
-            ["count"] = 2,
-        },
-        [168365] = {
-            ["name"] = "Fungret Shroomtender",
+        [165946] = {
+            ["name"] = "Mordretha, the Endless Empress",
             ["count"] = 0,
         },
-        [173655] = {
-            ["name"] = "Mistveil Matriarch",
-            ["count"] = 16,
+        [170690] = {
+            ["name"] = "Diseased Horror",
+            ["count"] = 4,
+        },
+        [164707] = {
+            ["name"] = "Congealed Slime",
+            ["count"] = 6,
         },
         [167892] = {
             ["name"] = "Tormented Soul",
@@ -269,13 +285,13 @@ function MMPEData:GetNPCData()
             ["name"] = "Kin-Tara",
             ["count"] = 0,
         },
-        [163621] = {
-            ["name"] = "Goregrind",
-            ["count"] = 6,
+        [167956] = {
+            ["name"] = "Dark Acolyte",
+            ["count"] = 1,
         },
-        [163894] = {
-            ["name"] = "Blighted Spinebreaker",
-            ["count"] = 12,
+        [179890] = {
+            ["name"] = "Executioner Varruth",
+            ["count"] = 0,
         },
         [164450] = {
             ["name"] = "Dealer Xy'exa",
@@ -285,13 +301,13 @@ function MMPEData:GetNPCData()
             ["name"] = "Brood Ambusher",
             ["count"] = 12,
         },
-        [162729] = {
-            ["name"] = "Patchwerk Soldier",
-            ["count"] = 4,
+        [168594] = {
+            ["name"] = "Chamber Sentinel",
+            ["count"] = 7,
         },
-        [165137] = {
-            ["name"] = "Zolramus Gatekeeper",
-            ["count"] = 6,
+        [164506] = {
+            ["name"] = "Ancient Captain",
+            ["count"] = 5,
         },
         [164578] = {
             ["name"] = "Stitchflesh's Creation",
@@ -313,41 +329,41 @@ function MMPEData:GetNPCData()
             ["name"] = "Dessia the Decapitator",
             ["count"] = 0,
         },
-        [168022] = {
-            ["name"] = "Slime Tentacle",
-            ["count"] = 10,
-        },
-        [167113] = {
-            ["name"] = "Spinemaw Acidgullet",
-            ["count"] = 4,
-        },
-        [168627] = {
-            ["name"] = "Plaguebinder",
-            ["count"] = 8,
+        [167538] = {
+            ["name"] = "Dokigg the Brutalizer",
+            ["count"] = 20,
         },
         [164510] = {
             ["name"] = "Shambling Arbalest",
             ["count"] = 4,
         },
-        [166396] = {
-            ["name"] = "Noble Skirmisher",
-            ["count"] = 4,
+        [167607] = {
+            ["name"] = "Stoneborn Slasher",
+            ["count"] = 7,
         },
         [163623] = {
             ["name"] = "Rotspew Leftovers",
             ["count"] = 0,
         },
-        [162057] = {
-            ["name"] = "Chamber Sentinel",
-            ["count"] = 7,
+        [166396] = {
+            ["name"] = "Noble Skirmisher",
+            ["count"] = 4,
         },
-        [164707] = {
-            ["name"] = "Congealed Slime",
+        [165408] = {
+            ["name"] = "Halkias",
+            ["count"] = 0,
+        },
+        [169696] = {
+            ["name"] = "Mire Soldier",
+            ["count"] = 8,
+        },
+        [170572] = {
+            ["name"] = "Atal'ai Hoodoo Hexxer",
             ["count"] = 6,
         },
-        [169875] = {
-            ["name"] = "Shackled Soul",
-            ["count"] = 2,
+        [164463] = {
+            ["name"] = "Paceran the Virulent",
+            ["count"] = 0,
         },
         [166301] = {
             ["name"] = "Mistveil Stalker",
@@ -357,9 +373,9 @@ function MMPEData:GetNPCData()
             ["name"] = "Soulforged Bonereaver",
             ["count"] = 8,
         },
-        [163892] = {
-            ["name"] = "Rotting Slimeclaw",
-            ["count"] = 6,
+        [165415] = {
+            ["name"] = "Toiling Groundskeeper",
+            ["count"] = 2,
         },
         [162317] = {
             ["name"] = "Gorechop",
@@ -369,13 +385,13 @@ function MMPEData:GetNPCData()
             ["name"] = "Skeletal Marauder",
             ["count"] = 6,
         },
-        [165529] = {
-            ["name"] = "Depraved Collector",
-            ["count"] = 4,
+        [162061] = {
+            ["name"] = "Devos",
+            ["count"] = 0,
         },
-        [167607] = {
-            ["name"] = "Stoneborn Slasher",
-            ["count"] = 7,
+        [168681] = {
+            ["name"] = "Forsworn Helion",
+            ["count"] = 6,
         },
         [174175] = {
             ["name"] = "Loyal Stoneborn",
@@ -385,72 +401,72 @@ function MMPEData:GetNPCData()
             ["name"] = "Tred'ova",
             ["count"] = 0,
         },
-        [164804] = {
-            ["name"] = "Droman Oulfarran",
+        [166079] = {
+            ["name"] = "Brittlebone Crossbowman",
             ["count"] = 0,
         },
-        [166302] = {
-            ["name"] = "Corpse Harvester",
-            ["count"] = 4,
+        [168627] = {
+            ["name"] = "Plaguebinder",
+            ["count"] = 8,
         },
-        [164563] = {
-            ["name"] = "Vicious Gargon",
+        [167611] = {
+            ["name"] = "Stoneborn Eviscerator",
             ["count"] = 4,
         },
         [165410] = {
             ["name"] = "High Adjudicator Aleez",
             ["count"] = 0,
         },
-        [164967] = {
-            ["name"] = "Doctor Ickus",
+        [168365] = {
+            ["name"] = "Fungret Shroomtender",
             ["count"] = 0,
         },
-        [171500] = {
-            ["name"] = "Shuffling Corpse",
-            ["count"] = 1,
+        [168845] = {
+            ["name"] = "Astronos",
+            ["count"] = 12,
         },
-        [163157] = {
-            ["name"] = "Amarth",
-            ["count"] = 0,
-        },
-        [164506] = {
-            ["name"] = "Ancient Captain",
+        [167965] = {
+            ["name"] = "Lubricator",
             ["count"] = 5,
+        },
+        [168844] = {
+            ["name"] = "Lakesis",
+            ["count"] = 12,
         },
         [167610] = {
             ["name"] = "Stonefiend Anklebiter",
             ["count"] = 1,
         },
-        [164266] = {
-            ["name"] = "Domina Venomblade",
-            ["count"] = 0,
+        [163520] = {
+            ["name"] = "Forsworn Squad-Leader",
+            ["count"] = 6,
         },
         [168949] = {
             ["name"] = "Risen Bonesoldier",
             ["count"] = 4,
         },
-        [162056] = {
-            ["name"] = "Rockbound Sprite",
-            ["count"] = 1,
+        [163077] = {
+            ["name"] = "Azules",
+            ["count"] = 0,
         },
-        [167964] = {
-            ["name"] = "4.RF-4.RF",
-            ["count"] = 8,
+        [171448] = {
+            ["name"] = "Dreadful Huntmaster",
+            ["count"] = 4,
         },
-        [167111] = {
-            ["name"] = "Spinemaw Staghorn",
-            ["count"] = 5,
+        [168942] = {
+            ["name"] = "Death Speaker",
+            ["count"] = 6,
         },
-        [165414] = {
-            ["name"] = "Depraved Obliterator",
+        [168718] = {
+            ["name"] = "Forsworn Warden",
             ["count"] = 4,
         },
         [166304] = {
             ["name"] = "Mistveil Stinger",
             ["count"] = 4,
         },
-        [167611] = {
-            ["name"] = "Stoneborn Eviscerator",
+        [171181] = {
+            ["name"] = "Territorial Bladebeak",
             ["count"] = 4,
         },
         [168153] = {
@@ -461,9 +477,9 @@ function MMPEData:GetNPCData()
             ["name"] = "Remnant of Fury",
             ["count"] = 4,
         },
-        [163882] = {
-            ["name"] = "Decaying Flesh Giant",
-            ["count"] = 14,
+        [167962] = {
+            ["name"] = "Defunct Dental Drill",
+            ["count"] = 8,
         },
         [167994] = {
             ["name"] = "Ossified Conscript",
@@ -477,16 +493,16 @@ function MMPEData:GetNPCData()
             ["name"] = "Infused Quill-feather",
             ["count"] = 1,
         },
-        [174210] = {
-            ["name"] = "Blighted Sludge-Spewer",
-            ["count"] = 4,
+        [169875] = {
+            ["name"] = "Shackled Soul",
+            ["count"] = 2,
         },
         [167612] = {
             ["name"] = "Stoneborn Reaver",
             ["count"] = 6,
         },
-        [166299] = {
-            ["name"] = "Mistveil Tender",
+        [163459] = {
+            ["name"] = "Forsworn Mender",
             ["count"] = 4,
         },
         [163086] = {
@@ -505,33 +521,33 @@ function MMPEData:GetNPCData()
             ["name"] = "Zolramus Bonemender",
             ["count"] = 4,
         },
-        [164926] = {
-            ["name"] = "Drust Boughbreaker",
-            ["count"] = 6,
+        [172981] = {
+            ["name"] = "Kyrian Stitchwerk",
+            ["count"] = 5,
         },
-        [163501] = {
-            ["name"] = "Forsworn Skirmisher",
-            ["count"] = 4,
+        [164266] = {
+            ["name"] = "Domina Venomblade",
+            ["count"] = 0,
         },
-        [167967] = {
-            ["name"] = "Sentient Oil",
-            ["count"] = 6,
+        [168886] = {
+            ["name"] = "Virulax Blightweaver",
+            ["count"] = 25,
         },
         [168155] = {
             ["name"] = "Plaguebound",
             ["count"] = 0,
         },
-        [163126] = {
-            ["name"] = "Brittlebone Mage",
-            ["count"] = 0,
+        [164705] = {
+            ["name"] = "Pestilence Slime",
+            ["count"] = 6,
         },
-        [162099] = {
-            ["name"] = "General Kaal",
-            ["count"] = 0,
+        [167964] = {
+            ["name"] = "4.RF-4.RF",
+            ["count"] = 8,
         },
-        [166276] = {
-            ["name"] = "Mistveil Guardian",
-            ["count"] = 4,
+        [163892] = {
+            ["name"] = "Rotting Slimeclaw",
+            ["count"] = 6,
         },
         [171343] = {
             ["name"] = "Bladebeak Matriarch",
@@ -561,17 +577,17 @@ function MMPEData:GetNPCData()
             ["name"] = "Kryxis the Voracious",
             ["count"] = 0,
         },
-        [167538] = {
-            ["name"] = "Dokigg the Brutalizer",
-            ["count"] = 20,
+        [163126] = {
+            ["name"] = "Brittlebone Mage",
+            ["count"] = 0,
         },
-        [170838] = {
-            ["name"] = "Unyielding Contender",
-            ["count"] = 4,
-        },
-        [171376] = {
-            ["name"] = "Head Custodian Javlin",
+        [168022] = {
+            ["name"] = "Slime Tentacle",
             ["count"] = 10,
+        },
+        [166276] = {
+            ["name"] = "Mistveil Guardian",
+            ["count"] = 4,
         },
         [163503] = {
             ["name"] = "Etherdiver",
@@ -581,9 +597,9 @@ function MMPEData:GetNPCData()
             ["name"] = "Millificent Manastorm",
             ["count"] = 0,
         },
-        [172981] = {
-            ["name"] = "Kyrian Stitchwerk",
-            ["count"] = 5,
+        [165111] = {
+            ["name"] = "Drust Spiteclaw",
+            ["count"] = 2,
         },
         [163089] = {
             ["name"] = "Disgusting Refuse",
@@ -597,37 +613,37 @@ function MMPEData:GetNPCData()
             ["name"] = "Portal Guardian",
             ["count"] = 8,
         },
-        [170572] = {
-            ["name"] = "Atal'ai Hoodoo Hexxer",
-            ["count"] = 6,
+        [163894] = {
+            ["name"] = "Blighted Spinebreaker",
+            ["count"] = 12,
         },
         [168572] = {
             ["name"] = "Fungi Stormer",
             ["count"] = 8,
         },
-        [163122] = {
-            ["name"] = "Brittlebone Warrior",
+        [171474] = {
+            ["name"] = "Finger Food",
             ["count"] = 0,
         },
         [164556] = {
             ["name"] = "Millhouse Manastorm",
             ["count"] = 0,
         },
+        [163058] = {
+            ["name"] = "Mistveil Defender",
+            ["count"] = 4,
+        },
         [162038] = {
             ["name"] = "Regal Mistdancer",
             ["count"] = 7,
         },
-        [167536] = {
-            ["name"] = "Harugia the Bloodthirsty",
-            ["count"] = 20,
-        },
-        [162102] = {
-            ["name"] = "Grand Proctor Beryllia",
+        [163122] = {
+            ["name"] = "Brittlebone Warrior",
             ["count"] = 0,
         },
-        [164567] = {
-            ["name"] = "Ingra Maloch",
-            ["count"] = 0,
+        [163882] = {
+            ["name"] = "Decaying Flesh Giant",
+            ["count"] = 14,
         },
         [164461] = {
             ["name"] = "Sathel the Accursed",
@@ -637,8 +653,8 @@ function MMPEData:GetNPCData()
             ["name"] = "Forsworn Goliath",
             ["count"] = 8,
         },
-        [171474] = {
-            ["name"] = "Finger Food",
+        [164967] = {
+            ["name"] = "Doctor Ickus",
             ["count"] = 0,
         },
         [164557] = {
@@ -649,20 +665,20 @@ function MMPEData:GetNPCData()
             ["name"] = "Wicked Oppressor",
             ["count"] = 4,
         },
-        [164862] = {
-            ["name"] = "Weald Shimmermoth",
-            ["count"] = 3,
+        [167117] = {
+            ["name"] = "Spinemaw Larva",
+            ["count"] = 1,
         },
         [162103] = {
             ["name"] = "Executor Tarvold",
             ["count"] = 0,
         },
-        [171342] = {
-            ["name"] = "Juvenile Runestag",
-            ["count"] = 2,
+        [164804] = {
+            ["name"] = "Droman Oulfarran",
+            ["count"] = 0,
         },
-        [163459] = {
-            ["name"] = "Forsworn Mender",
+        [166299] = {
+            ["name"] = "Mistveil Tender",
             ["count"] = 4,
         },
         [168574] = {
@@ -685,85 +701,85 @@ function MMPEData:GetNPCData()
             ["name"] = "Plaguebound Devoted",
             ["count"] = 4,
         },
-        [167962] = {
-            ["name"] = "Defunct Dental Drill",
-            ["count"] = 8,
-        },
-        [171181] = {
-            ["name"] = "Territorial Bladebeak",
+        [165076] = {
+            ["name"] = "Gluttonous Tick",
             ["count"] = 4,
         },
-        [164463] = {
-            ["name"] = "Paceran the Virulent",
-            ["count"] = 0,
+        [168934] = {
+            ["name"] = "Enraged Spirit",
+            ["count"] = 8,
+        },
+        [170838] = {
+            ["name"] = "Unyielding Contender",
+            ["count"] = 4,
         },
         [165515] = {
             ["name"] = "Depraved Darkblade",
             ["count"] = 4,
         },
-        [163458] = {
-            ["name"] = "Forsworn Castigator",
-            ["count"] = 4,
+        [162047] = {
+            ["name"] = "Insatiable Brute",
+            ["count"] = 7,
         },
-        [168718] = {
-            ["name"] = "Forsworn Warden",
-            ["count"] = 4,
+        [170480] = {
+            ["name"] = "Atal'ai Deathwalker",
+            ["count"] = 5,
         },
         [162041] = {
             ["name"] = "Grubby Dirtcruncher",
             ["count"] = 2,
         },
-        [167731] = {
-            ["name"] = "Separation Assistant",
-            ["count"] = 4,
+        [167111] = {
+            ["name"] = "Spinemaw Staghorn",
+            ["count"] = 5,
         },
-        [163520] = {
-            ["name"] = "Forsworn Squad-Leader",
-            ["count"] = 6,
+        [162056] = {
+            ["name"] = "Rockbound Sprite",
+            ["count"] = 1,
         },
-        [165197] = {
-            ["name"] = "Skeletal Monstrosity",
-            ["count"] = 12,
+        [163157] = {
+            ["name"] = "Amarth",
+            ["count"] = 0,
         },
         [164464] = {
             ["name"] = "Xira the Underhanded",
             ["count"] = 0,
         },
-        [163058] = {
-            ["name"] = "Mistveil Defender",
+        [162729] = {
+            ["name"] = "Patchwerk Soldier",
             ["count"] = 4,
         },
-        [168845] = {
-            ["name"] = "Astronos",
-            ["count"] = 12,
-        },
-        [163077] = {
-            ["name"] = "Azules",
-            ["count"] = 0,
-        },
-        [168681] = {
-            ["name"] = "Forsworn Helion",
+        [167967] = {
+            ["name"] = "Sentient Oil",
             ["count"] = 6,
+        },
+        [165824] = {
+            ["name"] = "Nar'zudah",
+            ["count"] = 15,
+        },
+        [179892] = {
+            ["name"] = "Oros Coldheart",
+            ["count"] = 0,
         },
         [162329] = {
             ["name"] = "Xav the Unfallen",
             ["count"] = 0,
         },
-        [163891] = {
-            ["name"] = "Rotmarrow Slime",
-            ["count"] = 6,
+        [179446] = {
+            ["name"] = "Incinerator Arkolath",
+            ["count"] = 0,
         },
         [167493] = {
             ["name"] = "Venomous Sniper",
             ["count"] = 8,
         },
-        [167965] = {
-            ["name"] = "Lubricator",
-            ["count"] = 5,
+        [169905] = {
+            ["name"] = "Risen Warlord",
+            ["count"] = 6,
         },
-        [166079] = {
-            ["name"] = "Brittlebone Crossbowman",
-            ["count"] = 0,
+        [166302] = {
+            ["name"] = "Corpse Harvester",
+            ["count"] = 4,
         },
         [162744] = {
             ["name"] = "Nekthara the Mangler",
@@ -785,29 +801,29 @@ function MMPEData:GetNPCData()
             ["name"] = "Risen Cultist",
             ["count"] = 4,
         },
-        [165408] = {
-            ["name"] = "Halkias",
-            ["count"] = 0,
+        [163620] = {
+            ["name"] = "Rotspew",
+            ["count"] = 6,
         },
-        [164218] = {
-            ["name"] = "Lord Chamberlain",
-            ["count"] = 0,
+        [165414] = {
+            ["name"] = "Depraved Obliterator",
+            ["count"] = 4,
         },
         [168578] = {
             ["name"] = "Fungalmancer",
             ["count"] = 8,
         },
-        [168886] = {
-            ["name"] = "Virulax Blightweaver",
-            ["count"] = 25,
+        [167113] = {
+            ["name"] = "Spinemaw Acidgullet",
+            ["count"] = 4,
         },
         [164562] = {
             ["name"] = "Depraved Houndmaster",
             ["count"] = 4,
         },
-        [165415] = {
-            ["name"] = "Toiling Groundskeeper",
-            ["count"] = 2,
+        [163621] = {
+            ["name"] = "Goregrind",
+            ["count"] = 6,
         },
         [166411] = {
             ["name"] = "Forsworn Usurper",
@@ -817,57 +833,57 @@ function MMPEData:GetNPCData()
             ["name"] = "Zolramus Sorcerer",
             ["count"] = 4,
         },
-        [169905] = {
-            ["name"] = "Risen Warlord",
-            ["count"] = 6,
+        [162051] = {
+            ["name"] = "Frenzied Ghoul",
+            ["count"] = 2,
         },
-        [170480] = {
-            ["name"] = "Atal'ai Deathwalker",
-            ["count"] = 5,
+        [162099] = {
+            ["name"] = "General Kaal",
+            ["count"] = 0,
         },
         [171384] = {
             ["name"] = "Research Scribe",
             ["count"] = 4,
         },
-        [165076] = {
-            ["name"] = "Gluttonous Tick",
-            ["count"] = 4,
+        [164862] = {
+            ["name"] = "Weald Shimmermoth",
+            ["count"] = 3,
         },
-        [171448] = {
-            ["name"] = "Dreadful Huntmaster",
+        [164563] = {
+            ["name"] = "Vicious Gargon",
             ["count"] = 4,
         },
         [168420] = {
             ["name"] = "Forsworn Champion",
             ["count"] = 4,
         },
-        [163862] = {
-            ["name"] = "Defender of Many Eyes",
-            ["count"] = 8,
+        [165137] = {
+            ["name"] = "Zolramus Gatekeeper",
+            ["count"] = 6,
         },
         [171799] = {
             ["name"] = "Depths Warden",
             ["count"] = 7,
         },
-        [162049] = {
-            ["name"] = "Vestige of Doubt",
-            ["count"] = 4,
+        [171376] = {
+            ["name"] = "Head Custodian Javlin",
+            ["count"] = 10,
         },
-        [162061] = {
-            ["name"] = "Devos",
-            ["count"] = 0,
+        [165197] = {
+            ["name"] = "Skeletal Monstrosity",
+            ["count"] = 12,
         },
         [168580] = {
             ["name"] = "Plagueborer",
             ["count"] = 8,
         },
-        [167956] = {
-            ["name"] = "Dark Acolyte",
-            ["count"] = 1,
+        [162102] = {
+            ["name"] = "Grand Proctor Beryllia",
+            ["count"] = 0,
         },
-        [164705] = {
-            ["name"] = "Pestilence Slime",
-            ["count"] = 6,
+        [171342] = {
+            ["name"] = "Juvenile Runestag",
+            ["count"] = 2,
         },
         [162046] = {
             ["name"] = "Famished Tick",
@@ -877,13 +893,13 @@ function MMPEData:GetNPCData()
             ["name"] = "Blight Bag",
             ["count"] = 1,
         },
-        [167955] = {
-            ["name"] = "Sanguine Cadet",
+        [171500] = {
+            ["name"] = "Shuffling Corpse",
             ["count"] = 1,
         },
-        [162047] = {
-            ["name"] = "Insatiable Brute",
-            ["count"] = 7,
+        [179891] = {
+            ["name"] = "Soggodon the Breaker",
+            ["count"] = 0,
         },
     }
 end

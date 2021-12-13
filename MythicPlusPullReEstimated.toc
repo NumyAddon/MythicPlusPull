@@ -1,18 +1,17 @@
-## Interface: @toc-version-retail@
+## Interface: 90105
 ## Title: Mythic Plus Pull ReEstimated
-## Version: @project-version@
+## Version: v1.1.1
 ## Notes: Tracks and displays % progress gained from individual mobs or entire pulls in Mythic+ dungeons. /mpp for options
 ## Author: Numy
 ## SavedVariables: MMPEDB
 ## X-Curse-Project-ID: 431246
 ## X-Wago-ID: anKWEqNE
 
-#@do-not-package@
-#extractData.lua
-#@end-do-not-package@
 
 Libs\embeds.xml
 
 MythicPlusPullReEstimated.lua
 
 Data\Shadowlands.lua
+Data\BFA.lua
+Data\Legion.lua

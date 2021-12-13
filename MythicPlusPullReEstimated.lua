@@ -26,12 +26,14 @@ local UnitPlayerControlled = _G.UnitPlayerControlled
 local UnitAffectingCombat = _G.UnitAffectingCombat
 local C_NamePlate = _G.C_NamePlate
 
-local name = ...
+local name, ns = ...
 
 MMPEDB = MMPEDB or {}
 
 local MMPE = LibStub('AceAddon-3.0'):NewAddon(name, 'AceConsole-3.0', 'AceHook-3.0', 'AceEvent-3.0');
 if not MMPE then return end
+ns.addon = MMPE
+ns.data = {}
 
 MMPE.loaded = false
 MMPE.quantity = 0
@@ -366,7 +368,12 @@ function MMPE:VerifyDB(forceWipe)
         self.DB.npcData = {}
     end
     self:VerifySettings()
-    local defaultValues = MMPE.data:GetNPCData()
+
+	local defaultValues = {}
+	for _, dataProvider in pairs(ns.data) do
+		defaultValues = Mixin(defaultValues, dataProvider:GetNPCData())
+	end
+
     if defaultValues ~= nil then
         for npcId, npcData in pairs(defaultValues) do
             if self:GetValue(npcId) == nil then
