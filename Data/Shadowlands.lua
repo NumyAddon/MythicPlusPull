@@ -901,5 +901,146 @@ function data:GetNPCData()
             ["name"] = "Soggodon the Breaker",
             ["count"] = 0,
         },
+        [177807] = {
+            ["name"] = "Customs Security",
+            ["count"] = 4,
+        },
+        [178392] = {
+            ["name"] = "Gatewarden Zo'mazz",
+            ["count"] = 10,
+        },
+        [177817] = {
+            ["name"] = "Support Officer",
+            ["count"] = 4,
+        },
+        [177816] = {
+            ["name"] = "Interrogation Specialist",
+            ["count"] = 4,
+        },
+        [179334] = {
+            ["name"] = "Portalmancer Zo'honn",
+            ["count"] = 16,
+        },
+        [177808] = {
+            ["name"] = "Armored Overseer",
+            ["count"] = 8,
+        },
+        [179893] = {
+            ["name"] = "Cartel Skulker",
+            ["count"] = 4,
+        },
+        [180335] = {
+            ["name"] = "Cartel Smuggler",
+            ["count"] = 4,
+        },
+        [180336] = {
+            ["name"] = "Cartel Wiseguy",
+            ["count"] = 4,
+        },
+        [180348] = {
+            ["name"] = "Cartel Muscle",
+            ["count"] = 8,
+        },
+        [179837] = {
+            ["name"] = "Tracker Zo'korss",
+            ["count"] = 20,
+        },
+        [180091] = {
+            ["name"] = "Ancient Core Hound",
+            ["count"] = 12,
+        },
+        [180495] = {
+            ["name"] = "Enraged Direhorn",
+            ["count"] = 10,
+        },
+        [180567] = {
+            ["name"] = "Frenzied Nightclaw",
+            ["count"] = 4,
+        },
+        [179840] = {
+            ["name"] = "Market Peacekeeper",
+            ["count"] = 4,
+        },
+        [179841] = {
+            ["name"] = "Veteran Sparkcaster",
+            ["count"] = 4,
+        },
+        [179842] = {
+            ["name"] = "Commerce Enforcerr",
+            ["count"] = 8,
+        },
+        [179821] = {
+            ["name"] = "Commander Zo'far",
+            ["count"] = 20,
+        },
+        [176396] = {
+            ["name"] = "Defective Sorter",
+            ["count"] = 2,
+        },
+        [176394] = {
+            ["name"] = "P.O.S.T. Worker",
+            ["count"] = 4,
+        },
+        [176395] = {
+            ["name"] = "Overloaded Mailemental",
+            ["count"] = 4,
+        },
+        [178139] = {
+            ["name"] = "Murkbrine Shellcrusher",
+            ["count"] = 6,
+        },
+        [178133] = {
+            ["name"] = "Murkbrine Wavejumper",
+            ["count"] = 3,
+        },
+        [178163] = {
+            ["name"] = "Murkbrine Shorerunner",
+            ["count"] = 1,
+        },
+        [178142] = {
+            ["name"] = "Murkbrine Fishmancer",
+            ["count"] = 3,
+        },
+        [178141] = {
+            ["name"] = "Murkbrine Scalebinder",
+            ["count"] = 3,
+        },
+        [178165] = {
+            ["name"] = "Coastwalker Goliath",
+            ["count"] = 15,
+        },
+        [178171] = {
+            ["name"] = "Stormforged Guardian",
+            ["count"] = 10,
+        },
+        [180015] = {
+            ["name"] = "Burly Deckhand",
+            ["count"] = 5,
+        },
+        [179388] = {
+            ["name"] = "Hourglass Tidesage",
+            ["count"] = 5,
+        },
+        [179386] = {
+            ["name"] = "Corsair Officere",
+            ["count"] = 5,
+        },
+        [180429] = {
+            ["name"] = "Adorned Starseer",
+            ["count"] = 10,
+        },
+        [180432] = {
+            ["name"] = "Devoted Accomplice",
+            ["count"] = 5,
+        },
+        [180431] = {
+            ["name"] = "Focused Ritualist",
+            ["count"] = 5,
+        },
+        [180429] = {
+            ["name"] = "FAdorned Starseer",
+            ["count"] = 10,
+        }
+        
     }
 end
