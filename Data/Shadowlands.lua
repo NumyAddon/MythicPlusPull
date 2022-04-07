@@ -907,7 +907,7 @@ function data:GetNPCData()
         },
         [178392] = {
             ["name"] = "Gatewarden Zo'mazz",
-            ["count"] = 10,
+            ["count"] = 18,
         },
         [177817] = {
             ["name"] = "Support Officer",
@@ -931,11 +931,11 @@ function data:GetNPCData()
         },
         [180335] = {
             ["name"] = "Cartel Smuggler",
-            ["count"] = 4,
+            ["count"] = 5,
         },
         [180336] = {
             ["name"] = "Cartel Wiseguy",
-            ["count"] = 4,
+            ["count"] = 5,
         },
         [180348] = {
             ["name"] = "Cartel Muscle",
@@ -971,19 +971,19 @@ function data:GetNPCData()
         },
         [179821] = {
             ["name"] = "Commander Zo'far",
-            ["count"] = 20,
+            ["count"] = 25,
         },
         [176396] = {
             ["name"] = "Defective Sorter",
-            ["count"] = 2,
+            ["count"] = 3,
         },
         [176394] = {
             ["name"] = "P.O.S.T. Worker",
-            ["count"] = 4,
+            ["count"] = 5,
         },
         [176395] = {
             ["name"] = "Overloaded Mailemental",
-            ["count"] = 4,
+            ["count"] = 5,
         },
         [178139] = {
             ["name"] = "Murkbrine Shellcrusher",
