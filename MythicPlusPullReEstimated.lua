@@ -28,8 +28,6 @@ local C_NamePlate = _G.C_NamePlate
 
 local name, ns = ...
 
-MMPEDB = MMPEDB or {}
-
 local MMPE = LibStub('AceAddon-3.0'):NewAddon(name, 'AceConsole-3.0', 'AceHook-3.0', 'AceEvent-3.0');
 if not MMPE then return end
 ns.addon = MMPE
@@ -66,6 +64,15 @@ MMPE.defaultSettings = {
 
     enableNameplateText = true,
     nameplateTextColor = "FFFFFF",
+
+    lockPullFrame = false,
+    pullFramePoint = {
+        ["anchorPoint"] = "CENTER",
+        ["relativeFrame"] = "UIParent",
+        ["relativePoint"] = "CENTER",
+        ["offX"] = 400,
+        ["offY"] = 300,
+    },
 }
 
 MMPE.warnings = {}
@@ -89,6 +96,27 @@ end
 
 local function GetTimeInSeconds()
     return GetTime() * 1000
+end
+
+local function GetAbsoluteFramePosition(frame)
+    return {
+        ["anchorPoint"] = "TOPLEFT",
+        ["relativeFrame"] = "UIParent",
+        ["relativePoint"] = "BOTTOMLEFT",
+        ["offX"] = frame:GetLeft(),
+        ["offY"] = frame:GetTop(),
+    }
+end
+
+local function SetFramePoint(frame, pointInfo)
+    frame:ClearAllPoints()
+    frame:SetPoint(
+        pointInfo.anchorPoint,
+        pointInfo.relativeFrame,
+        pointInfo.relativePoint,
+        pointInfo.offX,
+        pointInfo.offY
+    );
 end
 
 function MMPE:DebugPrint(...)
@@ -364,7 +392,7 @@ function MMPE:VerifyDB(forceWipe)
         self:Print("Running first time setup. This should only happen once. Enjoy! ;)")
         MMPEDB = {}
         self.DB = MMPEDB
-        self.DB.settings = {}
+        self.DB.settings = self.defaultSettings
         self.DB.npcData = {}
     end
     self:VerifySettings()
@@ -434,12 +462,18 @@ end
 
 function MMPE:CreatePullFrame()
     self.currentPullFrame = CreateFrame("frame", nil, UIParent)
-    self.currentPullFrame:SetPoint("CENTER", UIParent, 400, 300)
+    SetFramePoint(self.currentPullFrame, self.DB.settings.pullFramePoint)
     self.currentPullFrame:EnableMouse(true)
     self.currentPullFrame:SetMovable(true)
     self.currentPullFrame:RegisterForDrag("LeftButton")
-    self.currentPullFrame:SetScript("OnDragStart", self.currentPullFrame.StartMoving)
-    self.currentPullFrame:SetScript("OnDragStop", self.currentPullFrame.StopMovingOrSizing)
+    self.currentPullFrame:SetScript("OnDragStart", function(frame)
+        if MMPE.DB.settings.lockPullFrame then return end
+        frame:StartMoving()
+    end)
+    self.currentPullFrame:SetScript("OnDragStop", function(frame)
+        frame:StopMovingOrSizing()
+        MMPE.DB.settings.pullFramePoint = GetAbsoluteFramePosition(frame)
+    end)
     self.currentPullFrame:SetWidth(50)
     self.currentPullFrame:SetHeight(50)
 
@@ -624,6 +658,7 @@ end
 ---
 
 function MMPE:OnInitialize()
+    MMPEDB = MMPEDB or {}
     self.DB = MMPEDB
     self.DB.debug = self.DB.debug or false
 
@@ -684,8 +719,13 @@ function MMPE:Command(args)
         self:Print("Y offset for nameplates is now ", self:GetSetting('offsety'))
 
     elseif args[1] == "reset" then
-        self.currentPullFrame:SetPoint("CENTER", UIParent, 50, 50)
-        self:Print("MythicPlusPullEstimator' position reset.")
+        self.DB.settings.pullFramePoint = self.defaultSettings.pullFramePoint
+        SetFramePoint(self.currentPullFrame, self.DB.settings.pullFramePoint)
+        self:Print("MythicPlusPullEstimator's position reset.")
+
+    elseif args[1] == "lock" then
+        self.DB.settings.lockPullFrame = not self.DB.settings.lockPullFrame
+        self:Print("MPP pull frame position is ".. (self.DB.settings.lockPullFrame and "LOCKED" or "UNLOCKED"))
 
     elseif args[1] == "sim" then
         self.simulationActive = not self.simulationActive
@@ -698,7 +738,7 @@ function MMPE:Command(args)
     elseif args[1] == "updatevalue" then
         local npcId = self:GetNPCID(UnitGUID("target"))
         if npcId then
-            updateValue(npcId, tonumber(args[2]), UnitName("target") .. ("(Manual)"))
+            self:UpdateValue(npcId, tonumber(args[2]), UnitName("target") .. ("(Manual)"))
         end
 
     elseif args[1] == "getvalue" then
