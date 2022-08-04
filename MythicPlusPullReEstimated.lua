@@ -19,7 +19,6 @@ local CreateFrame = _G.CreateFrame
 local UnitGUID = _G.UnitGUID
 local UIParent = _G.UIParent
 local unpack = _G.unpack
-local foreach = _G.foreach
 local GameTooltip = _G.GameTooltip
 local UnitThreatSituation = _G.UnitThreatSituation
 local UnitPlayerControlled = _G.UnitPlayerControlled
@@ -30,6 +29,9 @@ local CombatLogGetCurrentEventInfo = _G.CombatLogGetCurrentEventInfo
 local IsControlKeyDown = _G.IsControlKeyDown
 local StaticPopup_Show = _G.StaticPopup_Show
 local StaticPopupDialogs = _G.StaticPopupDialogs
+local max = _G.max
+local wipe = _G.wipe
+local Mixin = _G.Mixin
 
 local name, ns = ...
 
@@ -37,6 +39,7 @@ local MMPE = LibStub('AceAddon-3.0'):NewAddon(name, 'AceConsole-3.0', 'AceHook-3
 if not MMPE then return end
 ns.addon = MMPE
 ns.data = {}
+MMPE.ns = ns
 
 MMPE.loaded = false
 MMPE.quantity = 0
@@ -275,7 +278,7 @@ function MMPE:DeleteEntry(npcID)
     return exists
 end
 
-function MMPE:UpdateValue(npcID, value, npcName, updatedFromCombat)
+function MMPE:UpdateValue(npcID, value, npcName, updatedFromCombat, forceUpdate)
     local newValue = false
     if value <= 0 then
         self:DebugPrint("Discarding update for", npcName, "(", npcID, ") due to value being", value)
@@ -291,8 +294,10 @@ function MMPE:UpdateValue(npcID, value, npcName, updatedFromCombat)
     if values[value] == nil then
         newValue = true
         values[value] = 1
-    else
+    elseif updatedFromCombat then
         values[value] = values[value] + 1
+    elseif forceUpdate then
+        values[value] = 1
     end
     local bestValue, maxOccurrence = nil, -1
     local previousBestValue, previousMaxOccurrence = nil, -1
@@ -300,8 +305,11 @@ function MMPE:UpdateValue(npcID, value, npcName, updatedFromCombat)
         if ((val == value and (occurrence - 1) or occurrence) > previousMaxOccurrence) then
             previousBestValue, previousMaxOccurrence = val, occurrence
         end
-        if val ~= value then
+        if val ~= value and updatedFromCombat then
             values[val] = occurrence * 0.75 -- Newer values will quickly overtake old ones
+        end
+        if val ~= value and forceUpdate then
+            values[val] = nil -- Old values are deleted on forced updates
         end
         if occurrence > maxOccurrence then
             bestValue, maxOccurrence = val, occurrence
@@ -315,43 +323,29 @@ function MMPE:UpdateValue(npcID, value, npcName, updatedFromCombat)
     return newValue
 end
 
-function MMPE:ExportData()
+function MMPE:ExportData(onlyUpdatedData)
     if not StaticPopupDialogs["MPPEDataExportDialog"] then
-        StaticPopupDialogs["MPPEDataExportDialog"] = {
-            text = "CTRL-C to copy",
-            button1 = "Close",
-            OnShow = function(dialog, data)
-                local function HidePopup()
-                    dialog:Hide();
-                end
-                dialog.editBox:SetScript("OnEscapePressed", HidePopup);
-                dialog.editBox:SetScript("OnEnterPressed", HidePopup);
-                dialog.editBox:SetScript("OnKeyUp", function(_, key)
-                    if IsControlKeyDown() and key == "C" then
-                        HidePopup();
-                    end
-                end);
-                dialog.editBox:SetMaxLetters(0);
-                dialog.editBox:SetText(data);
-                dialog.editBox:HighlightText();
-            end,
-            hasEditBox = true,
-            editBoxWidth = 240,
-            timeout = 0,
-            whileDead = true,
-            hideOnEscape = true,
-            preferredIndex = 3,
-        };
+        self:InitPopup()
     end
-    local editBoxText = string.format("Export ver %s - %i mobs: {", self.version, #self.DB.npcData)
+    local defaultValues = {}
+    if onlyUpdatedData then
+        for _, dataProvider in pairs(ns.data) do
+            defaultValues = Mixin(defaultValues, dataProvider:GetNPCData())
+        end
+    end
+    local editBoxText = "{ data = {"
+    local count = 0
     for npcID, npcData in pairs(self.DB.npcData) do
         local value = self:GetValue(npcID)
         local npcName = npcData.name
-        editBoxText = editBoxText .. "[".. npcID.."] = {[\"name\"] = \"" .. npcName .. "\", [\"count\"] = " .. value .. "},"
+        if(not onlyUpdatedData or value ~= (defaultValues[npcID] and defaultValues[npcID].count or 0)) then
+            count = count + 1
+            editBoxText = editBoxText .. string.format("[%d] = {[\"name\"] = \"%s\", [\"count\"] = %d},", npcID, npcName, value)
+        end
     end
-    editBoxText = editBoxText .. "}"
+    editBoxText = editBoxText .. string.format("}, version = \"%s\", numberOfMobs = %d }", self.version, count)
 
-    StaticPopup_Show("MPPEDataExportDialog", _, _, editBoxText);
+    StaticPopup_Show("MPPEDataExportDialog", nil, nil, editBoxText);
 end
 
 --
@@ -442,8 +436,8 @@ function MMPE:VerifySettings(overwriteWithDefault)
     self.DB.settings["offsety"] = tonumber(self.DB.settings["offsety"])
 end
 
-function MMPE:VerifyDB(forceWipe)
-    if not self.DB or not self.DB.settings or not self.DB.npcData or forceWipe then
+function MMPE:VerifyDB(fullWipe, npcDataWipe)
+    if not self.DB or not self.DB.settings or not self.DB.npcData or fullWipe then
         self:Print("Running first time setup. This should only happen once. Enjoy! ;)")
         wipe(MMPEDB)
         self.DB = MMPEDB
@@ -452,18 +446,27 @@ function MMPE:VerifyDB(forceWipe)
     end
     self:VerifySettings()
 
-	local defaultValues = {}
-	for _, dataProvider in pairs(ns.data) do
-		defaultValues = Mixin(defaultValues, dataProvider:GetNPCData())
-	end
-
-    if defaultValues ~= nil then
-        for npcId, npcData in pairs(defaultValues) do
-            if self:GetValue(npcId) == nil then
-                self:UpdateValue(npcId, npcData.count, npcData.name)
-            end
-        end
+    if npcDataWipe then
+        wipe(self.DB.npcData)
+        self.DB.npcDataPatchVersion = 0
     end
+
+    local currentPatchVersion = self.DB.npcDataPatchVersion or 0
+    local newPatchVersion = currentPatchVersion
+	for _, dataProvider in pairs(ns.data) do
+        local patchVersion = dataProvider.GetPatchVersion and dataProvider:GetPatchVersion() or 0
+		local defaultValues = dataProvider:GetNPCData()
+
+        local forceUpdate = false
+        if currentPatchVersion < patchVersion then
+            forceUpdate = true
+            newPatchVersion = max(newPatchVersion, patchVersion)
+        end
+        for npcId, npcData in pairs(defaultValues) do
+            self:UpdateValue(npcId, npcData.count, npcData.name, false, forceUpdate)
+        end
+	end
+    self.DB.npcDataPatchVersion = newPatchVersion
 
 end
 
@@ -748,6 +751,36 @@ function MMPE:OnInitialize()
     self.loaded = true
 end
 
+function MMPE:InitPopup()
+    if not StaticPopupDialogs["MPPEDataExportDialog"] then
+        StaticPopupDialogs["MPPEDataExportDialog"] = {
+            text = "CTRL-C to copy",
+            button1 = "Close",
+            OnShow = function(dialog, data)
+                local function HidePopup()
+                    dialog:Hide();
+                end
+                dialog.editBox:SetScript("OnEscapePressed", HidePopup);
+                dialog.editBox:SetScript("OnEnterPressed", HidePopup);
+                dialog.editBox:SetScript("OnKeyUp", function(_, key)
+                    if IsControlKeyDown() and key == "C" then
+                        HidePopup();
+                    end
+                end);
+                dialog.editBox:SetMaxLetters(0);
+                dialog.editBox:SetText(data);
+                dialog.editBox:HighlightText();
+            end,
+            hasEditBox = true,
+            editBoxWidth = 240,
+            timeout = 0,
+            whileDead = true,
+            hideOnEscape = true,
+            preferredIndex = 3,
+        };
+    end
+end
+
 function MMPE:InitConfig()
     local count = 0
     local function increment() count = count + 1; return count end
@@ -901,11 +934,33 @@ function MMPE:InitConfig()
                         desc = "Opens a popup which allows copying the data",
                         func = function() self:ExportData() end,
                     },
+                    exportUpdatedData = {
+                        order = increment(),
+                        type = "execute",
+                        name = "Export updated NPC data",
+                        desc = "Export only data that is different from the default values",
+                        func = function() self:ExportData(true) end,
+                    },
+                    npcDataPatchVersion = {
+                        order = increment(),
+                        type = "description",
+                        name = function() return "NPC data patch version: " .. self.DB.npcDataPatchVersion or 0 end,
+                    },
+                    resetNpcData = {
+                        order = increment(),
+                        type = "execute",
+                        name = "Reset NPC data",
+                        desc = "Reset the NPC data to the default values",
+                        func = function() self:VerifyDB(false, true) end,
+                        confirm = true,
+                        confirmText = "Are you sure you want to reset the NPC data to the defaults?",
+                    },
                     simulationActive = {
                         order = increment(),
                         type = "toggle",
                         name = "Simulation Mode",
                         desc = "Enable/Disable Simulation Mode",
+                        width = "double",
                         get = function(info) return self.simulationActive end,
                         set = function(info, value) self.simulationActive = value end,
                     },
@@ -936,9 +991,7 @@ function MMPE:InitConfig()
                         type = "execute",
                         name = "Wipe All Data",
                         desc = "Wipe all data",
-                        func = function()
-                            self:VerifyDB(true)
-                        end,
+                        func = function() self:VerifyDB(true) end,
                         confirm = true,
                         confirmText = "Are you sure you want to wipe all data?",
                     },

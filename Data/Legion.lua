@@ -3,6 +3,10 @@ local _, ns = ...
 local data = {};
 tinsert(ns.data, data)
 
+function data:GetPatchVersion()
+    return 1;
+end
+
 function data:GetNPCData()
     -- data is sorted with natural sorting by NPC ID
     return {
