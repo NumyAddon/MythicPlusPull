@@ -25,6 +25,11 @@ local UnitThreatSituation = _G.UnitThreatSituation
 local UnitPlayerControlled = _G.UnitPlayerControlled
 local UnitAffectingCombat = _G.UnitAffectingCombat
 local C_NamePlate = _G.C_NamePlate
+local InterfaceOptionsFrame_OpenToCategory = _G.InterfaceOptionsFrame_OpenToCategory
+local CombatLogGetCurrentEventInfo = _G.CombatLogGetCurrentEventInfo
+local IsControlKeyDown = _G.IsControlKeyDown
+local StaticPopup_Show = _G.StaticPopup_Show
+local StaticPopupDialogs = _G.StaticPopupDialogs
 
 local name, ns = ...
 
@@ -44,7 +49,7 @@ MMPE.simulationActive = false
 MMPE.simulationMax = 220
 MMPE.simulationCurrent = 28
 
-MMPE.version = GetAddOnMetadata(name, "Version") or ""
+MMPE.version = GetAddOnMetadata(name, "Version") or "unknown"
 MMPE.defaultSettings = {
     enabled = true,
 
@@ -63,7 +68,7 @@ MMPE.defaultSettings = {
     offsety = 0,
 
     enableNameplateText = true,
-    nameplateTextColor = "FFFFFF",
+    nameplateTextColor = "FFFFFFFF",
 
     lockPullFrame = false,
     pullFramePoint = {
@@ -73,6 +78,9 @@ MMPE.defaultSettings = {
         ["offX"] = 400,
         ["offY"] = 300,
     },
+
+    debug = false,
+    debugNewNPCScores = false,
 }
 
 MMPE.warnings = {}
@@ -83,15 +91,11 @@ MMPE.warnings = {}
 -- And by "utility" I mostly mean creating a bunch of shit that should really be built-in.
 
 local function split(str)
-    a = {}
+    local a = {}
     for s in string.gmatch(str, "%S+") do
         table.insert(a, s)
     end
     return a
-end
-
-local function round(number, decimals)
-    return (("%%.%df"):format(decimals)):format(number)
 end
 
 local function GetTimeInSeconds()
@@ -120,8 +124,12 @@ local function SetFramePoint(frame, pointInfo)
 end
 
 function MMPE:DebugPrint(...)
-    if self.mppDebug then
-        self:Print(...)
+    if self:GetSetting('debug') then
+        if(ViragDevTool and ViragDevTool.AddData) then
+            ViragDevTool:AddData({ ... }, "MMPE DebugPrint")
+        else
+            self:Print(...)
+        end
     end
 end
 
@@ -267,10 +275,11 @@ function MMPE:DeleteEntry(npcID)
     return exists
 end
 
-function MMPE:UpdateValue(npcID, value, npcName)
+function MMPE:UpdateValue(npcID, value, npcName, updatedFromCombat)
+    local newValue = false
     if value <= 0 then
         self:DebugPrint("Discarding update for", npcName, "(", npcID, ") due to value being", value)
-        return
+        return newValue
     end
     local npcData = self.DB.npcData[npcID]
     if not npcData then
@@ -280,18 +289,60 @@ function MMPE:UpdateValue(npcID, value, npcName)
 
     local values = npcData.values
     if values[value] == nil then
+        newValue = true
         values[value] = 1
     else
         values[value] = values[value] + 1
     end
+    local bestValue, maxOccurrence = nil, -1
+    local previousBestValue, previousMaxOccurrence = nil, -1
     for val, occurrence in pairs(values) do
+        if ((val == value and (occurrence - 1) or occurrence) > previousMaxOccurrence) then
+            previousBestValue, previousMaxOccurrence = val, occurrence
+        end
         if val ~= value then
             values[val] = occurrence * 0.75 -- Newer values will quickly overtake old ones
         end
+        if occurrence > maxOccurrence then
+            bestValue, maxOccurrence = val, occurrence
+        end
     end
+
+    if(updatedFromCombat and value == bestValue and value ~= previousBestValue and self:GetSetting('debugNewNPCScores')) then
+        self:Print(string.format("New score for %s (%d): %d, old value: %d", npcName, npcID, value, previousBestValue))
+    end
+
+    return newValue
 end
 
 function MMPE:ExportData()
+    if not StaticPopupDialogs["MPPEDataExportDialog"] then
+        StaticPopupDialogs["MPPEDataExportDialog"] = {
+            text = "CTRL-C to copy",
+            button1 = "Close",
+            OnShow = function(dialog, data)
+                local function HidePopup()
+                    dialog:Hide();
+                end
+                dialog.editBox:SetScript("OnEscapePressed", HidePopup);
+                dialog.editBox:SetScript("OnEnterPressed", HidePopup);
+                dialog.editBox:SetScript("OnKeyUp", function(_, key)
+                    if IsControlKeyDown() and key == "C" then
+                        HidePopup();
+                    end
+                end);
+                dialog.editBox:SetMaxLetters(0);
+                dialog.editBox:SetText(data);
+                dialog.editBox:HighlightText();
+            end,
+            hasEditBox = true,
+            editBoxWidth = 240,
+            timeout = 0,
+            whileDead = true,
+            hideOnEscape = true,
+            preferredIndex = 3,
+        };
+    end
     local editBoxText = string.format("Export ver %s - %i mobs: {", self.version, #self.DB.npcData)
     for npcID, npcData in pairs(self.DB.npcData) do
         local value = self:GetValue(npcID)
@@ -299,11 +350,8 @@ function MMPE:ExportData()
         editBoxText = editBoxText .. "[".. npcID.."] = {[\"name\"] = \"" .. npcName .. "\", [\"count\"] = " .. value .. "},"
     end
     editBoxText = editBoxText .. "}"
-    local editBoxFrame = CreateFrame('EditBox', "MPPExportBox", UIParent, "InputBoxTemplate")
-    editBoxFrame:SetSize(200, 100)
-    editBoxFrame:SetPoint("CENTER", 0, 150)
-    editBoxFrame:SetScript("OnEnterPressed", editBoxFrame.Hide)
-    editBoxFrame:SetText(editBoxText)
+
+    StaticPopup_Show("MPPEDataExportDialog", _, _, editBoxText);
 end
 
 --
@@ -334,10 +382,13 @@ function MMPE:OnProgressUpdated(deltaProgress)
         local timeSinceKill = GetTimeInSeconds() - timestamp
         self:DebugPrint("timeSinceKill: " .. timestamp .. " Current Time: " .. GetTimeInSeconds() .. "Timestamp of kill: " .. timeSinceKill)
         if timeSinceKill <= self:GetSetting("maxTimeSinceKill") then
-            self:DebugPrint(string.format("Gained %f%s. Last mob killed was %s (%i) %fs ago", deltaProgress, "%", npcName, npcID, timeSinceKill/1000))
-            self:UpdateValue(npcID, deltaProgress, npcName) -- Looks like we have ourselves a valid entry. Set this in our database/list/whatever.
+            self:DebugPrint(string.format("Gained %f%%. Last mob killed was %s (%i) %fs ago", deltaProgress, npcName, npcID, timeSinceKill/1000))
+            local updated = self:UpdateValue(npcID, deltaProgress, npcName, true) -- Looks like we have ourselves a valid entry. Set this in our database/list/whatever.
+            if updated and self:GetSetting('debugNewNPCScores') then
+                self:Print(string.format("Gained %f%%. Last mob killed was %s (%i) %fs ago", deltaProgress, npcName, npcID, timeSinceKill/1000))
+            end
         else
-            self:DebugPrint(string.format("Gained %f%s. Last mob killed was %s (%i) %fs ago (PAST CUTOFF!)", deltaProgress, "%", npcName, npcID, timeSinceKill))
+            self:DebugPrint(string.format("Gained %f%%. Last mob killed was %s (%i) %fs ago (PAST CUTOFF!)", deltaProgress, npcName, npcID, timeSinceKill))
         end
     end
 end
@@ -372,9 +423,7 @@ function MMPE:OnCombatLogEvent(args)
                 isDataUseful = false
             end
             self.lastKill = { GetTimeInSeconds(), npcID, destName, isDataUseful} -- timestamp is not at all accurate, we use GetTime() instead.
-            if self.DB.debug then
-                foreach(self.lastKill, function(var) self:DebugPrint(var) end)
-            end
+            self:DebugPrint('lastKill:', unpack(self.lastKill))
         end
     end
 end
@@ -385,14 +434,20 @@ function MMPE:VerifySettings(overwriteWithDefault)
             self.DB.settings[setting] = value
         end
     end
+    if string.len(self.DB.settings["nameplateTextColor"]) == 6 then
+        -- alpha got added in a later version
+        self.DB.settings["nameplateTextColor"] = "FF" .. self.DB.settings["nameplateTextColor"]
+    end
+    self.DB.settings["offsetx"] = tonumber(self.DB.settings["offsetx"])
+    self.DB.settings["offsety"] = tonumber(self.DB.settings["offsety"])
 end
 
 function MMPE:VerifyDB(forceWipe)
     if not self.DB or not self.DB.settings or not self.DB.npcData or forceWipe then
         self:Print("Running first time setup. This should only happen once. Enjoy! ;)")
-        MMPEDB = {}
+        wipe(MMPEDB)
         self.DB = MMPEDB
-        self.DB.settings = self.defaultSettings
+        self.DB.settings = {}
         self.DB.npcData = {}
     end
     self:VerifySettings()
@@ -438,7 +493,7 @@ function MMPE:GetTooltipMessage(npcID)
         return message .. "No Progress."
     end
     local mobsLeft = (100 - self:GetEnemyForcesProgress()) / estimatedProgress
-    message = string.format("%s%.2f%s (%i left)", message, estimatedProgress, "%", math.ceil(mobsLeft))
+    message = string.format("%s%.2f%% (%i left)", message, estimatedProgress, math.ceil(mobsLeft))
     return message
 end
 
@@ -583,7 +638,7 @@ function MMPE:UpdateNameplateValue(unit)
     if npcID then
         local estProg = self:GetEstimatedProgress(npcID)
         if estProg and estProg > 0 then
-            local message = "|cFF" .. self:GetSetting("nameplateTextColor") .. "+"
+            local message = "|c" .. self:GetSetting("nameplateTextColor") .. "+"
             message = string.format("%s%.2f%%", message, estProg)
             self.activeNameplates[unit]:SetText(message)
             self.activeNameplates[unit]:Show()
@@ -660,10 +715,9 @@ end
 function MMPE:OnInitialize()
     MMPEDB = MMPEDB or {}
     self.DB = MMPEDB
-    self.DB.debug = self.DB.debug or false
 
     self:RegisterEvent("SCENARIO_CRITERIA_UPDATE", function() self:OnCriteriaUpdate() end)
-    self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED", function(...) self:OnCombatLogEvent({...}) end)
+    self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED", function(...) self:OnCombatLogEvent({CombatLogGetCurrentEventInfo()}) end)
 
     self:RegisterEvent("NAME_PLATE_UNIT_ADDED", function(_, unit) self:OnAddNameplate(unit) end)
     self:RegisterEvent("NAME_PLATE_UNIT_REMOVED", function(_, unit) self:OnRemoveNameplate(unit) end)
@@ -682,11 +736,225 @@ function MMPE:OnInitialize()
     end
     self:CreatePullFrame()
 
-    self:RegisterChatCommand('mythicplusprogress', function(args) self:Command(args) end);
-    self:RegisterChatCommand('mypp', function(args) self:Command(args) end);
-    self:RegisterChatCommand('mpp', function(args) self:Command(args) end);
+    self:InitConfig()
+
+    local openConfig = function() self:OpenConfig() end
+    self:RegisterChatCommand('mythicplusprogress', openConfig);
+    self:RegisterChatCommand('mypp', openConfig);
+    self:RegisterChatCommand('mpp', openConfig);
+    self:RegisterChatCommand('mppre', openConfig);
+    self:RegisterChatCommand('mppe', openConfig);
 
     self.loaded = true
+end
+
+function MMPE:InitConfig()
+    local count = 0
+    local function increment() count = count + 1; return count end
+    local options = {
+        type = "group",
+        name = "Mythic Plus Progress",
+        desc = "Mythic Plus Progress tracker",
+        get = function(info) return self:GetSetting(info[#info]) end,
+        set = function(info, value) self:SetSetting(info[#info], value) end,
+        args = {
+            version = {
+                order = increment(),
+                type = "description",
+                name = "Version: " .. self.version,
+            },
+            enabled = {
+                order = increment(),
+                type = "toggle",
+                name = "Enabled",
+                desc = "Enable/Disable the addon",
+            },
+            wipesettings = {
+                order = increment(),
+                type = "execute",
+                name = "Reset Settings to default",
+                desc = "Reset Settings to default",
+                func = function()
+                    self:VerifySettings(true)
+                end,
+                width = "double",
+            },
+            tooltip = {
+                order = increment(),
+                type = "group",
+                name = "Tooltip",
+                args = {
+                    enableTooltip = {
+                        order = increment(),
+                        type = "toggle",
+                        name = "Enable Tooltip",
+                        desc = "Adds % info to the unit tooltip",
+                        descStyle = "inline",
+                    },
+                },
+            },
+            pullEstimateFrame = {
+                order = increment(),
+                type = "group",
+                name = "Pull Estimate frame",
+                args = {
+                    enablePullEstimate = {
+                        order = increment(),
+                        type = "toggle",
+                        name = "Enable Current Pull frame",
+                        desc = "Display a frame with current pull information",
+                        width = "double",
+                    },
+                    pullEstimateCombatOnly = {
+                        order = increment(),
+                        type = "toggle",
+                        name = "Only in combat",
+                        desc = "Only show the frame when you are in combat",
+                    },
+                    lockPullFrame = {
+                        order = increment(),
+                        type = "toggle",
+                        name = "Lock frame",
+                        desc = "Lock the frame in place",
+                    },
+                    reset = {
+                        order = increment(),
+                        type = "execute",
+                        name = "Reset position",
+                        desc = "Reset position of Current Pull frame to the default",
+                        func = function()
+                            self.DB.settings.pullFramePoint = self.defaultSettings.pullFramePoint
+                            SetFramePoint(self.currentPullFrame, self.DB.settings.pullFramePoint)
+                        end,
+                    },
+                },
+            },
+            nameplate = {
+                order = increment(),
+                type = "group",
+                name = "Nameplate",
+                args = {
+                    enableNameplateText = {
+                        order = increment(),
+                        type = "toggle",
+                        name = "Enable Nameplate Text",
+                        desc = "Adds the % info to the enemy nameplates",
+                        descStyle = "inline",
+                    },
+                    nameplateTextColor = {
+                        order = increment(),
+                        type = "color",
+                        name = "Nameplate Text Color",
+                        desc = "Color of the text on the enemy nameplates",
+                        hasAlpha = true,
+                        get = function(info)
+                            local hex = self:GetSetting(info[#info])
+                            return tonumber(hex:sub(3,4), 16) / 255, tonumber(hex:sub(5,6), 16) / 255, tonumber(hex:sub(7,8), 16) / 255, tonumber(hex:sub(1,2), 16) / 255
+                        end,
+                        set = function(info, r, g, b, a)
+                            self:SetSetting(info[#info], string.format("%02x%02x%02x%02x", a * 255, r * 255, g * 255, b * 255))
+                        end,
+                    },
+                    offsetx = {
+                        order = increment(),
+                        type = "range",
+                        name = "Horizontal offset ( <-> )",
+                        desc = "Horizontal offset of the nameplate text",
+                        width = "double",
+                        softMin = -100,
+                        softMax = 100,
+                        bigStep = 1,
+                    },
+                    offsety = {
+                        order = increment(),
+                        type = "range",
+                        name = "Vertical Offset ( | )",
+                        desc = "Vertical offset of the nameplate text",
+                        width = "double",
+                        softMin = -100,
+                        softMax = 100,
+                        bigStep = 1,
+                    },
+                },
+            },
+            devOptions = {
+                order = increment(),
+                type = "group",
+                name = "Developer Options",
+                args = {
+                    debug = {
+                        order = increment(),
+                        type = "toggle",
+                        name = "Debug",
+                        desc = "Enable/Disable debug prints",
+                    },
+                    debugNewNPCScores = {
+                        order = increment(),
+                        type = "toggle",
+                        name = "Debug New NPC Scores",
+                        desc = "Enable/Disable debug prints for new NPC scores",
+                    },
+                    exportData = {
+                        order = increment(),
+                        type = "execute",
+                        name = "Export NPC data",
+                        desc = "Opens a popup which allows copying the data",
+                        func = function() self:ExportData() end,
+                    },
+                    simulationActive = {
+                        order = increment(),
+                        type = "toggle",
+                        name = "Simulation Mode",
+                        desc = "Enable/Disable Simulation Mode",
+                        get = function(info) return self.simulationActive end,
+                        set = function(info, value) self.simulationActive = value end,
+                    },
+                    simulationMax = {
+                        order = increment(),
+                        type = "range",
+                        name = "Simulation Required Points",
+                        desc = "Simulated number of 'points' required to complete the run",
+                        softMin = 1,
+                        softMax = 100,
+                        bigStep = 1,
+                        get = function(info) return self.simulationMax end,
+                        set = function(info, value) self.simulationMax = value end,
+                    },
+                    simulationCurrent = {
+                        order = increment(),
+                        type = "range",
+                        name = "Simulation Current Points",
+                        desc = "Simulated number of 'points' currently earned",
+                        softMin = 1,
+                        softMax = 100,
+                        bigStep = 1,
+                        get = function(info) return self.simulationCurrent end,
+                        set = function(info, value) self.simulationCurrent = value end,
+                    },
+                    wipeAll = {
+                        order = increment(),
+                        type = "execute",
+                        name = "Wipe All Data",
+                        desc = "Wipe all data",
+                        func = function()
+                            self:VerifyDB(true)
+                        end,
+                        confirm = true,
+                        confirmText = "Are you sure you want to wipe all data?",
+                    },
+                },
+            },
+        },
+    }
+
+    self.configCategory = "MythicPlusProgress"
+    LibStub("AceConfig-3.0"):RegisterOptionsTable(self.configCategory, options)
+    LibStub("AceConfigDialog-3.0"):AddToBlizOptions(self.configCategory)
+end
+
+function MMPE:OpenConfig()
+    InterfaceOptionsFrame_OpenToCategory(self.configCategory);
+    InterfaceOptionsFrame_OpenToCategory(self.configCategory);
 end
 
 function MMPE:OnUpdate(elapsed)
@@ -697,112 +965,4 @@ function MMPE:OnUpdate(elapsed)
         self:UpdateNameplateValues()
     end
     self:UpdateNameplates()
-end
-
-function MMPE:Command(args)
-    args = split(args)
-    args[1] = string.lower(args[1] or "")
-
-    if args[1] == "toggle" then
-        self:Print("MythicPlusPullEstimator toggled ".. (self:ToggleSetting("enabled") and "ON" or "OFF"))
-
-    elseif args[1] == "offsetx" then
-        if args[2] then
-            self:SetSetting("offsetx", args[2])
-        end
-        self:Print("X offset for nameplates is now ", self:GetSetting('offsetx'))
-
-    elseif args[1] == "offsety" then
-        if args[2] then
-            self:SetSetting("offsety", args[2])
-        end
-        self:Print("Y offset for nameplates is now ", self:GetSetting('offsety'))
-
-    elseif args[1] == "reset" then
-        self.DB.settings.pullFramePoint = self.defaultSettings.pullFramePoint
-        SetFramePoint(self.currentPullFrame, self.DB.settings.pullFramePoint)
-        self:Print("MythicPlusPullEstimator's position reset.")
-
-    elseif args[1] == "lock" then
-        self.DB.settings.lockPullFrame = not self.DB.settings.lockPullFrame
-        self:Print("MPP pull frame position is ".. (self.DB.settings.lockPullFrame and "LOCKED" or "UNLOCKED"))
-
-    elseif args[1] == "sim" then
-        self.simulationActive = not self.simulationActive
-        self:Print("MPP simulation mode toggled ".. (self.simulationActive and "ON" or "OFF"))
-
-    elseif args[1] == "debug" then
-        self.DB.debug = not self.DB.debug
-        self:Print("MPP debug toggled ".. (self.DB.debug and "ON" or "OFF"))
-
-    elseif args[1] == "updatevalue" then
-        local npcId = self:GetNPCID(UnitGUID("target"))
-        if npcId then
-            self:UpdateValue(npcId, tonumber(args[2]), UnitName("target") .. ("(Manual)"))
-        end
-
-    elseif args[1] == "getvalue" then
-        self:Print(self:GetValue(tonumber(args[2])) or "No Data")
-
-    elseif args[1] == "getvalues" then
-        local npcData = self.DB.npcData[tonumber(args[2])]
-        if npcData then
-            self:Print((npcData["name"]))
-            foreach(npcData["values"], function(...) self:Print(...) end)
-        else
-            self:Print("No data.")
-        end
-
-    elseif args[1] == "getsetting" then
-        self:Print(self:GetSetting(args[2]))
-
-    elseif args[1] == "simmax" then
-        self.simulationMax = tonumber(args[2])
-
-    elseif args[1] == "simcur" then
-        self.simulationCurrent = tonumber(args[2])
-
-    elseif args[1] == "wipeall" then
-        self:VerifyDB(true)
-        self:Print("RIP Database.")
-
-    elseif args[1] == "wipesettings" then
-        self:VerifySettings(true)
-
-    elseif args[1] == "tooltip" then
-        self:Print("Toggled tooltips ".. (self:ToggleSetting("enableTooltip") and "on" or "off"))
-
-    elseif args[1] == "currentpull" then
-        self:Print("Toggled \"current pull\" display ".. (self:ToggleSetting("enablePullEstimate") and "on" or "off"))
-
-    elseif args[1] == "dbinfo" then
-        self:Print("Mobs recorded: " .. #self.DB.npcData)
-
-    elseif args[1] == "combatonly" then
-        self:Print("Toggled combat only \"current pull\" display ".. (self:ToggleSetting("pullEstimateCombatOnly") and "on" or "off"))
-
-    elseif args[1] == "version" then
-        self:Print("MythicPlusPullEstimator Version: " .. self.version)
-
-    elseif args[1] == "nameplates" then
-        self:Print("Nameplate text overlay toggled ".. (self:ToggleSetting("enableNameplateText") and "ON" or "OFF"))
-
-    elseif args[1] == "export" then
-        self:ExportData()
-        self:Print("Data export opened, copy it to clipboard then hit enter to close.")
-
-    else
-        self:Print("MythicPlusPullEstimator commands:")
-        self:Print("/mpp toggle (Toggles ALL addon visibility on/off, it will still record npc data while in Mythic+)")
-        self:Print("/mpp reset (reset position of 'current pull' text, it likes to run away)")
-        self:Print("/mpp version (displays current version of addon)")
-        self:Print("/mpp tooltip (toggles the tooltip functionality on/off)")
-        self:Print("/mpp currentpull (toggles the \"current pull\" functionality on/off)")
-        self:Print("/mpp dbinfo (Shows how many unique mobs you've recorded)")
-        self:Print("/mpp combatonly (Toggles only showing the current pull estimate while you or one of your party members are in combat)")
-        self:Print("/mpp nameplates (Toggles nameplate text overlay on/off)")
-        self:Print("/mpp offsetx (allows you to change the left/right offset for nameplate text)")
-        self:Print("/mpp offsety (allows you to change the up/down offset for nameplate text)")
-        self:Print("/mpp wipesettings (Resets all settings to default (but not mob data!))")
-    end
 end
