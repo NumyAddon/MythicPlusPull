@@ -4,1043 +4,304 @@ local data = {};
 tinsert(ns.data, data)
 
 function data:GetNPCData()
+    -- data is sorted with natural sorting by NPC ID
     return {
-        [164501] = {
-            ["name"] = "Mistcaller",
-            ["count"] = 0,
-        },
-        [165872] = {
-            ["name"] = "Flesh Crafter",
-            ["count"] = 4,
-        },
-        [173044] = {
-            ["name"] = "Stitching Assistant",
-            ["count"] = 4,
-        },
-        [173714] = {
-            ["name"] = "Mistveil Nightblossom",
-            ["count"] = 16,
-        },
-        [167116] = {
-            ["name"] = "Spinemaw Reaver",
-            ["count"] = 4,
-        },
-        [172312] = {
-            ["name"] = "Spinemaw Gorger",
-            ["count"] = 4,
-        },
-        [164567] = {
-            ["name"] = "Ingra Maloch",
-            ["count"] = 0,
-        },
-        [162049] = {
-            ["name"] = "Vestige of Doubt",
-            ["count"] = 4,
-        },
-        [164185] = {
-            ["name"] = "Echelon",
-            ["count"] = 0,
-        },
-        [167532] = {
-            ["name"] = "Heavin the Breaker",
-            ["count"] = 20,
-        },
-        [168361] = {
-            ["name"] = "Fen Hornet",
-            ["count"] = 8,
-        },
-        [166608] = {
-            ["name"] = "Mueh'zala",
-            ["count"] = 0,
-        },
-        [164218] = {
-            ["name"] = "Lord Chamberlain",
-            ["count"] = 0,
-        },
-        [170147] = {
-            ["name"] = "Volatile Memory",
-            ["count"] = 0,
-        },
-        [169159] = {
-            ["name"] = "Unstable Canister",
-            ["count"] = 0,
-        },
-        [173016] = {
-            ["name"] = "Corpse Collector",
-            ["count"] = 4,
-        },
-        [168968] = {
-            ["name"] = "Plaguebound Fallen",
-            ["count"] = 0,
-        },
-        [164920] = {
-            ["name"] = "Drust Soulcleaver",
-            ["count"] = 4,
-        },
-        [162689] = {
-            ["name"] = "Surgeon Stitchflesh",
-            ["count"] = 0,
-        },
-        [169861] = {
-            ["name"] = "Ickor Bileflesh",
-            ["count"] = 25,
-        },
-        [169893] = {
-            ["name"] = "Nefarious Darkspeaker",
-            ["count"] = 6,
-        },
-        [171455] = {
-            ["name"] = "Stonewall Gargon",
-            ["count"] = 1,
-        },
-        [164857] = {
-            ["name"] = "Spriggan Mendbender",
-            ["count"] = 2,
-        },
-        [168969] = {
-            ["name"] = "Gushing Slime",
-            ["count"] = 1,
-        },
-        [164921] = {
-            ["name"] = "Drust Harvester",
-            ["count"] = 4,
-        },
-        [173655] = {
-            ["name"] = "Mistveil Matriarch",
-            ["count"] = 16,
-        },
-        [170882] = {
-            ["name"] = "Bone Magus",
-            ["count"] = 4,
-        },
-        [168396] = {
-            ["name"] = "Plaguebelcher",
-            ["count"] = 0,
-        },
-        [168747] = {
-            ["name"] = "Venomfang",
-            ["count"] = 0,
-        },
-        [162691] = {
-            ["name"] = "Blightbone",
-            ["count"] = 0,
-        },
-        [168843] = {
-            ["name"] = "Klotos",
-            ["count"] = 12,
-        },
-        [173720] = {
-            ["name"] = "Mistveil Gorgegullet",
-            ["count"] = 16,
-        },
-        [168907] = {
-            ["name"] = "Slime Tentacle",
-            ["count"] = 10,
-        },
-        [162309] = {
-            ["name"] = "Kul'tharok",
-            ["count"] = 0,
-        },
-        [165911] = {
-            ["name"] = "Loyal Creation",
-            ["count"] = 4,
-        },
-        [163457] = {
-            ["name"] = "Forsworn Vanguard",
-            ["count"] = 4,
-        },
-        [165529] = {
-            ["name"] = "Depraved Collector",
-            ["count"] = 4,
-        },
-        [167534] = {
-            ["name"] = "Rek the Hardened",
-            ["count"] = 20,
-        },
-        [168717] = {
-            ["name"] = "Forsworn Justicar",
-            ["count"] = 4,
-        },
-        [163862] = {
-            ["name"] = "Defender of Many Eyes",
-            ["count"] = 8,
-        },
-        [170850] = {
-            ["name"] = "Raging Bloodhorn",
-            ["count"] = 7,
-        },
-        [162693] = {
-            ["name"] = "Nalthor the Rimebinder",
-            ["count"] = 0,
-        },
-        [164255] = {
-            ["name"] = "Globgrog",
-            ["count"] = 0,
-        },
-        [174197] = {
-            ["name"] = "Battlefield Ritualist",
-            ["count"] = 4,
-        },
-        [163891] = {
-            ["name"] = "Rotmarrow Slime",
-            ["count"] = 6,
-        },
-        [164861] = {
-            ["name"] = "Spriggan Barkbinder",
-            ["count"] = 2,
-        },
-        [163618] = {
-            ["name"] = "Zolramus Necromancer",
-            ["count"] = 8,
-        },
-        [174210] = {
-            ["name"] = "Blighted Sludge-Spewer",
-            ["count"] = 4,
-        },
-        [163458] = {
-            ["name"] = "Forsworn Castigator",
-            ["count"] = 4,
-        },
-        [166264] = {
-            ["name"] = "Spare Parts",
-            ["count"] = 0,
-        },
-        [168591] = {
-            ["name"] = "Ravenous Dreadbat",
-            ["count"] = 4,
-        },
-        [168878] = {
-            ["name"] = "Rigged Plagueborer",
-            ["count"] = 8,
-        },
-        [160495] = {
-            ["name"] = "Maniacal Soulbinder",
-            ["count"] = 4,
-        },
-        [162057] = {
-            ["name"] = "Chamber Sentinel",
-            ["count"] = 7,
-        },
-        [163619] = {
-            ["name"] = "Zolramus Bonecarver",
-            ["count"] = 4,
-        },
-        [164926] = {
-            ["name"] = "Drust Boughbreaker",
-            ["count"] = 6,
-        },
-        [171333] = {
-            ["name"] = "Atal'ai Devoted",
-            ["count"] = 2,
-        },
-        [167533] = {
-            ["name"] = "Advent Nevermore",
-            ["count"] = 20,
-        },
-        [167536] = {
-            ["name"] = "Harugia the Bloodthirsty",
-            ["count"] = 20,
-        },
-        [163524] = {
-            ["name"] = "Kyrian Dark-Praetor",
-            ["count"] = 5,
-        },
-        [163501] = {
-            ["name"] = "Forsworn Skirmisher",
-            ["count"] = 4,
-        },
-        [162058] = {
-            ["name"] = "Ventunax",
-            ["count"] = 0,
-        },
-        [167955] = {
-            ["name"] = "Sanguine Cadet",
-            ["count"] = 1,
-        },
-        [167731] = {
-            ["name"] = "Separation Assistant",
-            ["count"] = 4,
-        },
-        [169927] = {
-            ["name"] = "Putrid Butcher",
-            ["count"] = 5,
-        },
-        [165946] = {
-            ["name"] = "Mordretha, the Endless Empress",
-            ["count"] = 0,
-        },
-        [170690] = {
-            ["name"] = "Diseased Horror",
-            ["count"] = 4,
-        },
-        [164707] = {
-            ["name"] = "Congealed Slime",
-            ["count"] = 6,
-        },
-        [167892] = {
-            ["name"] = "Tormented Soul",
-            ["count"] = 0,
-        },
-        [162059] = {
-            ["name"] = "Kin-Tara",
-            ["count"] = 0,
-        },
-        [167956] = {
-            ["name"] = "Dark Acolyte",
-            ["count"] = 1,
-        },
-        [179890] = {
-            ["name"] = "Executioner Varruth",
-            ["count"] = 0,
-        },
-        [164450] = {
-            ["name"] = "Dealer Xy'exa",
-            ["count"] = 0,
-        },
-        [164737] = {
-            ["name"] = "Brood Ambusher",
-            ["count"] = 12,
-        },
-        [168594] = {
-            ["name"] = "Chamber Sentinel",
-            ["count"] = 7,
-        },
-        [164506] = {
-            ["name"] = "Ancient Captain",
-            ["count"] = 5,
-        },
-        [164578] = {
-            ["name"] = "Stitchflesh's Creation",
-            ["count"] = 0,
-        },
-        [162060] = {
-            ["name"] = "Oryphrion",
-            ["count"] = 0,
-        },
-        [163622] = {
-            ["name"] = "Goregrind Bits",
-            ["count"] = 0,
-        },
-        [164929] = {
-            ["name"] = "Tirnenn Villager",
-            ["count"] = 7,
-        },
-        [164451] = {
-            ["name"] = "Dessia the Decapitator",
-            ["count"] = 0,
-        },
-        [167538] = {
-            ["name"] = "Dokigg the Brutalizer",
-            ["count"] = 20,
-        },
-        [164510] = {
-            ["name"] = "Shambling Arbalest",
-            ["count"] = 4,
-        },
-        [167607] = {
-            ["name"] = "Stoneborn Slasher",
-            ["count"] = 7,
-        },
-        [163623] = {
-            ["name"] = "Rotspew Leftovers",
-            ["count"] = 0,
-        },
-        [166396] = {
-            ["name"] = "Noble Skirmisher",
-            ["count"] = 4,
-        },
-        [165408] = {
-            ["name"] = "Halkias",
-            ["count"] = 0,
-        },
-        [169696] = {
-            ["name"] = "Mire Soldier",
-            ["count"] = 8,
-        },
-        [170572] = {
-            ["name"] = "Atal'ai Hoodoo Hexxer",
-            ["count"] = 6,
-        },
-        [164463] = {
-            ["name"] = "Paceran the Virulent",
-            ["count"] = 0,
-        },
-        [166301] = {
-            ["name"] = "Mistveil Stalker",
-            ["count"] = 4,
-        },
-        [162763] = {
-            ["name"] = "Soulforged Bonereaver",
-            ["count"] = 8,
-        },
-        [165415] = {
-            ["name"] = "Toiling Groundskeeper",
-            ["count"] = 2,
-        },
-        [162317] = {
-            ["name"] = "Gorechop",
-            ["count"] = 0,
-        },
-        [165919] = {
-            ["name"] = "Skeletal Marauder",
-            ["count"] = 6,
-        },
-        [162061] = {
-            ["name"] = "Devos",
-            ["count"] = 0,
-        },
-        [168681] = {
-            ["name"] = "Forsworn Helion",
-            ["count"] = 6,
-        },
-        [174175] = {
-            ["name"] = "Loyal Stoneborn",
-            ["count"] = 4,
-        },
-        [164517] = {
-            ["name"] = "Tred'ova",
-            ["count"] = 0,
-        },
-        [166079] = {
-            ["name"] = "Brittlebone Crossbowman",
-            ["count"] = 0,
-        },
-        [168627] = {
-            ["name"] = "Plaguebinder",
-            ["count"] = 8,
-        },
-        [167611] = {
-            ["name"] = "Stoneborn Eviscerator",
-            ["count"] = 4,
-        },
-        [165410] = {
-            ["name"] = "High Adjudicator Aleez",
-            ["count"] = 0,
-        },
-        [168365] = {
-            ["name"] = "Fungret Shroomtender",
-            ["count"] = 0,
-        },
-        [168845] = {
-            ["name"] = "Astronos",
-            ["count"] = 12,
-        },
-        [167965] = {
-            ["name"] = "Lubricator",
-            ["count"] = 5,
-        },
-        [168844] = {
-            ["name"] = "Lakesis",
-            ["count"] = 12,
-        },
-        [167610] = {
-            ["name"] = "Stonefiend Anklebiter",
-            ["count"] = 1,
-        },
-        [163520] = {
-            ["name"] = "Forsworn Squad-Leader",
-            ["count"] = 6,
-        },
-        [168949] = {
-            ["name"] = "Risen Bonesoldier",
-            ["count"] = 4,
-        },
-        [163077] = {
-            ["name"] = "Azules",
-            ["count"] = 0,
-        },
-        [171448] = {
-            ["name"] = "Dreadful Huntmaster",
-            ["count"] = 4,
-        },
-        [168942] = {
-            ["name"] = "Death Speaker",
-            ["count"] = 6,
-        },
-        [168718] = {
-            ["name"] = "Forsworn Warden",
-            ["count"] = 4,
-        },
-        [166304] = {
-            ["name"] = "Mistveil Stinger",
-            ["count"] = 4,
-        },
-        [171181] = {
-            ["name"] = "Territorial Bladebeak",
-            ["count"] = 4,
-        },
-        [168153] = {
-            ["name"] = "Plagueroc",
-            ["count"] = 12,
-        },
-        [172265] = {
-            ["name"] = "Remnant of Fury",
-            ["count"] = 4,
-        },
-        [167962] = {
-            ["name"] = "Defunct Dental Drill",
-            ["count"] = 8,
-        },
-        [167994] = {
-            ["name"] = "Ossified Conscript",
-            ["count"] = 4,
-        },
-        [171341] = {
-            ["name"] = "Bladebeak Hatchling",
-            ["count"] = 1,
-        },
-        [168058] = {
-            ["name"] = "Infused Quill-feather",
-            ["count"] = 1,
-        },
-        [169875] = {
-            ["name"] = "Shackled Soul",
-            ["count"] = 2,
-        },
-        [167612] = {
-            ["name"] = "Stoneborn Reaver",
-            ["count"] = 6,
-        },
-        [163459] = {
-            ["name"] = "Forsworn Mender",
-            ["count"] = 4,
-        },
-        [163086] = {
-            ["name"] = "Rancid Gasbag",
-            ["count"] = 8,
-        },
-        [167963] = {
-            ["name"] = "Headless Client",
-            ["count"] = 5,
-        },
-        [163915] = {
-            ["name"] = "Hatchling Nest",
-            ["count"] = 10,
-        },
-        [165222] = {
-            ["name"] = "Zolramus Bonemender",
-            ["count"] = 4,
-        },
-        [172981] = {
-            ["name"] = "Kyrian Stitchwerk",
-            ["count"] = 5,
-        },
-        [164266] = {
-            ["name"] = "Domina Venomblade",
-            ["count"] = 0,
-        },
-        [168886] = {
-            ["name"] = "Virulax Blightweaver",
-            ["count"] = 25,
-        },
-        [168155] = {
-            ["name"] = "Plaguebound",
-            ["count"] = 0,
-        },
-        [164705] = {
-            ["name"] = "Pestilence Slime",
-            ["count"] = 6,
-        },
-        [167964] = {
-            ["name"] = "4.RF-4.RF",
-            ["count"] = 8,
-        },
-        [163892] = {
-            ["name"] = "Rotting Slimeclaw",
-            ["count"] = 6,
-        },
-        [171343] = {
-            ["name"] = "Bladebeak Matriarch",
-            ["count"] = 5,
-        },
-        [166275] = {
-            ["name"] = "Mistveil Shaper",
-            ["count"] = 4,
-        },
-        [164267] = {
-            ["name"] = "Margrave Stradama",
-            ["count"] = 0,
-        },
-        [171184] = {
-            ["name"] = "Mythresh, Sky's Talons",
-            ["count"] = 12,
-        },
-        [168986] = {
-            ["name"] = "Skeletal Raptor",
-            ["count"] = 3,
-        },
-        [164873] = {
-            ["name"] = "Runestag Elderhorn",
-            ["count"] = 4,
-        },
-        [162100] = {
-            ["name"] = "Kryxis the Voracious",
-            ["count"] = 0,
-        },
-        [163126] = {
-            ["name"] = "Brittlebone Mage",
-            ["count"] = 0,
-        },
-        [168022] = {
-            ["name"] = "Slime Tentacle",
-            ["count"] = 10,
-        },
-        [166276] = {
-            ["name"] = "Mistveil Guardian",
-            ["count"] = 4,
-        },
-        [163503] = {
-            ["name"] = "Etherdiver",
-            ["count"] = 2,
-        },
-        [164555] = {
-            ["name"] = "Millificent Manastorm",
-            ["count"] = 0,
-        },
-        [165111] = {
-            ["name"] = "Drust Spiteclaw",
-            ["count"] = 2,
-        },
-        [163089] = {
-            ["name"] = "Disgusting Refuse",
-            ["count"] = 1,
-        },
-        [163121] = {
-            ["name"] = "Stitched Vanguard",
-            ["count"] = 5,
-        },
-        [167998] = {
-            ["name"] = "Portal Guardian",
-            ["count"] = 8,
-        },
-        [163894] = {
-            ["name"] = "Blighted Spinebreaker",
-            ["count"] = 12,
-        },
-        [168572] = {
-            ["name"] = "Fungi Stormer",
-            ["count"] = 8,
-        },
-        [171474] = {
-            ["name"] = "Finger Food",
-            ["count"] = 0,
-        },
-        [164556] = {
-            ["name"] = "Millhouse Manastorm",
-            ["count"] = 0,
-        },
-        [163058] = {
-            ["name"] = "Mistveil Defender",
-            ["count"] = 4,
-        },
-        [162038] = {
-            ["name"] = "Regal Mistdancer",
-            ["count"] = 7,
-        },
-        [163122] = {
-            ["name"] = "Brittlebone Warrior",
-            ["count"] = 0,
-        },
-        [163882] = {
-            ["name"] = "Decaying Flesh Giant",
-            ["count"] = 14,
-        },
-        [164461] = {
-            ["name"] = "Sathel the Accursed",
-            ["count"] = 0,
-        },
-        [168318] = {
-            ["name"] = "Forsworn Goliath",
-            ["count"] = 8,
-        },
-        [164967] = {
-            ["name"] = "Doctor Ickus",
-            ["count"] = 0,
-        },
-        [164557] = {
-            ["name"] = "Shard of Halkias",
-            ["count"] = 10,
-        },
-        [162039] = {
-            ["name"] = "Wicked Oppressor",
-            ["count"] = 4,
-        },
-        [167117] = {
-            ["name"] = "Spinemaw Larva",
-            ["count"] = 1,
-        },
-        [162103] = {
-            ["name"] = "Executor Tarvold",
-            ["count"] = 0,
-        },
-        [164804] = {
-            ["name"] = "Droman Oulfarran",
-            ["count"] = 0,
-        },
-        [166299] = {
-            ["name"] = "Mistveil Tender",
-            ["count"] = 4,
-        },
-        [168574] = {
-            ["name"] = "Pestilent Harvester",
-            ["count"] = 8,
-        },
-        [163506] = {
-            ["name"] = "Forsworn Stealthclaw",
-            ["count"] = 4,
-        },
-        [164558] = {
-            ["name"] = "Hakkar the Soulflayer",
-            ["count"] = 0,
-        },
-        [162040] = {
-            ["name"] = "Grand Overseer",
-            ["count"] = 7,
-        },
-        [163857] = {
-            ["name"] = "Plaguebound Devoted",
-            ["count"] = 4,
-        },
-        [165076] = {
-            ["name"] = "Gluttonous Tick",
-            ["count"] = 4,
-        },
-        [168934] = {
-            ["name"] = "Enraged Spirit",
-            ["count"] = 8,
-        },
-        [170838] = {
-            ["name"] = "Unyielding Contender",
-            ["count"] = 4,
-        },
-        [165515] = {
-            ["name"] = "Depraved Darkblade",
-            ["count"] = 4,
-        },
-        [162047] = {
-            ["name"] = "Insatiable Brute",
-            ["count"] = 7,
-        },
-        [170480] = {
-            ["name"] = "Atal'ai Deathwalker",
-            ["count"] = 5,
-        },
-        [162041] = {
-            ["name"] = "Grubby Dirtcruncher",
-            ["count"] = 2,
-        },
-        [167111] = {
-            ["name"] = "Spinemaw Staghorn",
-            ["count"] = 5,
-        },
-        [162056] = {
-            ["name"] = "Rockbound Sprite",
-            ["count"] = 1,
-        },
-        [163157] = {
-            ["name"] = "Amarth",
-            ["count"] = 0,
-        },
-        [164464] = {
-            ["name"] = "Xira the Underhanded",
-            ["count"] = 0,
-        },
-        [162729] = {
-            ["name"] = "Patchwerk Soldier",
-            ["count"] = 4,
-        },
-        [167967] = {
-            ["name"] = "Sentient Oil",
-            ["count"] = 6,
-        },
-        [165824] = {
-            ["name"] = "Nar'zudah",
-            ["count"] = 15,
-        },
-        [179892] = {
-            ["name"] = "Oros Coldheart",
-            ["count"] = 0,
-        },
-        [162329] = {
-            ["name"] = "Xav the Unfallen",
-            ["count"] = 0,
-        },
-        [179446] = {
-            ["name"] = "Incinerator Arkolath",
-            ["count"] = 0,
-        },
-        [167493] = {
-            ["name"] = "Venomous Sniper",
-            ["count"] = 8,
-        },
-        [169905] = {
-            ["name"] = "Risen Warlord",
-            ["count"] = 6,
-        },
-        [166302] = {
-            ["name"] = "Corpse Harvester",
-            ["count"] = 4,
-        },
-        [162744] = {
-            ["name"] = "Nekthara the Mangler",
-            ["count"] = 20,
-        },
-        [167876] = {
-            ["name"] = "Inquisitor Sigar",
-            ["count"] = 20,
-        },
-        [168418] = {
-            ["name"] = "Forsworn Inquisitor",
-            ["count"] = 4,
-        },
-        [170490] = {
-            ["name"] = "Atal'ai High Priest",
-            ["count"] = 5,
-        },
-        [168992] = {
-            ["name"] = "Risen Cultist",
-            ["count"] = 4,
-        },
-        [163620] = {
-            ["name"] = "Rotspew",
-            ["count"] = 6,
-        },
-        [165414] = {
-            ["name"] = "Depraved Obliterator",
-            ["count"] = 4,
-        },
-        [168578] = {
-            ["name"] = "Fungalmancer",
-            ["count"] = 8,
-        },
-        [167113] = {
-            ["name"] = "Spinemaw Acidgullet",
-            ["count"] = 4,
-        },
-        [164562] = {
-            ["name"] = "Depraved Houndmaster",
-            ["count"] = 4,
-        },
-        [163621] = {
-            ["name"] = "Goregrind",
-            ["count"] = 6,
-        },
-        [166411] = {
-            ["name"] = "Forsworn Usurper",
-            ["count"] = 1,
-        },
-        [163128] = {
-            ["name"] = "Zolramus Sorcerer",
-            ["count"] = 4,
-        },
-        [162051] = {
-            ["name"] = "Frenzied Ghoul",
-            ["count"] = 2,
-        },
-        [162099] = {
-            ["name"] = "General Kaal",
-            ["count"] = 0,
-        },
-        [171384] = {
-            ["name"] = "Research Scribe",
-            ["count"] = 4,
-        },
-        [164862] = {
-            ["name"] = "Weald Shimmermoth",
-            ["count"] = 3,
-        },
-        [164563] = {
-            ["name"] = "Vicious Gargon",
-            ["count"] = 4,
-        },
-        [168420] = {
-            ["name"] = "Forsworn Champion",
-            ["count"] = 4,
-        },
-        [165137] = {
-            ["name"] = "Zolramus Gatekeeper",
-            ["count"] = 6,
-        },
-        [171799] = {
-            ["name"] = "Depths Warden",
-            ["count"] = 7,
-        },
-        [171376] = {
-            ["name"] = "Head Custodian Javlin",
-            ["count"] = 10,
-        },
-        [165197] = {
-            ["name"] = "Skeletal Monstrosity",
-            ["count"] = 12,
-        },
-        [168580] = {
-            ["name"] = "Plagueborer",
-            ["count"] = 8,
-        },
-        [162102] = {
-            ["name"] = "Grand Proctor Beryllia",
-            ["count"] = 0,
-        },
-        [171342] = {
-            ["name"] = "Juvenile Runestag",
-            ["count"] = 2,
-        },
-        [162046] = {
-            ["name"] = "Famished Tick",
-            ["count"] = 1,
-        },
-        [165138] = {
-            ["name"] = "Blight Bag",
-            ["count"] = 1,
-        },
-        [171500] = {
-            ["name"] = "Shuffling Corpse",
-            ["count"] = 1,
-        },
-        [179891] = {
-            ["name"] = "Soggodon the Breaker",
-            ["count"] = 0,
-        },
-        [177807] = {
-            ["name"] = "Customs Security",
-            ["count"] = 4,
-        },
-        [178392] = {
-            ["name"] = "Gatewarden Zo'mazz",
-            ["count"] = 18,
-        },
-        [177817] = {
-            ["name"] = "Support Officer",
-            ["count"] = 4,
-        },
-        [177816] = {
-            ["name"] = "Interrogation Specialist",
-            ["count"] = 4,
-        },
-        [179334] = {
-            ["name"] = "Portalmancer Zo'honn",
-            ["count"] = 16,
-        },
-        [177808] = {
-            ["name"] = "Armored Overseer",
-            ["count"] = 8,
-        },
-        [179893] = {
-            ["name"] = "Cartel Skulker",
-            ["count"] = 4,
-        },
-        [180335] = {
-            ["name"] = "Cartel Smuggler",
-            ["count"] = 5,
-        },
-        [180336] = {
-            ["name"] = "Cartel Wiseguy",
-            ["count"] = 5,
-        },
-        [180348] = {
-            ["name"] = "Cartel Muscle",
-            ["count"] = 8,
-        },
-        [179837] = {
-            ["name"] = "Tracker Zo'korss",
-            ["count"] = 20,
-        },
-        [180091] = {
-            ["name"] = "Ancient Core Hound",
-            ["count"] = 12,
-        },
-        [180495] = {
-            ["name"] = "Enraged Direhorn",
-            ["count"] = 10,
-        },
-        [180567] = {
-            ["name"] = "Frenzied Nightclaw",
-            ["count"] = 4,
-        },
-        [179840] = {
-            ["name"] = "Market Peacekeeper",
-            ["count"] = 4,
-        },
-        [179841] = {
-            ["name"] = "Veteran Sparkcaster",
-            ["count"] = 4,
-        },
-        [179842] = {
-            ["name"] = "Commerce Enforcerr",
-            ["count"] = 8,
-        },
-        [179821] = {
-            ["name"] = "Commander Zo'far",
-            ["count"] = 25,
-        },
-        [176396] = {
-            ["name"] = "Defective Sorter",
-            ["count"] = 3,
-        },
-        [176394] = {
-            ["name"] = "P.O.S.T. Worker",
-            ["count"] = 5,
-        },
-        [176395] = {
-            ["name"] = "Overloaded Mailemental",
-            ["count"] = 5,
-        },
-        [178139] = {
-            ["name"] = "Murkbrine Shellcrusher",
-            ["count"] = 6,
-        },
-        [178133] = {
-            ["name"] = "Murkbrine Wavejumper",
-            ["count"] = 3,
-        },
-        [178163] = {
-            ["name"] = "Murkbrine Shorerunner",
-            ["count"] = 1,
-        },
-        [178142] = {
-            ["name"] = "Murkbrine Fishmancer",
-            ["count"] = 3,
-        },
-        [178141] = {
-            ["name"] = "Murkbrine Scalebinder",
-            ["count"] = 3,
-        },
-        [178165] = {
-            ["name"] = "Coastwalker Goliath",
-            ["count"] = 15,
-        },
-        [178171] = {
-            ["name"] = "Stormforged Guardian",
-            ["count"] = 10,
-        },
-        [180015] = {
-            ["name"] = "Burly Deckhand",
-            ["count"] = 5,
-        },
-        [179388] = {
-            ["name"] = "Hourglass Tidesage",
-            ["count"] = 5,
-        },
-        [179386] = {
-            ["name"] = "Corsair Officere",
-            ["count"] = 5,
-        },
-        [180429] = {
-            ["name"] = "Adorned Starseer",
-            ["count"] = 10,
-        },
-        [180432] = {
-            ["name"] = "Devoted Accomplice",
-            ["count"] = 5,
-        },
-        [180431] = {
-            ["name"] = "Focused Ritualist",
-            ["count"] = 5,
-        },
-        [180429] = {
-            ["name"] = "FAdorned Starseer",
-            ["count"] = 10,
-        }
-        
+        [77803] = { ["name"] = "Railmaster Rocketspark", ["count"] = 0 },
+        [77816] = { ["name"] = "Borka the Brute", ["count"] = 0 },
+        [79545] = { ["name"] = "Nitrogg Thundertower", ["count"] = 0 },
+        [80005] = { ["name"] = "Skylord Tovra", ["count"] = 0 },
+        [80935] = { ["name"] = "Grom'kar Boomer", ["count"] = 7 },
+        [80936] = { ["name"] = "Grom'kar Grenadier", ["count"] = 7 },
+        [80937] = { ["name"] = "Grom'kar Gunner", ["count"] = 6 },
+        [80938] = { ["name"] = "Grom'kar Hulk", ["count"] = 18 },
+        [80940] = { ["name"] = "Iron Infantry", ["count"] = 3 },
+        [81212] = { ["name"] = "Grimrail Overseer", ["count"] = 7 },
+        [81235] = { ["name"] = "Grimrail Laborer", ["count"] = 2 },
+        [81236] = { ["name"] = "Grimrail Technician", ["count"] = 4 },
+        [81407] = { ["name"] = "Grimrail Bombardier", ["count"] = 12 },
+        [82579] = { ["name"] = "Grom'kar Far Seer", ["count"] = 12 },
+        [82590] = { ["name"] = "Grimrail Scout", ["count"] = 12 },
+        [82594] = { ["name"] = "Grimrail Loader", ["count"] = 1 },
+        [82597] = { ["name"] = "Grom'kar Captain", ["count"] = 18 },
+        [88163] = { ["name"] = "Grom'kar Cinderseer", ["count"] = 8 },
+        [160495] = { ["name"] = "Maniacal Soulbinder", ["count"] = 4 },
+        [162038] = { ["name"] = "Regal Mistdancer", ["count"] = 7 },
+        [162039] = { ["name"] = "Wicked Oppressor", ["count"] = 4 },
+        [162040] = { ["name"] = "Grand Overseer", ["count"] = 7 },
+        [162041] = { ["name"] = "Grubby Dirtcruncher", ["count"] = 2 },
+        [162046] = { ["name"] = "Famished Tick", ["count"] = 1 },
+        [162047] = { ["name"] = "Insatiable Brute", ["count"] = 7 },
+        [162049] = { ["name"] = "Vestige of Doubt", ["count"] = 4 },
+        [162051] = { ["name"] = "Frenzied Ghoul", ["count"] = 2 },
+        [162056] = { ["name"] = "Rockbound Sprite", ["count"] = 1 },
+        [162057] = { ["name"] = "Chamber Sentinel", ["count"] = 7 },
+        [162058] = { ["name"] = "Ventunax", ["count"] = 0 },
+        [162059] = { ["name"] = "Kin-Tara", ["count"] = 0 },
+        [162060] = { ["name"] = "Oryphrion", ["count"] = 0 },
+        [162061] = { ["name"] = "Devos", ["count"] = 0 },
+        [162099] = { ["name"] = "General Kaal", ["count"] = 0 },
+        [162100] = { ["name"] = "Kryxis the Voracious", ["count"] = 0 },
+        [162102] = { ["name"] = "Grand Proctor Beryllia", ["count"] = 0 },
+        [162103] = { ["name"] = "Executor Tarvold", ["count"] = 0 },
+        [162309] = { ["name"] = "Kul'tharok", ["count"] = 0 },
+        [162317] = { ["name"] = "Gorechop", ["count"] = 0 },
+        [162329] = { ["name"] = "Xav the Unfallen", ["count"] = 0 },
+        [162689] = { ["name"] = "Surgeon Stitchflesh", ["count"] = 0 },
+        [162691] = { ["name"] = "Blightbone", ["count"] = 0 },
+        [162693] = { ["name"] = "Nalthor the Rimebinder", ["count"] = 0 },
+        [162729] = { ["name"] = "Patchwerk Soldier", ["count"] = 4 },
+        [162744] = { ["name"] = "Nekthara the Mangler", ["count"] = 20 },
+        [162763] = { ["name"] = "Soulforged Bonereaver", ["count"] = 8 },
+        [163058] = { ["name"] = "Mistveil Defender", ["count"] = 4 },
+        [163077] = { ["name"] = "Azules", ["count"] = 0 },
+        [163086] = { ["name"] = "Rancid Gasbag", ["count"] = 8 },
+        [163089] = { ["name"] = "Disgusting Refuse", ["count"] = 1 },
+        [163121] = { ["name"] = "Stitched Vanguard", ["count"] = 5 },
+        [163122] = { ["name"] = "Brittlebone Warrior", ["count"] = 0 },
+        [163126] = { ["name"] = "Brittlebone Mage", ["count"] = 0 },
+        [163128] = { ["name"] = "Zolramus Sorcerer", ["count"] = 4 },
+        [163157] = { ["name"] = "Amarth", ["count"] = 0 },
+        [163457] = { ["name"] = "Forsworn Vanguard", ["count"] = 4 },
+        [163458] = { ["name"] = "Forsworn Castigator", ["count"] = 4 },
+        [163459] = { ["name"] = "Forsworn Mender", ["count"] = 4 },
+        [163501] = { ["name"] = "Forsworn Skirmisher", ["count"] = 4 },
+        [163503] = { ["name"] = "Etherdiver", ["count"] = 2 },
+        [163506] = { ["name"] = "Forsworn Stealthclaw", ["count"] = 4 },
+        [163520] = { ["name"] = "Forsworn Squad-Leader", ["count"] = 6 },
+        [163524] = { ["name"] = "Kyrian Dark-Praetor", ["count"] = 5 },
+        [163618] = { ["name"] = "Zolramus Necromancer", ["count"] = 8 },
+        [163619] = { ["name"] = "Zolramus Bonecarver", ["count"] = 4 },
+        [163620] = { ["name"] = "Rotspew", ["count"] = 6 },
+        [163621] = { ["name"] = "Goregrind", ["count"] = 6 },
+        [163622] = { ["name"] = "Goregrind Bits", ["count"] = 0 },
+        [163623] = { ["name"] = "Rotspew Leftovers", ["count"] = 0 },
+        [163857] = { ["name"] = "Plaguebound Devoted", ["count"] = 4 },
+        [163862] = { ["name"] = "Defender of Many Eyes", ["count"] = 8 },
+        [163882] = { ["name"] = "Decaying Flesh Giant", ["count"] = 14 },
+        [163891] = { ["name"] = "Rotmarrow Slime", ["count"] = 6 },
+        [163892] = { ["name"] = "Rotting Slimeclaw", ["count"] = 6 },
+        [163894] = { ["name"] = "Blighted Spinebreaker", ["count"] = 12 },
+        [163915] = { ["name"] = "Hatchling Nest", ["count"] = 10 },
+        [164185] = { ["name"] = "Echelon", ["count"] = 0 },
+        [164218] = { ["name"] = "Lord Chamberlain", ["count"] = 0 },
+        [164255] = { ["name"] = "Globgrog", ["count"] = 0 },
+        [164266] = { ["name"] = "Domina Venomblade", ["count"] = 0 },
+        [164267] = { ["name"] = "Margrave Stradama", ["count"] = 0 },
+        [164450] = { ["name"] = "Dealer Xy'exa", ["count"] = 0 },
+        [164451] = { ["name"] = "Dessia the Decapitator", ["count"] = 0 },
+        [164461] = { ["name"] = "Sathel the Accursed", ["count"] = 0 },
+        [164463] = { ["name"] = "Paceran the Virulent", ["count"] = 0 },
+        [164464] = { ["name"] = "Xira the Underhanded", ["count"] = 0 },
+        [164501] = { ["name"] = "Mistcaller", ["count"] = 0 },
+        [164506] = { ["name"] = "Ancient Captain", ["count"] = 5 },
+        [164510] = { ["name"] = "Shambling Arbalest", ["count"] = 4 },
+        [164517] = { ["name"] = "Tred'ova", ["count"] = 0 },
+        [164555] = { ["name"] = "Millificent Manastorm", ["count"] = 0 },
+        [164556] = { ["name"] = "Millhouse Manastorm", ["count"] = 0 },
+        [164557] = { ["name"] = "Shard of Halkias", ["count"] = 10 },
+        [164558] = { ["name"] = "Hakkar the Soulflayer", ["count"] = 0 },
+        [164562] = { ["name"] = "Depraved Houndmaster", ["count"] = 4 },
+        [164563] = { ["name"] = "Vicious Gargon", ["count"] = 4 },
+        [164567] = { ["name"] = "Ingra Maloch", ["count"] = 0 },
+        [164578] = { ["name"] = "Stitchflesh's Creation", ["count"] = 0 },
+        [164705] = { ["name"] = "Pestilence Slime", ["count"] = 6 },
+        [164707] = { ["name"] = "Congealed Slime", ["count"] = 6 },
+        [164737] = { ["name"] = "Brood Ambusher", ["count"] = 12 },
+        [164804] = { ["name"] = "Droman Oulfarran", ["count"] = 0 },
+        [164857] = { ["name"] = "Spriggan Mendbender", ["count"] = 2 },
+        [164861] = { ["name"] = "Spriggan Barkbinder", ["count"] = 2 },
+        [164862] = { ["name"] = "Weald Shimmermoth", ["count"] = 3 },
+        [164873] = { ["name"] = "Runestag Elderhorn", ["count"] = 4 },
+        [164920] = { ["name"] = "Drust Soulcleaver", ["count"] = 4 },
+        [164921] = { ["name"] = "Drust Harvester", ["count"] = 4 },
+        [164926] = { ["name"] = "Drust Boughbreaker", ["count"] = 6 },
+        [164929] = { ["name"] = "Tirnenn Villager", ["count"] = 7 },
+        [164967] = { ["name"] = "Doctor Ickus", ["count"] = 0 },
+        [165076] = { ["name"] = "Gluttonous Tick", ["count"] = 4 },
+        [165111] = { ["name"] = "Drust Spiteclaw", ["count"] = 2 },
+        [165137] = { ["name"] = "Zolramus Gatekeeper", ["count"] = 6 },
+        [165138] = { ["name"] = "Blight Bag", ["count"] = 1 },
+        [165197] = { ["name"] = "Skeletal Monstrosity", ["count"] = 12 },
+        [165222] = { ["name"] = "Zolramus Bonemender", ["count"] = 4 },
+        [165408] = { ["name"] = "Halkias", ["count"] = 0 },
+        [165410] = { ["name"] = "High Adjudicator Aleez", ["count"] = 0 },
+        [165414] = { ["name"] = "Depraved Obliterator", ["count"] = 4 },
+        [165415] = { ["name"] = "Toiling Groundskeeper", ["count"] = 2 },
+        [165515] = { ["name"] = "Depraved Darkblade", ["count"] = 4 },
+        [165529] = { ["name"] = "Depraved Collector", ["count"] = 4 },
+        [165824] = { ["name"] = "Nar'zudah", ["count"] = 15 },
+        [165872] = { ["name"] = "Flesh Crafter", ["count"] = 4 },
+        [165911] = { ["name"] = "Loyal Creation", ["count"] = 4 },
+        [165919] = { ["name"] = "Skeletal Marauder", ["count"] = 6 },
+        [165946] = { ["name"] = "Mordretha, the Endless Empress", ["count"] = 0 },
+        [166079] = { ["name"] = "Brittlebone Crossbowman", ["count"] = 0 },
+        [166264] = { ["name"] = "Spare Parts", ["count"] = 0 },
+        [166275] = { ["name"] = "Mistveil Shaper", ["count"] = 4 },
+        [166276] = { ["name"] = "Mistveil Guardian", ["count"] = 4 },
+        [166299] = { ["name"] = "Mistveil Tender", ["count"] = 4 },
+        [166301] = { ["name"] = "Mistveil Stalker", ["count"] = 4 },
+        [166302] = { ["name"] = "Corpse Harvester", ["count"] = 4 },
+        [166304] = { ["name"] = "Mistveil Stinger", ["count"] = 4 },
+        [166396] = { ["name"] = "Noble Skirmisher", ["count"] = 4 },
+        [166411] = { ["name"] = "Forsworn Usurper", ["count"] = 1 },
+        [166608] = { ["name"] = "Mueh'zala", ["count"] = 0 },
+        [167111] = { ["name"] = "Spinemaw Staghorn", ["count"] = 5 },
+        [167113] = { ["name"] = "Spinemaw Acidgullet", ["count"] = 4 },
+        [167116] = { ["name"] = "Spinemaw Reaver", ["count"] = 4 },
+        [167117] = { ["name"] = "Spinemaw Larva", ["count"] = 1 },
+        [167493] = { ["name"] = "Venomous Sniper", ["count"] = 8 },
+        [167532] = { ["name"] = "Heavin the Breaker", ["count"] = 20 },
+        [167533] = { ["name"] = "Advent Nevermore", ["count"] = 20 },
+        [167534] = { ["name"] = "Rek the Hardened", ["count"] = 20 },
+        [167536] = { ["name"] = "Harugia the Bloodthirsty", ["count"] = 20 },
+        [167538] = { ["name"] = "Dokigg the Brutalizer", ["count"] = 20 },
+        [167607] = { ["name"] = "Stoneborn Slasher", ["count"] = 7 },
+        [167610] = { ["name"] = "Stonefiend Anklebiter", ["count"] = 1 },
+        [167611] = { ["name"] = "Stoneborn Eviscerator", ["count"] = 4 },
+        [167612] = { ["name"] = "Stoneborn Reaver", ["count"] = 6 },
+        [167731] = { ["name"] = "Separation Assistant", ["count"] = 4 },
+        [167876] = { ["name"] = "Inquisitor Sigar", ["count"] = 20 },
+        [167892] = { ["name"] = "Tormented Soul", ["count"] = 0 },
+        [167955] = { ["name"] = "Sanguine Cadet", ["count"] = 1 },
+        [167956] = { ["name"] = "Dark Acolyte", ["count"] = 1 },
+        [167962] = { ["name"] = "Defunct Dental Drill", ["count"] = 8 },
+        [167963] = { ["name"] = "Headless Client", ["count"] = 5 },
+        [167964] = { ["name"] = "4.RF-4.RF", ["count"] = 8 },
+        [167965] = { ["name"] = "Lubricator", ["count"] = 5 },
+        [167967] = { ["name"] = "Sentient Oil", ["count"] = 6 },
+        [167994] = { ["name"] = "Ossified Conscript", ["count"] = 4 },
+        [167998] = { ["name"] = "Portal Guardian", ["count"] = 8 },
+        [168022] = { ["name"] = "Slime Tentacle", ["count"] = 10 },
+        [168058] = { ["name"] = "Infused Quill-feather", ["count"] = 1 },
+        [168153] = { ["name"] = "Plagueroc", ["count"] = 12 },
+        [168155] = { ["name"] = "Plaguebound", ["count"] = 0 },
+        [168318] = { ["name"] = "Forsworn Goliath", ["count"] = 8 },
+        [168361] = { ["name"] = "Fen Hornet", ["count"] = 8 },
+        [168365] = { ["name"] = "Fungret Shroomtender", ["count"] = 0 },
+        [168396] = { ["name"] = "Plaguebelcher", ["count"] = 12 },
+        [168418] = { ["name"] = "Forsworn Inquisitor", ["count"] = 4 },
+        [168420] = { ["name"] = "Forsworn Champion", ["count"] = 4 },
+        [168572] = { ["name"] = "Fungi Stormer", ["count"] = 8 },
+        [168574] = { ["name"] = "Pestilent Harvester", ["count"] = 8 },
+        [168578] = { ["name"] = "Fungalmancer", ["count"] = 8 },
+        [168580] = { ["name"] = "Plagueborer", ["count"] = 8 },
+        [168591] = { ["name"] = "Ravenous Dreadbat", ["count"] = 4 },
+        [168594] = { ["name"] = "Chamber Sentinel", ["count"] = 7 },
+        [168627] = { ["name"] = "Plaguebinder", ["count"] = 8 },
+        [168681] = { ["name"] = "Forsworn Helion", ["count"] = 6 },
+        [168717] = { ["name"] = "Forsworn Justicar", ["count"] = 4 },
+        [168718] = { ["name"] = "Forsworn Warden", ["count"] = 4 },
+        [168747] = { ["name"] = "Venomfang", ["count"] = 0 },
+        [168843] = { ["name"] = "Klotos", ["count"] = 12 },
+        [168844] = { ["name"] = "Lakesis", ["count"] = 12 },
+        [168845] = { ["name"] = "Astronos", ["count"] = 12 },
+        [168878] = { ["name"] = "Rigged Plagueborer", ["count"] = 8 },
+        [168886] = { ["name"] = "Virulax Blightweaver", ["count"] = 25 },
+        [168907] = { ["name"] = "Slime Tentacle", ["count"] = 10 },
+        [168934] = { ["name"] = "Enraged Spirit", ["count"] = 8 },
+        [168942] = { ["name"] = "Death Speaker", ["count"] = 6 },
+        [168949] = { ["name"] = "Risen Bonesoldier", ["count"] = 4 },
+        [168968] = { ["name"] = "Plaguebound Fallen", ["count"] = 0 },
+        [168969] = { ["name"] = "Gushing Slime", ["count"] = 1 },
+        [168986] = { ["name"] = "Skeletal Raptor", ["count"] = 3 },
+        [168992] = { ["name"] = "Risen Cultist", ["count"] = 4 },
+        [169159] = { ["name"] = "Unstable Canister", ["count"] = 0 },
+        [169696] = { ["name"] = "Mire Soldier", ["count"] = 8 },
+        [169861] = { ["name"] = "Ickor Bileflesh", ["count"] = 25 },
+        [169875] = { ["name"] = "Shackled Soul", ["count"] = 2 },
+        [169893] = { ["name"] = "Nefarious Darkspeaker", ["count"] = 6 },
+        [169905] = { ["name"] = "Risen Warlord", ["count"] = 6 },
+        [169927] = { ["name"] = "Putrid Butcher", ["count"] = 5 },
+        [170147] = { ["name"] = "Volatile Memory", ["count"] = 0 },
+        [170480] = { ["name"] = "Atal'ai Deathwalker", ["count"] = 5 },
+        [170486] = { ["name"] = "Atal'ai Devoted", ["count"] = 2 },
+        [170490] = { ["name"] = "Atal'ai High Priest", ["count"] = 5 },
+        [170572] = { ["name"] = "Atal'ai Hoodoo Hexxer", ["count"] = 6 },
+        [170690] = { ["name"] = "Diseased Horror", ["count"] = 4 },
+        [170838] = { ["name"] = "Unyielding Contender", ["count"] = 4 },
+        [170850] = { ["name"] = "Raging Bloodhorn", ["count"] = 7 },
+        [170882] = { ["name"] = "Bone Magus", ["count"] = 4 },
+        [171181] = { ["name"] = "Territorial Bladebeak", ["count"] = 4 },
+        [171184] = { ["name"] = "Mythresh, Sky's Talons", ["count"] = 12 },
+        [171341] = { ["name"] = "Bladebeak Hatchling", ["count"] = 1 },
+        [171342] = { ["name"] = "Juvenile Runestag", ["count"] = 2 },
+        [171343] = { ["name"] = "Bladebeak Matriarch", ["count"] = 5 },
+        [171376] = { ["name"] = "Head Custodian Javlin", ["count"] = 10 },
+        [171384] = { ["name"] = "Research Scribe", ["count"] = 4 },
+        [171448] = { ["name"] = "Dreadful Huntmaster", ["count"] = 4 },
+        [171455] = { ["name"] = "Stonewall Gargon", ["count"] = 1 },
+        [171474] = { ["name"] = "Finger Food", ["count"] = 0 },
+        [171500] = { ["name"] = "Shuffling Corpse", ["count"] = 1 },
+        [171799] = { ["name"] = "Depths Warden", ["count"] = 7 },
+        [172265] = { ["name"] = "Remnant of Fury", ["count"] = 4 },
+        [172312] = { ["name"] = "Spinemaw Gorger", ["count"] = 4 },
+        [172981] = { ["name"] = "Kyrian Stitchwerk", ["count"] = 5 },
+        [173016] = { ["name"] = "Corpse Collector", ["count"] = 4 },
+        [173044] = { ["name"] = "Stitching Assistant", ["count"] = 4 },
+        [173360] = { ["name"] = "Plaguebelcher", ["count"] = 0 },
+        [173655] = { ["name"] = "Mistveil Matriarch", ["count"] = 16 },
+        [173714] = { ["name"] = "Mistveil Nightblossom", ["count"] = 16 },
+        [173720] = { ["name"] = "Mistveil Gorgegullet", ["count"] = 16 },
+        [174175] = { ["name"] = "Loyal Stoneborn", ["count"] = 4 },
+        [174197] = { ["name"] = "Battlefield Ritualist", ["count"] = 4 },
+        [174210] = { ["name"] = "Blighted Sludge-Spewer", ["count"] = 4 },
+        [175546] = { ["name"] = "Timecap'n Hooktail", ["count"] = 0 },
+        [175616] = { ["name"] = "Zo'phex", ["count"] = 0 },
+        [175646] = { ["name"] = "P.O.S.T. Master", ["count"] = 0 },
+        [175663] = { ["name"] = "Hylbrande", ["count"] = 0 },
+        [175806] = { ["name"] = "So'azmi", ["count"] = 0 },
+        [176394] = { ["name"] = "P.O.S.T. Worker", ["count"] = 5 },
+        [176395] = { ["name"] = "Overloaded Mailemental", ["count"] = 5 },
+        [176396] = { ["name"] = "Defective Sorter", ["count"] = 3 },
+        [176555] = { ["name"] = "Achillite", ["count"] = 0 },
+        [176556] = { ["name"] = "Alcruux", ["count"] = 0 },
+        [176562] = { ["name"] = "Brawling Patron", ["count"] = 0 },
+        [176563] = { ["name"] = "Zo'gron", ["count"] = 0 },
+        [176565] = { ["name"] = "Disruptive Patron", ["count"] = 0 },
+        [176705] = { ["name"] = "Venza Goldfuse", ["count"] = 0 },
+        [177269] = { ["name"] = "So'leah", ["count"] = 0 },
+        [177807] = { ["name"] = "Customs Security", ["count"] = 4 },
+        [177808] = { ["name"] = "Armored Overseer", ["count"] = 8 },
+        [177816] = { ["name"] = "Interrogation Specialist", ["count"] = 4 },
+        [177817] = { ["name"] = "Support Officer", ["count"] = 4 },
+        [178133] = { ["name"] = "Murkbrine Wavejumper", ["count"] = 2 },
+        [178139] = { ["name"] = "Murkbrine Shellcrusher", ["count"] = 3 },
+        [178141] = { ["name"] = "Murkbrine Scalebinder", ["count"] = 2 },
+        [178142] = { ["name"] = "Murkbrine Fishmancer", ["count"] = 2 },
+        [178163] = { ["name"] = "Murkbrine Shorerunner", ["count"] = 1 },
+        [178165] = { ["name"] = "Coastwalker Goliath", ["count"] = 18 },
+        [178171] = { ["name"] = "Stormforged Guardian", ["count"] = 10 },
+        [178392] = { ["name"] = "Gatewarden Zo'mazz", ["count"] = 18 },
+        [179269] = { ["name"] = "Oasis Security", ["count"] = 0 },
+        [179334] = { ["name"] = "Portalmancer Zo'honn", ["count"] = 24 },
+        [179386] = { ["name"] = "Corsair Officer", ["count"] = 5 },
+        [179388] = { ["name"] = "Hourglass Tidesage", ["count"] = 4 },
+        [179399] = { ["name"] = "Drunk Pirate", ["count"] = 0 },
+        [179446] = { ["name"] = "Incinerator Arkolath", ["count"] = 0 },
+        [179821] = { ["name"] = "Commander Zo'far", ["count"] = 24 },
+        [179837] = { ["name"] = "Tracker Zo'korss", ["count"] = 18 },
+        [179840] = { ["name"] = "Market Peacekeeper", ["count"] = 4 },
+        [179841] = { ["name"] = "Veteran Sparkcaster", ["count"] = 4 },
+        [179842] = { ["name"] = "Commerce Enforcer", ["count"] = 8 },
+        [179890] = { ["name"] = "Executioner Varruth", ["count"] = 0 },
+        [179891] = { ["name"] = "Soggodon the Breaker", ["count"] = 0 },
+        [179892] = { ["name"] = "Oros Coldheart", ["count"] = 0 },
+        [179893] = { ["name"] = "Cartel Skulker", ["count"] = 4 },
+        [180015] = { ["name"] = "Burly Deckhand", ["count"] = 5 },
+        [180091] = { ["name"] = "Ancient Core Hound", ["count"] = 12 },
+        [180159] = { ["name"] = "Brawling Patron", ["count"] = 0 },
+        [180335] = { ["name"] = "Cartel Smuggler", ["count"] = 5 },
+        [180336] = { ["name"] = "Cartel Wiseguy", ["count"] = 5 },
+        [180348] = { ["name"] = "Cartel Muscle", ["count"] = 8 },
+        [180429] = { ["name"] = "Adorned Starseer", ["count"] = 12 },
+        [180431] = { ["name"] = "Focused Ritualist", ["count"] = 4 },
+        [180432] = { ["name"] = "Devoted Accomplice", ["count"] = 5 },
+        [180495] = { ["name"] = "Enraged Direhorn", ["count"] = 10 },
+        [180567] = { ["name"] = "Frenzied Nightclaw", ["count"] = 4 },
+        [185680] = { ["name"] = "Vy Relic", ["count"] = 0 },
+        [185683] = { ["name"] = "Wo Relic", ["count"] = 0 },
+        [185685] = { ["name"] = "Urh Relic", ["count"] = 0 },
+        [189878] = { ["name"] = "Nathrezim Infiltrator", ["count"] = 0 },
+        [190128] = { ["name"] = "Zul'gamux", ["count"] = 0 },
     }
 end
