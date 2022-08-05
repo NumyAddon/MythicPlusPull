@@ -7,6 +7,19 @@ function data:GetPatchVersion()
     return 1;
 end
 
+function data:GetDungeonOverrides()
+    return {
+        [227] = { -- lower kara
+            [189878] = { ["name"] = "Nathrezim Infiltrator", ["count"] = 4 },
+            [190128] = { ["name"] = "Zul'gamux", ["count"] = 12 },
+        },
+        [234] = { -- upper kara
+            [189878] = { ["name"] = "Nathrezim Infiltrator", ["count"] = 6 },
+            [190128] = { ["name"] = "Zul'gamux", ["count"] = 18 },
+        },
+    }
+end
+
 function data:GetNPCData()
     -- data is sorted with natural sorting by NPC ID
     return {

@@ -7,6 +7,19 @@ function data:GetPatchVersion()
     return 1;
 end
 
+function data:GetDungeonOverrides()
+    return {
+        [369] = { -- mechagon junkjard
+            [189878] = { ["name"] = "Nathrezim Infiltrator", ["count"] = 7 },
+            [190128] = { ["name"] = "Zul'gamux", ["count"] = 21 },
+        },
+        [370] = { -- mechagon workshop
+            [189878] = { ["name"] = "Nathrezim Infiltrator", ["count"] = 4 },
+            [190128] = { ["name"] = "Zul'gamux", ["count"] = 12 },
+        },
+    }
+end
+
 function data:GetNPCData()
     -- data is sorted with natural sorting by NPC ID
     return {
@@ -367,7 +380,5 @@ function data:GetNPCData()
         [161241] = { ["name"] = "Voidweaver Mal'thir", ["count"] = 7 },
         [161243] = { ["name"] = "Samh'rek, Beckoner of Chaos", ["count"] = 7 },
         [161244] = { ["name"] = "Blood of the Corruptor", ["count"] = 7 },
-        [189878] = { ["name"] = "Nathrezim Infiltrator", ["count"] = 0 },
-        [190128] = { ["name"] = "Zul'gamux", ["count"] = 0 },
     }
 end

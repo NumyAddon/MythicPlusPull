@@ -32,6 +32,7 @@ local StaticPopupDialogs = _G.StaticPopupDialogs
 local max = _G.max
 local wipe = _G.wipe
 local Mixin = _G.Mixin
+local C_ChallengeMode = _G.C_ChallengeMode
 
 local name, ns = ...
 
@@ -51,6 +52,7 @@ MMPE.activeNameplates = {}
 MMPE.simulationActive = false
 MMPE.simulationMax = 220
 MMPE.simulationCurrent = 28
+MMPE.simulationMapId = 234 -- upper kara
 
 MMPE.version = GetAddOnMetadata(name, "Version") or "unknown"
 MMPE.defaultSettings = {
@@ -252,12 +254,22 @@ function MMPE:GetEnemyForcesProgress()
     return progress
 end
 
+function MMPE:GetChallengeMapId()
+    if self.simulationActive then return self.simulationMapId end
+    return C_ChallengeMode.GetActiveChallengeMapID()
+end
+
 --
 -- DB READ/WRITES
 --
 
 function MMPE:GetValue(npcID)
     self:DebugPrint("GetValue called. Args:", npcID)
+    local activeMapId = self:GetChallengeMapId()
+    if (activeMapId and self.dungeonOverrides[activeMapId] and self.dungeonOverrides[activeMapId][npcID] and self.dungeonOverrides[activeMapId][npcID].count) then
+        return self.dungeonOverrides[activeMapId][npcID].count
+    end
+
     local npcData = self.DB.npcData[npcID]
     if npcData then
         local bestValue, maxOccurrence = nil, -1
@@ -453,6 +465,7 @@ function MMPE:VerifyDB(fullWipe, npcDataWipe)
 
     local currentPatchVersion = self.DB.npcDataPatchVersion or 0
     local newPatchVersion = currentPatchVersion
+    self.dungeonOverrides = {}
 	for _, dataProvider in pairs(ns.data) do
         local patchVersion = dataProvider.GetPatchVersion and dataProvider:GetPatchVersion() or 0
 		local defaultValues = dataProvider:GetNPCData()
@@ -464,6 +477,9 @@ function MMPE:VerifyDB(fullWipe, npcDataWipe)
         end
         for npcId, npcData in pairs(defaultValues) do
             self:UpdateValue(npcId, npcData.count, npcData.name, false, forceUpdate)
+        end
+        if dataProvider.GetDungeonOverrides then
+            self.dungeonOverrides = Mixin(self.dungeonOverrides, dataProvider:GetDungeonOverrides())
         end
 	end
     self.DB.npcDataPatchVersion = newPatchVersion

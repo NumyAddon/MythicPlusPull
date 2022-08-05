@@ -7,6 +7,27 @@ function data:GetPatchVersion()
     return 1;
 end
 
+function data:GetDungeonOverrides()
+    return {
+        [166] = { -- grimrail depot
+            [189878] = { ["name"] = "Nathrezim Infiltrator", ["count"] = 6 },
+            [190128] = { ["name"] = "Zul'gamux", ["count"] = 18 },
+        },
+        [169] = { -- iron docks
+            [189878] = { ["name"] = "Nathrezim Infiltrator", ["count"] = 4 },
+            [190128] = { ["name"] = "Zul'gamux", ["count"] = 12 },
+        },
+        [391] = { -- tazavesh streets
+            [189878] = { ["name"] = "Nathrezim Infiltrator", ["count"] = 3 },
+            [190128] = { ["name"] = "Zul'gamux", ["count"] = 9 },
+        },
+        [392] = { -- tazavesh gambit
+            [189878] = { ["name"] = "Nathrezim Infiltrator", ["count"] = 6 },
+            [190128] = { ["name"] = "Zul'gamux", ["count"] = 18 },
+        },
+    }
+end
+
 function data:GetNPCData()
     -- data is sorted with natural sorting by NPC ID
     return {
@@ -305,7 +326,5 @@ function data:GetNPCData()
         [185680] = { ["name"] = "Vy Relic", ["count"] = 0 },
         [185683] = { ["name"] = "Wo Relic", ["count"] = 0 },
         [185685] = { ["name"] = "Urh Relic", ["count"] = 0 },
-        [189878] = { ["name"] = "Nathrezim Infiltrator", ["count"] = 0 },
-        [190128] = { ["name"] = "Zul'gamux", ["count"] = 0 },
     }
 end
