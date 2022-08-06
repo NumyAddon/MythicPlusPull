@@ -345,14 +345,20 @@ function MMPE:ExportData(onlyUpdatedData)
             defaultValues = Mixin(defaultValues, dataProvider:GetNPCData())
         end
     end
-    local editBoxText = "{ data = {"
+    local editBoxText = "{ data = {\n"
     local count = 0
     for npcID, npcData in pairs(self.DB.npcData) do
         local value = self:GetValue(npcID)
         local npcName = npcData.name
         if(not onlyUpdatedData or value ~= (defaultValues[npcID] and defaultValues[npcID].count or 0)) then
             count = count + 1
-            editBoxText = editBoxText .. string.format("[%d] = {[\"name\"] = \"%s\", [\"count\"] = %d},", npcID, npcName, value)
+            editBoxText = editBoxText .. string.format(
+                "\t[%d] = {[\"name\"] = \"%s\", [\"count\"] = %d, [\"defaultCount\"] = %d},\n",
+                npcID,
+                npcName,
+                value,
+                (defaultValues[npcID] and defaultValues[npcID].count or -1)
+            )
         end
     end
     editBoxText = editBoxText .. string.format("}, version = \"%s\", numberOfMobs = %d }", self.version, count)

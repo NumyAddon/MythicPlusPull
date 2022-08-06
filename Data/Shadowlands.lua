@@ -4,7 +4,7 @@ local data = {};
 tinsert(ns.data, data)
 
 function data:GetPatchVersion()
-    return 1;
+    return 2;
 end
 
 function data:GetDungeonOverrides()
@@ -34,7 +34,11 @@ function data:GetNPCData()
         [77803] = { ["name"] = "Railmaster Rocketspark", ["count"] = 0 },
         [77816] = { ["name"] = "Borka the Brute", ["count"] = 0 },
         [79545] = { ["name"] = "Nitrogg Thundertower", ["count"] = 0 },
+        [79852] = { ["name"] = "Oshir", ["count"] = 0 },
         [80005] = { ["name"] = "Skylord Tovra", ["count"] = 0 },
+        [80805] = { ["name"] = "Makogg Emberblade", ["count"] = 0 },
+        [80808] = { ["name"] = "Neesa Nox", ["count"] = 0 },
+        [80816] = { ["name"] = "Ahri'ok Dugru", ["count"] = 0 },
         [80935] = { ["name"] = "Grom'kar Boomer", ["count"] = 7 },
         [80936] = { ["name"] = "Grom'kar Grenadier", ["count"] = 7 },
         [80937] = { ["name"] = "Grom'kar Gunner", ["count"] = 6 },
@@ -43,11 +47,38 @@ function data:GetNPCData()
         [81212] = { ["name"] = "Grimrail Overseer", ["count"] = 7 },
         [81235] = { ["name"] = "Grimrail Laborer", ["count"] = 2 },
         [81236] = { ["name"] = "Grimrail Technician", ["count"] = 4 },
+        [81279] = { ["name"] = "Grom'kar Flameslinger", ["count"] = 5 },
+        [81283] = { ["name"] = "Grom'kar Footsoldier", ["count"] = 4 },
+        [81297] = { ["name"] = "Dreadfang", ["count"] = 0 },
+        [81305] = { ["name"] = "Fleshrender Nok'gar", ["count"] = 0 },
         [81407] = { ["name"] = "Grimrail Bombardier", ["count"] = 12 },
+        [81432] = { ["name"] = "Grom'kar Technician", ["count"] = 4 },
+        [81603] = { ["name"] = "Champion Druna", ["count"] = 9 },
         [82579] = { ["name"] = "Grom'kar Far Seer", ["count"] = 12 },
         [82590] = { ["name"] = "Grimrail Scout", ["count"] = 12 },
         [82594] = { ["name"] = "Grimrail Loader", ["count"] = 1 },
         [82597] = { ["name"] = "Grom'kar Captain", ["count"] = 18 },
+        [83025] = { ["name"] = "Grom'kar Battlemaster", ["count"] = 9 },
+        [83026] = { ["name"] = "Siegemaster Olugar", ["count"] = 9 },
+        [83028] = { ["name"] = "Grom'kar Deadeye", ["count"] = 3 },
+        [83389] = { ["name"] = "Ironwing Flamespitter", ["count"] = 8 },
+        [83390] = { ["name"] = "Thunderlord Wrangler", ["count"] = 7 },
+        [83392] = { ["name"] = "Rampaging Clefthoof", ["count"] = 8 },
+        [83578] = { ["name"] = "Ogron Laborer", ["count"] = 9 },
+        [83612] = { ["name"] = "Skulloc", ["count"] = 0 },
+        [83613] = { ["name"] = "Koramar", ["count"] = 0 },
+        [83616] = { ["name"] = "Zoggosh", ["count"] = 0 },
+        [83697] = { ["name"] = "Grom'kar Deckhand", ["count"] = 3 },
+        [83761] = { ["name"] = "Ogron Laborer", ["count"] = 9 },
+        [83762] = { ["name"] = "Grom'kar Deckhand", ["count"] = 1 },
+        [83763] = { ["name"] = "Grom'kar Technician", ["count"] = 2 },
+        [83764] = { ["name"] = "Grom'kar Deadeye", ["count"] = 2 },
+        [83765] = { ["name"] = "Grom'kar Footsoldier", ["count"] = 2 },
+        [84028] = { ["name"] = "Siegemaster Rokra", ["count"] = 9 },
+        [84520] = { ["name"] = "Pitwarden Gwarnok", ["count"] = 9 },
+        [86526] = { ["name"] = "Grom'kar Chainmaster", ["count"] = 9 },
+        [86809] = { ["name"] = "Grom'kar Incinerator", ["count"] = 5 },
+        [87252] = { ["name"] = "Unruly Ogron", ["count"] = 9 },
         [88163] = { ["name"] = "Grom'kar Cinderseer", ["count"] = 8 },
         [160495] = { ["name"] = "Maniacal Soulbinder", ["count"] = 4 },
         [162038] = { ["name"] = "Regal Mistdancer", ["count"] = 7 },
@@ -315,6 +346,7 @@ function data:GetNPCData()
         [180015] = { ["name"] = "Burly Deckhand", ["count"] = 5 },
         [180091] = { ["name"] = "Ancient Core Hound", ["count"] = 12 },
         [180159] = { ["name"] = "Brawling Patron", ["count"] = 0 },
+        [180315] = { ["name"] = "Shady Dealer", ["count"] = 0 },
         [180335] = { ["name"] = "Cartel Smuggler", ["count"] = 5 },
         [180336] = { ["name"] = "Cartel Wiseguy", ["count"] = 5 },
         [180348] = { ["name"] = "Cartel Muscle", ["count"] = 8 },
@@ -326,5 +358,7 @@ function data:GetNPCData()
         [185680] = { ["name"] = "Vy Relic", ["count"] = 0 },
         [185683] = { ["name"] = "Wo Relic", ["count"] = 0 },
         [185685] = { ["name"] = "Urh Relic", ["count"] = 0 },
+        [189878] = { ["name"] = "Nathrezim Infiltrator", ["count"] = 4 },
+        [190128] = { ["name"] = "Zul'gamux", ["count"] = 12 },
     }
 end

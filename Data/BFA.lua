@@ -4,7 +4,7 @@ local data = {};
 tinsert(ns.data, data)
 
 function data:GetPatchVersion()
-    return 1;
+    return 2;
 end
 
 function data:GetDungeonOverrides()
@@ -380,5 +380,8 @@ function data:GetNPCData()
         [161241] = { ["name"] = "Voidweaver Mal'thir", ["count"] = 7 },
         [161243] = { ["name"] = "Samh'rek, Beckoner of Chaos", ["count"] = 7 },
         [161244] = { ["name"] = "Blood of the Corruptor", ["count"] = 7 },
+        [189878] = { ["name"] = "Nathrezim Infiltrator", ["count"] = 4 },
+        [190128] = { ["name"] = "Zul'gamux", ["count"] = 12 },
+        [129547000] = { ["name"] = "Blacktooth Knuckleduster", ["count"] = 0 },
     }
 end

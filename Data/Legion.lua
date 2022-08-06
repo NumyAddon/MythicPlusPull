@@ -4,7 +4,7 @@ local data = {};
 tinsert(ns.data, data)
 
 function data:GetPatchVersion()
-    return 1;
+    return 2;
 end
 
 function data:GetDungeonOverrides()
@@ -287,7 +287,7 @@ function data:GetNPCData()
         [115486] = { ["name"] = "Erudite Slayer", ["count"] = 9 },
         [115488] = { ["name"] = "Infused Pyromancer", ["count"] = 8 },
         [115757] = { ["name"] = "Wrathguard Flamebringer", ["count"] = 12 },
-        [115765] = { ["name"] = "Abstract Nullifier", ["count"] = 12 },
+        [115765] = { ["name"] = "Abstract Nullifier", ["count"] = 18 },
         [115831] = { ["name"] = "Mana Devourer", ["count"] = 3 },
         [116549] = { ["name"] = "Backup Singer", ["count"] = 4 },
         [116944] = { ["name"] = "Mephistroth", ["count"] = 0 },
@@ -340,5 +340,7 @@ function data:GetNPCData()
         [124947] = { ["name"] = "Void Flayer", ["count"] = 1 },
         [125857] = { ["name"] = "Lashing Voidling", ["count"] = 0 },
         [125860] = { ["name"] = "Rift Warden", ["count"] = 8 },
+        [189878] = { ["name"] = "Nathrezim Infiltrator", ["count"] = 6 },
+        [190128] = { ["name"] = "Zul'gamux", ["count"] = 18 },
     }
 end
