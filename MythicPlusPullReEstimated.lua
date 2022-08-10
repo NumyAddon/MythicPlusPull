@@ -345,7 +345,7 @@ function MMPE:ExportData(onlyUpdatedData)
             defaultValues = Mixin(defaultValues, dataProvider:GetNPCData())
         end
     end
-    local editBoxText = "{ data = {\n"
+    local editBoxText = "exported = { data = {\n"
     local count = 0
     for npcID, npcData in pairs(self.DB.npcData) do
         local value = self:GetValue(npcID)
