@@ -4,7 +4,7 @@ local data = {};
 tinsert(ns.data, data)
 
 function data:GetPatchVersion()
-    return 2;
+    return 3;
 end
 
 function data:GetDungeonOverrides()
@@ -23,7 +23,6 @@ end
 function data:GetNPCData()
     -- data is sorted with natural sorting by NPC ID
     return {
-        [68819] = { ["name"] = "Eye of Sethraliss", ["count"] = 12 },
         [122969] = { ["name"] = "Zanchuli Witch-Doctor", ["count"] = 4 },
         [122970] = { ["name"] = "Shadowblade Stalker", ["count"] = 4 },
         [122971] = { ["name"] = "Dazar'ai Juggernaut", ["count"] = 4 },
@@ -66,6 +65,7 @@ function data:GetNPCData()
         [129547] = { ["name"] = "Blacktooth Knuckleduster", ["count"] = 4 },
         [129548] = { ["name"] = "Blacktooth Brute", ["count"] = 4 },
         [129550] = { ["name"] = "Bilge Rat Padfoot", ["count"] = 4 },
+        [129551] = { ["name"] = "Bilge Rat Mixologist", ["count"] = 1 },
         [129552] = { ["name"] = "Monzumi", ["count"] = 6 },
         [129553] = { ["name"] = "Dinomancer Kish'o", ["count"] = 10 },
         [129559] = { ["name"] = "Cutwater Duelist", ["count"] = 4 },
@@ -83,6 +83,8 @@ function data:GetNPCData()
         [130026] = { ["name"] = "Bilge Rat Seaspeaker", ["count"] = 6 },
         [130027] = { ["name"] = "Ashvane Marine", ["count"] = 7 },
         [130028] = { ["name"] = "Ashvane Priest", ["count"] = 7 },
+        [130207] = { ["name"] = "Enchanted Brine", ["count"] = 3 },
+        [130353] = { ["name"] = "Smoldering Elemental", ["count"] = 6 },
         [130400] = { ["name"] = "Irontide Crusher", ["count"] = 6 },
         [130404] = { ["name"] = "Vermin Trapper", ["count"] = 4 },
         [130435] = { ["name"] = "Addled Thug", ["count"] = 5 },
@@ -104,6 +106,9 @@ function data:GetNPCData()
         [131585] = { ["name"] = "Enthralled Guard", ["count"] = 4 },
         [131586] = { ["name"] = "Banquet Steward", ["count"] = 4 },
         [131587] = { ["name"] = "Bewitched Captain", ["count"] = 5 },
+        [131601] = { ["name"] = "Executive Chef Daniel", ["count"] = 4 },
+        [131607] = { ["name"] = "Sauciere Samuel", ["count"] = 4 },
+        [131611] = { ["name"] = "Roast Chef Rhonda", ["count"] = 4 },
         [131666] = { ["name"] = "Coven Thornshaper", ["count"] = 4 },
         [131669] = { ["name"] = "Jagged Hound", ["count"] = 1 },
         [131670] = { ["name"] = "Heartsbane Vinetwister", ["count"] = 6 },
@@ -173,6 +178,7 @@ function data:GetNPCData()
         [135052] = { ["name"] = "Blight Toad", ["count"] = 1 },
         [135167] = { ["name"] = "Spectral Berserker", ["count"] = 4 },
         [135192] = { ["name"] = "Honored Raptor", ["count"] = 4 },
+        [135195] = { ["name"] = "Drustvar Villager", ["count"] = 4 },
         [135204] = { ["name"] = "Spectral Hex Priest", ["count"] = 4 },
         [135231] = { ["name"] = "Spectral Brute", ["count"] = 8 },
         [135234] = { ["name"] = "Diseased Mastiff", ["count"] = 3 },
@@ -183,7 +189,9 @@ function data:GetNPCData()
         [135245] = { ["name"] = "Bilge Rat Demolisher", ["count"] = 8 },
         [135254] = { ["name"] = "Irontide Raider", ["count"] = 4 },
         [135258] = { ["name"] = "Irontide Marauder", ["count"] = 1 },
+        [135263] = { ["name"] = "Ashvane Spotter", ["count"] = 4 },
         [135329] = { ["name"] = "Matron Bryndle", ["count"] = 10 },
+        [135336] = { ["name"] = "Eye of Sethraliss", ["count"] = 12 },
         [135365] = { ["name"] = "Matron Alma", ["count"] = 16 },
         [135366] = { ["name"] = "Blacktooth Arsonist", ["count"] = 6 },
         [135474] = { ["name"] = "Thistle Acolyte", ["count"] = 4 },
@@ -204,8 +212,10 @@ function data:GetNPCData()
         [136470] = { ["name"] = "Refreshment Vendor", ["count"] = 4 },
         [136643] = { ["name"] = "Azerite Extractor", ["count"] = 12 },
         [136665] = { ["name"] = "Ashvane Spotter", ["count"] = 7 },
+        [136735] = { ["name"] = "Ashvane Marine", ["count"] = 7 },
         [136934] = { ["name"] = "Weapons Tester", ["count"] = 4 },
         [137029] = { ["name"] = "Ordnance Specialist", ["count"] = 5 },
+        [137048] = { ["name"] = "Beguiled Villager", ["count"] = 1 },
         [137473] = { ["name"] = "Guard Captain Atu", ["count"] = 4 },
         [137474] = { ["name"] = "King Timalji", ["count"] = 6 },
         [137478] = { ["name"] = "Queen Wasi", ["count"] = 6 },
@@ -284,16 +294,12 @@ function data:GetNPCData()
         [151659] = { ["name"] = "Rocket Tonk", ["count"] = 3 },
         [151773] = { ["name"] = "Junkyard D.0.G.", ["count"] = 4 },
         [152009] = { ["name"] = "Malfunctioning Scrapbot", ["count"] = 5 },
+        [152435] = { ["name"] = "Bomb Tonk", ["count"] = 3 },
+        [152442] = { ["name"] = "Strider Tonk", ["count"] = 3 },
+        [152443] = { ["name"] = "Rocket Tonk", ["count"] = 3 },
+        [154744] = { ["name"] = "Toxic Monstrosity", ["count"] = 5 },
+        [154758] = { ["name"] = "Toxic Monstrosity", ["count"] = 5 },
         [155090] = { ["name"] = "Anodized Coilbearer", ["count"] = 4 },
         [155094] = { ["name"] = "Mechagon Trooper", ["count"] = 3 },
-        [155432] = { ["name"] = "Enchanted Emissary", ["count"] = 7 },
-        [155433] = { ["name"] = "Void-Touched Emissary", ["count"] = 7 },
-        [155434] = { ["name"] = "Emissary of the Tides", ["count"] = 7 },
-        [161124] = { ["name"] = "Urg'roth, Breaker of Heroes", ["count"] = 7 },
-        [161241] = { ["name"] = "Voidweaver Mal'thir", ["count"] = 7 },
-        [161243] = { ["name"] = "Samh'rek, Beckoner of Chaos", ["count"] = 7 },
-        [161244] = { ["name"] = "Blood of the Corruptor", ["count"] = 7 },
-        [189878] = { ["name"] = "Nathrezim Infiltrator", ["count"] = 4 },
-        [190128] = { ["name"] = "Zul'gamux", ["count"] = 12 },
     }
 end
