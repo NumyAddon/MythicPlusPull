@@ -14,8 +14,8 @@ function data:GetDungeonOverrides()
             [190128] = { ["name"] = "Zul'gamux", ["count"] = 21 },
         },
         [370] = { -- mechagon workshop
-            [189878] = { ["name"] = "Nathrezim Infiltrator", ["count"] = 4 },
-            [190128] = { ["name"] = "Zul'gamux", ["count"] = 12 },
+            [189878] = { ["name"] = "Nathrezim Infiltrator", ["count"] = 3 },
+            [190128] = { ["name"] = "Zul'gamux", ["count"] = 9 },
         },
     }
 end
