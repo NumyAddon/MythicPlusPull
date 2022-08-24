@@ -9,11 +9,11 @@ end
 
 function data:GetDungeonOverrides()
     return {
-        [391] = { -- tazavesh streets
+        [391] = { -- Tazavesh: Streets of Wonder
             [189878] = { ["name"] = "Nathrezim Infiltrator", ["count"] = 3 },
             [190128] = { ["name"] = "Zul'gamux", ["count"] = 9 },
         },
-        [392] = { -- tazavesh gambit
+        [392] = { -- Tazavesh: So'leah's Gambit
             [189878] = { ["name"] = "Nathrezim Infiltrator", ["count"] = 6 },
             [190128] = { ["name"] = "Zul'gamux", ["count"] = 18 },
         },

@@ -9,11 +9,11 @@ end
 
 function data:GetDungeonOverrides()
     return {
-        [166] = { -- grimrail depot
+        [166] = { -- Grimrail Depot
             [189878] = { ["name"] = "Nathrezim Infiltrator", ["count"] = 6 },
             [190128] = { ["name"] = "Zul'gamux", ["count"] = 18 },
         },
-        [169] = { -- iron docks
+        [169] = { -- Iron Docks
             [189878] = { ["name"] = "Nathrezim Infiltrator", ["count"] = 4 },
             [190128] = { ["name"] = "Zul'gamux", ["count"] = 12 },
         },

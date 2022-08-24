@@ -9,11 +9,11 @@ end
 
 function data:GetDungeonOverrides()
     return {
-        [369] = { -- mechagon junkjard
+        [369] = { -- Operation: Mechagon - Junkyard
             [189878] = { ["name"] = "Nathrezim Infiltrator", ["count"] = 7 },
             [190128] = { ["name"] = "Zul'gamux", ["count"] = 21 },
         },
-        [370] = { -- mechagon workshop
+        [370] = { -- Operation: Mechagon - Workshop
             [189878] = { ["name"] = "Nathrezim Infiltrator", ["count"] = 3 },
             [190128] = { ["name"] = "Zul'gamux", ["count"] = 9 },
         },

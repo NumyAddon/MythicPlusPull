@@ -4,18 +4,18 @@ local data = {};
 tinsert(ns.data, data)
 
 function data:GetPatchVersion()
-    return 3;
+    return 4;
 end
 
 function data:GetDungeonOverrides()
     return {
-        [227] = { -- lower kara
+        [227] = { -- Return to Karazhan: Lower
             [114626] = { ["name"] = "Forlorn Spirit", ["count"] = 5 },
             [114627] = { ["name"] = "Shrieking Terror", ["count"] = 5 },
             [189878] = { ["name"] = "Nathrezim Infiltrator", ["count"] = 4 },
             [190128] = { ["name"] = "Zul'gamux", ["count"] = 12 },
         },
-        [234] = { -- upper kara
+        [234] = { -- Return to Karazhan: Upper
             [114626] = { ["name"] = "Forlorn Spirit", ["count"] = 4 },
             [114627] = { ["name"] = "Shrieking Terror", ["count"] = 4 },
             [189878] = { ["name"] = "Nathrezim Infiltrator", ["count"] = 6 },
@@ -210,9 +210,9 @@ function data:GetNPCData()
         [114526] = { ["name"] = "Ghostly Understudy", ["count"] = 3 },
         [114541] = { ["name"] = "Spectral Patron", ["count"] = 1 },
         [114542] = { ["name"] = "Ghostly Philanthropist", ["count"] = 4 },
-        [114544] = { ["name"] = "Skeletal Usher", ["count"] = 6 },
+        [114544] = { ["name"] = "Skeletal Usher", ["count"] = 12 },
         [114584] = { ["name"] = "Phantom Crew", ["count"] = 4 },
-        [114624] = { ["name"] = "Arcane Warden", ["count"] = 6 },
+        [114624] = { ["name"] = "Arcane Warden", ["count"] = 12 },
         [114625] = { ["name"] = "Phantom Guest", ["count"] = 1 },
         [114628] = { ["name"] = "Skeletal Waiter", ["count"] = 3 },
         [114629] = { ["name"] = "Spectral Retainer", ["count"] = 3 },
