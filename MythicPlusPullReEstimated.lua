@@ -58,6 +58,7 @@ MMPE.version = GetAddOnMetadata(name, "Version") or "unknown"
 MMPE.defaultSettings = {
     enabled = true,
 
+    autoLearnScores = 'newOnly',
     inconclusiveDataThreshold = 100, -- Mobs killed within this span of time (in milliseconds) will not be processed since we might not get the criteria update fast enough to know which mob gave what progress. Well, that's the theory anyway.
     maxTimeSinceKill = 600, -- Lag tolerance between a mob dying and the progress criteria updating, in milliseconds.
 
@@ -395,6 +396,10 @@ function MMPE:OnProgressUpdated(deltaProgress)
         self:DebugPrint("timeSinceKill: " .. timestamp .. " Current Time: " .. GetTimeInSeconds() .. "Timestamp of kill: " .. timeSinceKill)
         if timeSinceKill <= self:GetSetting("maxTimeSinceKill") then
             self:DebugPrint(string.format("Gained %f%%. Last mob killed was %s (%i) %fs ago", deltaProgress, npcName, npcID, timeSinceKill/1000))
+            if ((self.DB.autoLearnScores == 'newOnly' and self:GetValue(npcID)) or self.DB.autoLearnScores == 'off') then
+                return
+            end
+
             local updated = self:UpdateValue(npcID, deltaProgress, npcName, true) -- Looks like we have ourselves a valid entry. Set this in our database/list/whatever.
             if updated and self:GetSetting('debugNewNPCScores') then
                 self:Print(string.format("Gained %f%%. Last mob killed was %s (%i) %fs ago", deltaProgress, npcName, npcID, timeSinceKill/1000))
@@ -833,6 +838,48 @@ function MMPE:InitConfig()
                     self:VerifySettings(true)
                 end,
                 width = "double",
+            },
+            scores = {
+                order = increment(),
+                type = "group",
+                name = "Auto Learn Scores",
+                args = {
+                    autoLearnScores = {
+                        order = increment(),
+                        name = "Auto Learn Scores",
+                        desc = [[New Only >> Only learn scores that for new NPCs. Useful for new dungeons, and the addon isn't updated yet.
+
+                        Always >> Always learn updated scores. This might make the percentage inaccurate.
+
+                        Off >> Don't learn scores.]],
+                        type = "select",
+                        values = {
+                            newOnly = "New Only (Recommended)",
+                            always = "Always (Risky)",
+                            off = "Off",
+                        },
+                    },
+                    inconclusiveDataThreshold = {
+                        order = increment(),
+                        name = "Inconclusive Data Threshold",
+                        desc = "Mobs killed within this span of time (in milliseconds) will not be processed since we might not get the criteria update fast enough to know which mob gave what progress.",
+                        type = "range",
+                        min = 50,
+                        max = 400,
+                        step = 10,
+                        hidden = true,
+                    },
+                    maxTimeSinceKill = {
+                        order = increment(),
+                        name = "Max Time Since Kill",
+                        desc = "Lag tolerance between a mob dying and the progress criteria updating, in milliseconds.",
+                        type = "range",
+                        min = 0,
+                        max = 1000,
+                        step = 10,
+                        hidden = true,
+                    },
+                },
             },
             tooltip = {
                 order = increment(),
