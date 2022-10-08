@@ -12,7 +12,9 @@ Libs\embeds.xml
 
 MythicPlusPullReEstimated.lua
 
+Data\Dragonflight.lua
 Data\Shadowlands.lua
 Data\BFA.lua
 Data\Legion.lua
-Data\WOD.lua
+Data\Warlords of Draenor.lua
+Data\Mists of Pandaria.lua

@@ -469,22 +469,28 @@ function MMPE:VerifyDB(fullWipe, npcDataWipe)
     end
     self:VerifySettings()
 
+    local emptyPatchVersionInfo = { timestamp = 0, version = "0.0.0", build = 0 }
+
     if npcDataWipe then
         wipe(self.DB.npcData)
         self.DB.npcDataPatchVersion = 0
+        self.DB.npcDataPatchVersionInfo = emptyPatchVersionInfo
     end
 
     local currentPatchVersion = self.DB.npcDataPatchVersion or 0
     local newPatchVersion = currentPatchVersion
+    local newPatchVersionInfo = self.DB.npcDataPatchVersionInfo or emptyPatchVersionInfo
     self.dungeonOverrides = {}
 	for _, dataProvider in pairs(ns.data) do
-        local patchVersion = dataProvider.GetPatchVersion and dataProvider:GetPatchVersion() or 0
+        local patchVersionInfo = dataProvider:GetPatchVersion()
+        local patchVersion = patchVersionInfo.timestamp
 		local defaultValues = dataProvider:GetNPCData()
 
         local forceUpdate = false
         if currentPatchVersion < patchVersion then
             forceUpdate = true
             newPatchVersion = max(newPatchVersion, patchVersion)
+            newPatchVersionInfo = patchVersionInfo
         end
         for npcId, npcData in pairs(defaultValues) do
             self:UpdateValue(npcId, npcData.count, npcData.name, false, forceUpdate)
@@ -494,6 +500,7 @@ function MMPE:VerifyDB(fullWipe, npcDataWipe)
         end
 	end
     self.DB.npcDataPatchVersion = newPatchVersion
+    self.DB.npcDataPatchVersionInfo = newPatchVersionInfo
 
 end
 
@@ -849,9 +856,9 @@ function MMPE:InitConfig()
                         name = "Auto Learn Scores",
                         desc = [[New Only >> Only learn scores that for new NPCs. Useful for new dungeons, and the addon isn't updated yet.
 
-                        Always >> Always learn updated scores. This might make the percentage inaccurate.
+Always >> Always learn updated scores. This might make the percentage inaccurate.
 
-                        Off >> Don't learn scores.]],
+Off >> Don't learn scores.]],
                         type = "select",
                         values = {
                             newOnly = "New Only (Recommended)",
@@ -1013,7 +1020,14 @@ function MMPE:InitConfig()
                     npcDataPatchVersion = {
                         order = increment(),
                         type = "description",
-                        name = function() return "NPC data patch version: " .. self.DB.npcDataPatchVersion or 0 end,
+                        name = function() return
+                            string.format(
+                                "NPC data patch version: %s, build %d (ts %d)",
+                                self.DB.npcDataPatchVersionInfo.version,
+                                self.DB.npcDataPatchVersionInfo.build,
+                                self.DB.npcDataPatchVersionInfo.timestamp
+                            )
+                        end,
                     },
                     resetNpcData = {
                         order = increment(),

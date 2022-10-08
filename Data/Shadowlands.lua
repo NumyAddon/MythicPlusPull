@@ -4,7 +4,11 @@ local data = {};
 tinsert(ns.data, data)
 
 function data:GetPatchVersion()
-    return 3;
+    return {
+        timestamp = 1665229196,
+        version = '10.0.2',
+        build = 45969,
+    }
 end
 
 function data:GetDungeonOverrides()
