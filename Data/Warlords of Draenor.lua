@@ -5,9 +5,9 @@ tinsert(ns.data, data)
 
 function data:GetPatchVersion()
     return {
-        timestamp = 1665229196,
+        timestamp = 1665603850,
         version = '10.0.2',
-        build = 45969,
+        build = 46092,
     }
 end
 
@@ -27,17 +27,18 @@ end
 function data:GetNPCData()
     -- data is sorted with natural sorting by NPC ID
     return {
-        [75451] = { ["name"] = "Defiled Spirit", ["count"] = 1 },
-        [75459] = { ["name"] = "Plagued Bat", ["count"] = 1 },
-        [75506] = { ["name"] = "Shadowmoon Loyalist", ["count"] = 1 },
-        [75652] = { ["name"] = "Void Spawn", ["count"] = 1 },
-        [75713] = { ["name"] = "Shadowmoon Bone-Mender", ["count"] = 1 },
-        [75715] = { ["name"] = "Reanimated Ritual Bones", ["count"] = 1 },
-        [75966] = { ["name"] = "Defiled Spirit", ["count"] = 1 },
-        [76104] = { ["name"] = "Monstrous Corpse Spider", ["count"] = 1 },
-        [76444] = { ["name"] = "Subjugated Soul", ["count"] = 1 },
-        [76446] = { ["name"] = "Shadowmoon Enslaver", ["count"] = 1 },
-        [77700] = { ["name"] = "Shadowmoon Exhumer", ["count"] = 1 },
+        [75451] = { ["name"] = "Defiled Spirit", ["count"] = 3 },
+        [75459] = { ["name"] = "Plagued Bat", ["count"] = 5 },
+        [75506] = { ["name"] = "Shadowmoon Loyalist", ["count"] = 5 },
+        [75652] = { ["name"] = "Void Spawn", ["count"] = 10 },
+        [75713] = { ["name"] = "Shadowmoon Bone-Mender", ["count"] = 6 },
+        [75715] = { ["name"] = "Reanimated Ritual Bones", ["count"] = 5 },
+        [75966] = { ["name"] = "Defiled Spirit", ["count"] = 3 },
+        [76104] = { ["name"] = "Monstrous Corpse Spider", ["count"] = 6 },
+        [76444] = { ["name"] = "Subjugated Soul", ["count"] = 4 },
+        [76446] = { ["name"] = "Shadowmoon Enslaver", ["count"] = 6 },
+        [77006] = { ["name"] = "Corpse Skitterling", ["count"] = 1 },
+        [77700] = { ["name"] = "Shadowmoon Exhumer", ["count"] = 8 },
         [80935] = { ["name"] = "Grom'kar Boomer", ["count"] = 7 },
         [80936] = { ["name"] = "Grom'kar Grenadier", ["count"] = 7 },
         [80937] = { ["name"] = "Grom'kar Gunner", ["count"] = 6 },
