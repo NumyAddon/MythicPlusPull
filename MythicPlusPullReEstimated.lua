@@ -656,7 +656,7 @@ function MMPE:CreateNameplateText(unit)
         end
         local nameplate = C_NamePlate.GetNamePlateForUnit(unit)
         if nameplate then
-            self.activeNameplates[unit] = nameplate:CreateFontString(unit .."mppProgress", nameplate.UnitFrame.healthBar, "GameFontHighlightSmall")
+            self.activeNameplates[unit] = nameplate:CreateFontString(unit .."mppProgress", "OVERLAY", "GameFontHighlightSmall")
             self.activeNameplates[unit]:SetText("+?%")
         end
     end
@@ -761,7 +761,13 @@ function MMPE:OnInitialize()
 
     self.frame = CreateFrame("FRAME")
     self:HookScript(self.frame, "OnUpdate", function(_, elapsed) self:OnUpdate(elapsed) end)
-    self:HookScript(GameTooltip, "OnTooltipSetUnit", function(tooltip) self:OnNPCTooltip(tooltip)  end)
+    if GameTooltip:HasScript('OnTooltipSetUnit') then
+        -- < 10.0.2
+        self:HookScript(GameTooltip, 'OnTooltipSetUnit', function(tooltip) self:OnNPCTooltip(tooltip) end)
+    elseif TooltipDataProcessor and TooltipDataProcessor.AddTooltipPostCall then
+        -- >= 10.0.2
+        TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Unit,function(tooltip) self:OnNPCTooltip(tooltip) end)
+    end
 
     self:VerifyDB()
     if self:IsMythicPlus() then
