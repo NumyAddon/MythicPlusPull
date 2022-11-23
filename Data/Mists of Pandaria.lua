@@ -5,9 +5,9 @@ tinsert(ns.data, data)
 
 function data:GetPatchVersion()
     return {
-        timestamp = 1668541834,
+        timestamp = 1669216189,
         version = '10.0.2',
-        build = 46658,
+        build = 46702,
     }
 end
 
@@ -33,9 +33,9 @@ function data:GetNPCData()
         [62358] = { ["name"] = "Corrupt Droplet", ["count"] = 1 },
         [65317] = { ["name"] = "Xiang", ["count"] = 5 },
         [65362] = { ["name"] = "Minion of Doubt", ["count"] = 8 },
-        [200126] = { ["name"] = "unknown_200126", ["count"] = 8 },
-        [200131] = { ["name"] = "unknown_200131", ["count"] = 8 },
-        [200137] = { ["name"] = "unknown_200137", ["count"] = 8 },
-        [200387] = { ["name"] = "unknown_200387", ["count"] = 18 },
+        [200126] = { ["name"] = "Fallen Waterspeaker", ["count"] = 8 },
+        [200131] = { ["name"] = "Sha-Touched Guardian", ["count"] = 8 },
+        [200137] = { ["name"] = "Depraved Mistweaver", ["count"] = 8 },
+        [200387] = { ["name"] = "Shambling Infester", ["count"] = 18 },
     }
 end
