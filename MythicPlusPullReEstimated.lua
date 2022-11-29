@@ -535,15 +535,14 @@ function MMPE:GetTooltipMessage(npcID)
 end
 
 function MMPE:OnNPCTooltip(tooltip)
-    local unit = select(2, tooltip:GetUnit())
-    if unit then
-        local guid = UnitGUID(unit)
-        local npcID = self:GetNPCID(guid)
-        if npcID and self:ShouldAddTooltip(unit) then
-            local tooltipMessage = self:GetTooltipMessage(npcID)
-            if tooltipMessage then
-                self:AddLineToTooltip(tooltip, tooltipMessage)
-            end
+    local unit = select(2, TooltipUtil.GetDisplayedUnit(tooltip))
+    if not unit then return end
+    local guid = UnitGUID(unit)
+    local npcID = self:GetNPCID(guid)
+    if npcID and self:ShouldAddTooltip(unit) then
+        local tooltipMessage = self:GetTooltipMessage(npcID)
+        if tooltipMessage then
+            self:AddLineToTooltip(tooltip, tooltipMessage)
         end
     end
 end
