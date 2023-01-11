@@ -5,9 +5,9 @@ tinsert(ns.data, data)
 
 function data:GetPatchVersion()
     return {
-        timestamp = 1671292417,
+        timestamp = 1673433520,
         version = '10.0.2',
-        build = 47187,
+        build = 47213,
     }
 end
 
@@ -33,7 +33,6 @@ function data:GetNPCData()
         [75652] = { ["name"] = "Void Spawn", ["count"] = 10 },
         [75713] = { ["name"] = "Shadowmoon Bone-Mender", ["count"] = 6 },
         [75715] = { ["name"] = "Reanimated Ritual Bones", ["count"] = 5 },
-        [75966] = { ["name"] = "Defiled Spirit", ["count"] = 3 },
         [76104] = { ["name"] = "Monstrous Corpse Spider", ["count"] = 6 },
         [76444] = { ["name"] = "Subjugated Soul", ["count"] = 4 },
         [76446] = { ["name"] = "Shadowmoon Enslaver", ["count"] = 6 },
