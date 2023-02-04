@@ -554,16 +554,16 @@ end
 function MMPE:CreatePullFrame()
     self.currentPullFrame = CreateFrame("frame", nil, UIParent)
     SetFramePoint(self.currentPullFrame, self.DB.settings.pullFramePoint)
-    self.currentPullFrame:EnableMouse(true)
+    self.currentPullFrame:EnableMouse(not self.DB.settings.lockPullFrame)
     self.currentPullFrame:SetMovable(true)
     self.currentPullFrame:RegisterForDrag("LeftButton")
     self.currentPullFrame:SetScript("OnDragStart", function(frame)
-        if MMPE.DB.settings.lockPullFrame then return end
+        if self.DB.settings.lockPullFrame then return end
         frame:StartMoving()
     end)
     self.currentPullFrame:SetScript("OnDragStop", function(frame)
         frame:StopMovingOrSizing()
-        MMPE.DB.settings.pullFramePoint = GetAbsoluteFramePosition(frame)
+        self.DB.settings.pullFramePoint = GetAbsoluteFramePosition(frame)
     end)
     self.currentPullFrame:SetWidth(50)
     self.currentPullFrame:SetHeight(50)
@@ -930,6 +930,10 @@ Off >> Don't learn scores.]],
                         type = "toggle",
                         name = "Lock frame",
                         desc = "Lock the frame in place",
+                        set = function(info, value)
+                            self:SetSetting(info[#info], value)
+                            self.currentPullFrame:EnableMouse(not value)
+                        end,
                     },
                     reset = {
                         order = increment(),
