@@ -18,3 +18,4 @@ Data\BFA.lua
 Data\Legion.lua
 Data\Warlords of Draenor.lua
 Data\Mists of Pandaria.lua
+Data\Cataclysm.lua
