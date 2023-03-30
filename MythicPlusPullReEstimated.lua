@@ -752,8 +752,9 @@ function MMPE:OnInitialize()
     MMPEDB = MMPEDB or {}
     self.DB = MMPEDB
 
-    self:RegisterEvent("SCENARIO_CRITERIA_UPDATE", function() self:OnCriteriaUpdate() end)
-    self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED", function(...) self:OnCombatLogEvent({CombatLogGetCurrentEventInfo()}) end)
+    ------------- disabled for now, might get re-enabled in the future, right now it's incorrectly detecting spiteful kills, and DH demon kills.
+    --self:RegisterEvent("SCENARIO_CRITERIA_UPDATE", function() self:OnCriteriaUpdate() end)
+    --self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED", function(...) self:OnCombatLogEvent({CombatLogGetCurrentEventInfo()}) end)
 
     self:RegisterEvent("NAME_PLATE_UNIT_ADDED", function(_, unit) self:OnAddNameplate(unit) end)
     self:RegisterEvent("NAME_PLATE_UNIT_REMOVED", function(_, unit) self:OnRemoveNameplate(unit) end)
@@ -768,7 +769,8 @@ function MMPE:OnInitialize()
         TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Unit,function(tooltip) self:OnNPCTooltip(tooltip) end)
     end
 
-    self:VerifyDB()
+    --- wipe NPC data for now, just to make sure that old, bad data is removed for everyone.
+    self:VerifyDB(false, true)
     if self:IsMythicPlus() then
         self.quantity = self:GetEnemyForcesProgress()
         self:DebugPrint("MPP Loaded in progress:", self.quantity, "in.")
@@ -851,48 +853,49 @@ function MMPE:InitConfig()
                 end,
                 width = "double",
             },
-            scores = {
-                order = increment(),
-                type = "group",
-                name = "Auto Learn Scores",
-                args = {
-                    autoLearnScores = {
-                        order = increment(),
-                        name = "Auto Learn Scores",
-                        desc = [[New Only >> Only learn scores that for new NPCs. Useful for new dungeons, and the addon isn't updated yet.
-
-Always >> Always learn updated scores. This might make the percentage inaccurate.
-
-Off >> Don't learn scores.]],
-                        type = "select",
-                        values = {
-                            newOnly = "New Only (Recommended)",
-                            always = "Always (Risky)",
-                            off = "Off",
-                        },
-                    },
-                    inconclusiveDataThreshold = {
-                        order = increment(),
-                        name = "Inconclusive Data Threshold",
-                        desc = "Mobs killed within this span of time (in milliseconds) will not be processed since we might not get the criteria update fast enough to know which mob gave what progress.",
-                        type = "range",
-                        min = 50,
-                        max = 400,
-                        step = 10,
-                        hidden = true,
-                    },
-                    maxTimeSinceKill = {
-                        order = increment(),
-                        name = "Max Time Since Kill",
-                        desc = "Lag tolerance between a mob dying and the progress criteria updating, in milliseconds.",
-                        type = "range",
-                        min = 0,
-                        max = 1000,
-                        step = 10,
-                        hidden = true,
-                    },
-                },
-            },
+------------- disabled for now, might get re-enabled in the future, right now it's incorrectly detecting spiteful kills, and DH demon kills.
+--            scores = {
+--                order = increment(),
+--                type = "group",
+--                name = "Auto Learn Scores",
+--                args = {
+--                    autoLearnScores = {
+--                        order = increment(),
+--                        name = "Auto Learn Scores",
+--                        desc = [[New Only >> Only learn scores that for new NPCs. Useful for new dungeons, and the addon isn't updated yet.
+--
+--Always >> Always learn updated scores. This might make the percentage inaccurate.
+--
+--Off >> Don't learn scores.]],
+--                        type = "select",
+--                        values = {
+--                            newOnly = "New Only (Recommended)",
+--                            always = "Always (Risky)",
+--                            off = "Off",
+--                        },
+--                    },
+--                    inconclusiveDataThreshold = {
+--                        order = increment(),
+--                        name = "Inconclusive Data Threshold",
+--                        desc = "Mobs killed within this span of time (in milliseconds) will not be processed since we might not get the criteria update fast enough to know which mob gave what progress.",
+--                        type = "range",
+--                        min = 50,
+--                        max = 400,
+--                        step = 10,
+--                        hidden = true,
+--                    },
+--                    maxTimeSinceKill = {
+--                        order = increment(),
+--                        name = "Max Time Since Kill",
+--                        desc = "Lag tolerance between a mob dying and the progress criteria updating, in milliseconds.",
+--                        type = "range",
+--                        min = 0,
+--                        max = 1000,
+--                        step = 10,
+--                        hidden = true,
+--                    },
+--                },
+--            },
             tooltip = {
                 order = increment(),
                 type = "group",
