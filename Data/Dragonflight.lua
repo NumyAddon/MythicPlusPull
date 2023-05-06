@@ -5,9 +5,9 @@ tinsert(ns.data, data)
 
 function data:GetPatchVersion()
     return {
-        timestamp = 1679137520,
+        timestamp = 1683375700,
         version = '10.1.0',
-        build = 48537,
+        build = 49444,
     }
 end
 
