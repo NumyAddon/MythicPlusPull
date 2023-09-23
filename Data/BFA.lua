@@ -5,9 +5,9 @@ tinsert(ns.data, data)
 
 function data:GetPatchVersion()
     return {
-        timestamp = 1683653548,
-        version = '10.1.0',
-        build = 49474,
+        timestamp = 1695497412,
+        version = '10.2.0',
+        build = 51425,
     }
 end
 
@@ -160,7 +160,7 @@ function data:GetNPCData()
         [134174] = { ["name"] = "Shadow-Borne Witch Doctor", ["count"] = 5 },
         [134232] = { ["name"] = "Hired Assassin", ["count"] = 4 },
         [134251] = { ["name"] = "Seneschal M'bara", ["count"] = 4 },
-        [134284] = { ["name"] = "Fallen Deathspeaker", ["count"] = 3 },
+        [134284] = { ["name"] = "Fallen Deathspeaker", ["count"] = 4 },
         [134331] = { ["name"] = "King Rahu'ai", ["count"] = 6 },
         [134338] = { ["name"] = "Tidesage Enforcer", ["count"] = 9 },
         [134364] = { ["name"] = "Faithless Tender", ["count"] = 4 },

@@ -5,14 +5,21 @@ tinsert(ns.data, data)
 
 function data:GetPatchVersion()
     return {
-        timestamp = 1683653548,
-        version = '10.1.0',
-        build = 49474,
+        timestamp = 1695497412,
+        version = '10.2.0',
+        build = 51425,
     }
 end
 
 function data:GetDungeonOverrides()
-    return {}
+    return {
+        [463] = { -- Dawn of the Infinite: Galakrond's Fall
+            [199749] = { ["name"] = "Timestream Anomaly", ["count"] = 12 },
+        },
+        [464] = { -- Dawn of the Infinite: Murozond's Rise
+            [199749] = { ["name"] = "Timestream Anomaly", ["count"] = 3 },
+        },
+    }
 end
 
 function data:GetNPCData()
@@ -185,5 +192,39 @@ function data:GetNPCData()
         [198047] = { ["name"] = "Tempest Channeler", ["count"] = 16 },
         [199037] = { ["name"] = "Primalist Shocktrooper", ["count"] = 5 },
         [199717] = { ["name"] = "Nokhud Defender", ["count"] = 10 },
+        [199748] = { ["name"] = "Timeline Marauder", ["count"] = 5 },
+        [201222] = { ["name"] = "Valow, Timesworn Keeper", ["count"] = 20 },
+        [201223] = { ["name"] = "Infinite Twilight Magus", ["count"] = 5 },
+        [203861] = { ["name"] = "Horde Destroyer", ["count"] = 25 },
+        [204206] = { ["name"] = "Horde Farseer", ["count"] = 8 },
+        [204536] = { ["name"] = "Blight Chunk", ["count"] = 1 },
+        [205151] = { ["name"] = "Tyr's Vanguard", ["count"] = 5 },
+        [205152] = { ["name"] = "Lerai, Timesworn Maiden", ["count"] = 20 },
+        [205158] = { ["name"] = "Spurlok, Timesworn Sentinel", ["count"] = 20 },
+        [205337] = { ["name"] = "Infinite Timebender", ["count"] = 8 },
+        [205363] = { ["name"] = "Time-Lost Waveshaper", ["count"] = 4 },
+        [205365] = { ["name"] = "Time-Lost Tidehunter", ["count"] = 4 },
+        [205366] = { ["name"] = "Time-Lost Wakethrasher", ["count"] = 1 },
+        [205384] = { ["name"] = "Infinite Chronoweaver", ["count"] = 5 },
+        [205408] = { ["name"] = "Infinite Timeslicer", ["count"] = 4 },
+        [205435] = { ["name"] = "Epoch Ripper", ["count"] = 12 },
+        [205691] = { ["name"] = "Iridikron's Creation", ["count"] = 5 },
+        [205723] = { ["name"] = "Time-Lost Aerobot", ["count"] = 4 },
+        [205727] = { ["name"] = "Time-Lost Rocketeer", ["count"] = 4 },
+        [205790] = { ["name"] = "Time-Lost Smack-o-Tron", ["count"] = 1 },
+        [205804] = { ["name"] = "Risen Dragon", ["count"] = 15 },
+        [206064] = { ["name"] = "Coalesced Moment", ["count"] = 2 },
+        [206066] = { ["name"] = "Timestream Leech", ["count"] = 3 },
+        [206068] = { ["name"] = "Temporal Fusion", ["count"] = 2 },
+        [206070] = { ["name"] = "Chronaxie", ["count"] = 6 },
+        [206074] = { ["name"] = "Pendule", ["count"] = 3 },
+        [206140] = { ["name"] = "Coalesced Time", ["count"] = 12 },
+        [206214] = { ["name"] = "Infinite Infiltrator", ["count"] = 20 },
+        [206230] = { ["name"] = "Infinite Diversionist", ["count"] = 15 },
+        [207177] = { ["name"] = "Infinite Watchkeeper", ["count"] = 15 },
+        [207969] = { ["name"] = "Horde Raider", ["count"] = 5 },
+        [208438] = { ["name"] = "Infinite Saboteur", ["count"] = 15 },
+        [208440] = { ["name"] = "Infinite Slayer", ["count"] = 15 },
+        [208698] = { ["name"] = "Infinite Riftmage", ["count"] = 6 },
     }
 end
