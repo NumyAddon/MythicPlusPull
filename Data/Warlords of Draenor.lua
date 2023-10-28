@@ -5,9 +5,9 @@ tinsert(ns.data, data)
 
 function data:GetPatchVersion()
     return {
-        timestamp = 1695497412,
+        timestamp = 1698486716,
         version = '10.2.0',
-        build = 51425,
+        build = 51851,
     }
 end
 
@@ -55,7 +55,7 @@ function data:GetNPCData()
         [81820] = { ["name"] = "Everbloom Mender", ["count"] = 5 },
         [81864] = { ["name"] = "Dreadpetal", ["count"] = 2 },
         [81983] = { ["name"] = "Verdant Mandragora", ["count"] = 15 },
-        [81984] = { ["name"] = "Gnarlroot", ["count"] = 15 },
+        [81984] = { ["name"] = "Gnarlroot", ["count"] = 25 },
         [81985] = { ["name"] = "Everbloom Tender", ["count"] = 3 },
         [82039] = { ["name"] = "Rockspine Stinger", ["count"] = 3 },
         [82579] = { ["name"] = "Grom'kar Far Seer", ["count"] = 12 },
@@ -87,5 +87,6 @@ function data:GetNPCData()
         [86809] = { ["name"] = "Grom'kar Incinerator", ["count"] = 5 },
         [87252] = { ["name"] = "Unruly Ogron", ["count"] = 9 },
         [88163] = { ["name"] = "Grom'kar Cinderseer", ["count"] = 8 },
+        [212981] = { ["name"] = "Hapless Assistant", ["count"] = 3 },
     }
 end

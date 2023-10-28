@@ -5,9 +5,9 @@ tinsert(ns.data, data)
 
 function data:GetPatchVersion()
     return {
-        timestamp = 1695497412,
+        timestamp = 1698486716,
         version = '10.2.0',
-        build = 51425,
+        build = 51851,
     }
 end
 
@@ -223,8 +223,11 @@ function data:GetNPCData()
         [206230] = { ["name"] = "Infinite Diversionist", ["count"] = 15 },
         [207177] = { ["name"] = "Infinite Watchkeeper", ["count"] = 15 },
         [207969] = { ["name"] = "Horde Raider", ["count"] = 5 },
+        [208165] = { ["name"] = "Alliance Knight", ["count"] = 5 },
+        [208193] = { ["name"] = "Paladin of the Silver Hand", ["count"] = 8 },
+        [208208] = { ["name"] = "Alliance Destroyer", ["count"] = 25 },
         [208438] = { ["name"] = "Infinite Saboteur", ["count"] = 15 },
         [208440] = { ["name"] = "Infinite Slayer", ["count"] = 15 },
-        [208698] = { ["name"] = "Infinite Riftmage", ["count"] = 6 },
+        [208698] = { ["name"] = "Infinite Riftmage", ["count"] = 5 },
     }
 end
