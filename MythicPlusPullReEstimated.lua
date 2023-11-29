@@ -19,13 +19,11 @@ local CreateFrame = _G.CreateFrame
 local UnitGUID = _G.UnitGUID
 local UIParent = _G.UIParent
 local unpack = _G.unpack
-local GameTooltip = _G.GameTooltip
 local UnitThreatSituation = _G.UnitThreatSituation
 local UnitPlayerControlled = _G.UnitPlayerControlled
 local UnitAffectingCombat = _G.UnitAffectingCombat
 local C_NamePlate = _G.C_NamePlate
 local InterfaceOptionsFrame_OpenToCategory = _G.InterfaceOptionsFrame_OpenToCategory
-local CombatLogGetCurrentEventInfo = _G.CombatLogGetCurrentEventInfo
 local IsControlKeyDown = _G.IsControlKeyDown
 local StaticPopup_Show = _G.StaticPopup_Show
 local StaticPopupDialogs = _G.StaticPopupDialogs
@@ -38,6 +36,10 @@ local name, ns = ...
 
 local MMPE = LibStub('AceAddon-3.0'):NewAddon(name, 'AceConsole-3.0', 'AceHook-3.0', 'AceEvent-3.0');
 if not MMPE then return end
+
+-- expose to the world, that we exist
+_G['MMPE'] = MMPE
+
 ns.addon = MMPE
 ns.data = {}
 MMPE.ns = ns
@@ -94,15 +96,7 @@ MMPE.warnings = {}
 
 --
 -- GENERAL ADDON UTILITY
--- And by "utility" I mostly mean creating a bunch of shit that should really be built-in.
-
-local function split(str)
-    local a = {}
-    for s in string.gmatch(str, "%S+") do
-        table.insert(a, s)
-    end
-    return a
-end
+--
 
 local function GetTimeInSeconds()
     return GetTime() * 1000
@@ -508,11 +502,6 @@ end
 --- TOOLTIPS
 ---
 
-function MMPE:AddLineToTooltip(tooltip, str)
-    tooltip:AddDoubleLine(str)
-    tooltip:Show()
-end
-
 function MMPE:ShouldAddTooltip(unit)
     if self.loaded and self:GetSetting("enabled") and self:GetSetting("enableTooltip") and self:IsMythicPlus() and self:IsValidTarget(unit) then
         return true
@@ -542,7 +531,8 @@ function MMPE:OnNPCTooltip(tooltip)
     if npcID and self:ShouldAddTooltip(unit) then
         local tooltipMessage = self:GetTooltipMessage(npcID)
         if tooltipMessage then
-            self:AddLineToTooltip(tooltip, tooltipMessage)
+            tooltip:AddDoubleLine(tooltipMessage)
+            tooltip:Show()
         end
     end
 end
@@ -604,7 +594,7 @@ function MMPE:GetPulledProgress(pulledUnits)
     for _, guid in pairs(pulledUnits) do
         local npcID = self:GetNPCID(guid)
         if npcID then
-            estimatedProgress = estimatedProgress + (self:GetEstimatedProgress(npcID) or 0)
+            estimatedProgress = estimatedProgress + (self:GetValue(npcID) or 0)
         end
     end
     return estimatedProgress
@@ -624,7 +614,6 @@ function MMPE:SetCurrentPullEstimateLabel(s)
     self.currentPullString:SetText(s)
     self.currentPullFrame:SetWidth(self.currentPullString:GetStringWidth())
     self.currentPullFrame:SetHeight(self.currentPullString:GetStringHeight())
-    --print(self.currentPullFrame:GetCenter())
 end
 
 function MMPE:UpdateCurrentPullEstimate()
@@ -636,13 +625,19 @@ function MMPE:UpdateCurrentPullEstimate()
     end
     local message
     local pulledUnits = self:GetPulledUnits()
-    local estimatedProgress = self:GetPulledProgress(pulledUnits)
-    local currentProgress = self:GetEnemyForcesProgress()
-    local totalProgress = math.floor((estimatedProgress + currentProgress) * 100) /100
-    if estimatedProgress == 0 then
+    local estimatedCount = self:GetPulledProgress(pulledUnits)
+    local maxCount = self:GetMaxQuantity()
+    local currentCount = self:GetCurrentQuantity()
+    local totalCount = (estimatedCount + currentCount)
+    if estimatedCount == 0 then
         message = "No recorded mobs pulled or nameplates inactive."
     else
-        message = string.format("Current pull: %.2f%% + %.2f%% = %.2f%%", currentProgress, estimatedProgress, totalProgress)
+        message = string.format(
+            "Current pull: %.2f%% + %.2f%% = %.2f%%",
+            (currentCount / maxCount) * 100,
+            (estimatedCount / maxCount) * 100,
+            (totalCount / maxCount) * 100
+        )
     end
     self:SetCurrentPullEstimateLabel(message)
 end
@@ -761,13 +756,7 @@ function MMPE:OnInitialize()
 
     self.frame = CreateFrame("FRAME")
     self:HookScript(self.frame, "OnUpdate", function(_, elapsed) self:OnUpdate(elapsed) end)
-    if GameTooltip:HasScript('OnTooltipSetUnit') then
-        -- < 10.0.2
-        self:HookScript(GameTooltip, 'OnTooltipSetUnit', function(tooltip) self:OnNPCTooltip(tooltip) end)
-    elseif TooltipDataProcessor and TooltipDataProcessor.AddTooltipPostCall then
-        -- >= 10.0.2
-        TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Unit,function(tooltip) self:OnNPCTooltip(tooltip) end)
-    end
+    TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Unit, function(tooltip) self:OnNPCTooltip(tooltip) end)
 
     --- wipe NPC data for now, just to make sure that old, bad data is removed for everyone.
     self:VerifyDB(false, true)
