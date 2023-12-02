@@ -65,6 +65,7 @@ MMPE.defaultSettings = {
     maxTimeSinceKill = 600, -- Lag tolerance between a mob dying and the progress criteria updating, in milliseconds.
 
     enableTooltip = true,
+    includeCountInTooltip = true,
     tooltipColor = "82E0FF",
 
     enablePullEstimate = true,
@@ -89,10 +90,23 @@ MMPE.defaultSettings = {
 
     debug = false,
     debugNewNPCScores = false,
+
+    enableMdtEmulation = true,
 }
 
 MMPE.warnings = {}
 
+local MDTEmulated = {
+    GetEnemyForces = function(_, npcID)
+        local count = MMPE:GetValue(npcID);
+        if count and count > 0 then
+            local maxCount = MMPE:GetMaxQuantity();
+            return count, maxCount, maxCount, count;
+        end
+    end,
+    GetCurrentPreset = function() end, -- some WA uses this for some reason /shrug
+    IsPresetTeeming = function() return false; end, -- used together with GetCurrentPreset
+};
 
 --
 -- GENERAL ADDON UTILITY
@@ -229,6 +243,8 @@ function MMPE:GetMaxQuantity()
     if info then
         return info[5]
     end
+
+    return 0
 end
 
 function MMPE:GetCurrentQuantity()
@@ -237,6 +253,8 @@ function MMPE:GetCurrentQuantity()
     if info then
         return strtrim(info[8], "%")
     end
+
+    return 0
 end
 
 function MMPE:GetEnemyForcesProgress()
@@ -246,11 +264,13 @@ function MMPE:GetEnemyForcesProgress()
     local maxQuantity = self:GetMaxQuantity() or 1
     local progress = (quantity / maxQuantity) * 100
     self:DebugPrint(progress)
+
     return progress
 end
 
 function MMPE:GetChallengeMapId()
     if self.simulationActive then return self.simulationMapId end
+
     return C_ChallengeMode.GetActiveChallengeMapID()
 end
 
@@ -370,7 +390,7 @@ function MMPE:GetEstimatedProgress(npcID)
     local npcValue = self:GetValue(npcID)
     local maxQuantity = self:GetMaxQuantity()
     if npcValue and maxQuantity then
-        return (npcValue / maxQuantity) * 100
+        return (npcValue / maxQuantity) * 100, npcValue, maxQuantity
     end
 end
 
@@ -511,15 +531,20 @@ end
 
 function MMPE:GetTooltipMessage(npcID)
     local message = "|cFF"..self:GetSetting("tooltipColor") .. "M+Progress: "
-    local estimatedProgress = self:GetEstimatedProgress(npcID)
+    local estimatedProgress, count, maxCount = self:GetEstimatedProgress(npcID)
     if not estimatedProgress then
         return message .. "No record."
     end
     if estimatedProgress == 0 then
         return message .. "No Progress."
     end
-    local mobsLeft = (100 - self:GetEnemyForcesProgress()) / estimatedProgress
-    message = string.format("%s%.2f%% (%i left)", message, estimatedProgress, math.ceil(mobsLeft))
+    local mobsLeft = (maxCount - self:GetCurrentQuantity()) / count
+    if self:GetSetting('includeCountInTooltip') then
+        message = string.format("%s%.2f%% %i/%i (%i left)", message, estimatedProgress, count, maxCount, math.ceil(mobsLeft))
+    else
+        message = string.format("%s%.2f%% (%i left)", message, estimatedProgress, math.ceil(mobsLeft))
+    end
+
     return message
 end
 
@@ -770,6 +795,7 @@ function MMPE:OnInitialize()
     self:CreatePullFrame()
 
     self:InitConfig()
+    self:CheckMdtEmulation()
 
     local openConfig = function() self:OpenConfig() end
     self:RegisterChatCommand('mythicplusprogress', openConfig);
@@ -779,6 +805,16 @@ function MMPE:OnInitialize()
     self:RegisterChatCommand('mppe', openConfig);
 
     self.loaded = true
+end
+
+function MMPE:CheckMdtEmulation()
+    if C_AddOns.IsAddOnLoaded("MythicDungeonTools") then return end
+
+    if self:GetSetting('enableMdtEmulation') then
+        _G['MDT'] = _G['MDT'] or MDTEmulated
+    elseif _G['MDT'] == MDTEmulated then
+        _G['MDT'] = nil
+    end
 end
 
 function MMPE:InitPopup()
@@ -812,10 +848,13 @@ function MMPE:InitPopup()
 end
 
 function MMPE:InitConfig()
+    local mdtLoaded = C_AddOns.IsAddOnLoaded("MythicDungeonTools");
+
     local count = 0
     local function increment() count = count + 1; return count end
     local options = {
         type = "group",
+        childGroups = "tab",
         name = "Mythic Plus Progress",
         desc = "Mythic Plus Progress tracker",
         get = function(info) return self:GetSetting(info[#info]) end,
@@ -843,7 +882,7 @@ function MMPE:InitConfig()
                 width = "double",
             },
 ------------- disabled for now, might get re-enabled in the future, right now it's incorrectly detecting spiteful kills, and DH demon kills.
---            scores = {
+--[[            scores = {
 --                order = increment(),
 --                type = "group",
 --                name = "Auto Learn Scores",
@@ -851,11 +890,7 @@ function MMPE:InitConfig()
 --                    autoLearnScores = {
 --                        order = increment(),
 --                        name = "Auto Learn Scores",
---                        desc = [[New Only >> Only learn scores that for new NPCs. Useful for new dungeons, and the addon isn't updated yet.
---
---Always >> Always learn updated scores. This might make the percentage inaccurate.
---
---Off >> Don't learn scores.]],
+--                        desc = "New Only >> Only learn scores that for new NPCs. Useful for new dungeons, and the addon isn't updated yet.\nAlways >> Always learn updated scores. This might make the percentage inaccurate.\nOff >> Don't learn scores.",
 --                        type = "select",
 --                        values = {
 --                            newOnly = "New Only (Recommended)",
@@ -884,106 +919,158 @@ function MMPE:InitConfig()
 --                        hidden = true,
 --                    },
 --                },
---            },
-            tooltip = {
+--            },--]]
+            mainOptions = {
                 order = increment(),
                 type = "group",
-                name = "Tooltip",
+                name = "Main Options",
                 args = {
-                    enableTooltip = {
+                    tooltip = {
                         order = increment(),
-                        type = "toggle",
-                        name = "Enable Tooltip",
-                        desc = "Adds % info to the unit tooltip",
-                        descStyle = "inline",
+                        type = "group",
+                        name = "Tooltip",
+                        inline = true,
+                        args = {
+                            enableTooltip = {
+                                order = increment(),
+                                type = "toggle",
+                                name = "Enable Tooltip",
+                                desc = "Adds percentage info to the unit tooltip",
+                            },
+                            includeCountInTooltip = {
+                                order = increment(),
+                                type = "toggle",
+                                name = "Include Count",
+                                desc = "Include the raw count value in the tooltip, as well as the percentage",
+                            },
+                        },
                     },
-                },
-            },
-            pullEstimateFrame = {
-                order = increment(),
-                type = "group",
-                name = "Pull Estimate frame",
-                args = {
-                    enablePullEstimate = {
+                    pullEstimateFrame = {
                         order = increment(),
-                        type = "toggle",
-                        name = "Enable Current Pull frame",
-                        desc = "Display a frame with current pull information",
-                        width = "double",
+                        type = "group",
+                        name = "Pull Estimate frame",
+                        inline = true,
+                        args = {
+                            enablePullEstimate = {
+                                order = increment(),
+                                type = "toggle",
+                                name = "Enable Current Pull frame",
+                                desc = "Display a frame with current pull information",
+                            },
+                            pullEstimateCombatOnly = {
+                                order = increment(),
+                                type = "toggle",
+                                name = "Only in combat",
+                                desc = "Only show the frame when you are in combat",
+                            },
+                            lockPullFrame = {
+                                order = increment(),
+                                type = "toggle",
+                                name = "Lock frame",
+                                desc = "Lock the frame in place",
+                                set = function(info, value)
+                                    self:SetSetting(info[#info], value)
+                                    self.currentPullFrame:EnableMouse(not value)
+                                end,
+                            },
+                            reset = {
+                                order = increment(),
+                                type = "execute",
+                                name = "Reset position",
+                                desc = "Reset position of Current Pull frame to the default",
+                                func = function()
+                                    self.DB.settings.pullFramePoint = self.defaultSettings.pullFramePoint
+                                    SetFramePoint(self.currentPullFrame, self.DB.settings.pullFramePoint)
+                                end,
+                            },
+                        },
                     },
-                    pullEstimateCombatOnly = {
+                    nameplate = {
                         order = increment(),
-                        type = "toggle",
-                        name = "Only in combat",
-                        desc = "Only show the frame when you are in combat",
+                        type = "group",
+                        name = "Nameplate",
+                        inline = true,
+                        args = {
+                            enableNameplateText = {
+                                order = increment(),
+                                type = "toggle",
+                                name = "Enable Nameplate Text",
+                                desc = "Adds the % info to the enemy nameplates",
+                                descStyle = "inline",
+                            },
+                            nameplateTextColor = {
+                                order = increment(),
+                                type = "color",
+                                name = "Nameplate Text Color",
+                                desc = "Color of the text on the enemy nameplates",
+                                hasAlpha = true,
+                                get = function(info)
+                                    local hex = self:GetSetting(info[#info])
+                                    return tonumber(hex:sub(3,4), 16) / 255, tonumber(hex:sub(5,6), 16) / 255, tonumber(hex:sub(7,8), 16) / 255, tonumber(hex:sub(1,2), 16) / 255
+                                end,
+                                set = function(info, r, g, b, a)
+                                    self:SetSetting(info[#info], string.format("%02x%02x%02x%02x", a * 255, r * 255, g * 255, b * 255))
+                                end,
+                            },
+                            offsetx = {
+                                order = increment(),
+                                type = "range",
+                                name = "Horizontal offset ( <-> )",
+                                desc = "Horizontal offset of the nameplate text",
+                                width = "double",
+                                softMin = -100,
+                                softMax = 100,
+                                bigStep = 1,
+                            },
+                            offsety = {
+                                order = increment(),
+                                type = "range",
+                                name = "Vertical Offset ( | )",
+                                desc = "Vertical offset of the nameplate text",
+                                width = "double",
+                                softMin = -100,
+                                softMax = 100,
+                                bigStep = 1,
+                            },
+                        },
                     },
-                    lockPullFrame = {
+                    experimental = {
                         order = increment(),
-                        type = "toggle",
-                        name = "Lock frame",
-                        desc = "Lock the frame in place",
-                        set = function(info, value)
-                            self:SetSetting(info[#info], value)
-                            self.currentPullFrame:EnableMouse(not value)
-                        end,
-                    },
-                    reset = {
-                        order = increment(),
-                        type = "execute",
-                        name = "Reset position",
-                        desc = "Reset position of Current Pull frame to the default",
-                        func = function()
-                            self.DB.settings.pullFramePoint = self.defaultSettings.pullFramePoint
-                            SetFramePoint(self.currentPullFrame, self.DB.settings.pullFramePoint)
-                        end,
-                    },
-                },
-            },
-            nameplate = {
-                order = increment(),
-                type = "group",
-                name = "Nameplate",
-                args = {
-                    enableNameplateText = {
-                        order = increment(),
-                        type = "toggle",
-                        name = "Enable Nameplate Text",
-                        desc = "Adds the % info to the enemy nameplates",
-                        descStyle = "inline",
-                    },
-                    nameplateTextColor = {
-                        order = increment(),
-                        type = "color",
-                        name = "Nameplate Text Color",
-                        desc = "Color of the text on the enemy nameplates",
-                        hasAlpha = true,
-                        get = function(info)
-                            local hex = self:GetSetting(info[#info])
-                            return tonumber(hex:sub(3,4), 16) / 255, tonumber(hex:sub(5,6), 16) / 255, tonumber(hex:sub(7,8), 16) / 255, tonumber(hex:sub(1,2), 16) / 255
-                        end,
-                        set = function(info, r, g, b, a)
-                            self:SetSetting(info[#info], string.format("%02x%02x%02x%02x", a * 255, r * 255, g * 255, b * 255))
-                        end,
-                    },
-                    offsetx = {
-                        order = increment(),
-                        type = "range",
-                        name = "Horizontal offset ( <-> )",
-                        desc = "Horizontal offset of the nameplate text",
-                        width = "double",
-                        softMin = -100,
-                        softMax = 100,
-                        bigStep = 1,
-                    },
-                    offsety = {
-                        order = increment(),
-                        type = "range",
-                        name = "Vertical Offset ( | )",
-                        desc = "Vertical offset of the nameplate text",
-                        width = "double",
-                        softMin = -100,
-                        softMax = 100,
-                        bigStep = 1,
+                        type = "group",
+                        name = "Experimental",
+                        inline = true,
+                        args = {
+                            description = {
+                                order = increment(),
+                                type = "description",
+                                name = "These options are experimental and may not work as intended.",
+                            },
+                            mdtEmulation = {
+                                order = increment(),
+                                type = "group",
+                                inline = true,
+                                name = "MDT Emulation",
+                                args = {
+                                    mdtEmulationDescription = {
+                                        order = increment(),
+                                        type = "description",
+                                        name = mdtLoaded and "Disabled when MythicDungeonTools is loaded" or "Allows addons and WAs that use MythicDungeonTools for % info to work with this addon instead.",
+                                        width = "double",
+                                    },
+                                    enableMdtEmulation = {
+                                        order = increment(),
+                                        type = "toggle",
+                                        name = "Enable MDT Emulation",
+                                        desc = "",
+                                        set = function(info, value)
+                                            self:SetSetting(info[#info], value)
+                                            self:CheckMdtEmulation()
+                                        end,
+                                        disabled = mdtLoaded,
+                                    },
+                                },
+                            },
+                        },
                     },
                 },
             },
@@ -1022,12 +1109,12 @@ function MMPE:InitConfig()
                         order = increment(),
                         type = "description",
                         name = function() return
-                            string.format(
+                        string.format(
                                 "NPC data patch version: %s, build %d (ts %d)",
                                 self.DB.npcDataPatchVersionInfo.version,
                                 self.DB.npcDataPatchVersionInfo.build,
                                 self.DB.npcDataPatchVersionInfo.timestamp
-                            )
+                        )
                         end,
                     },
                     resetNpcData = {
@@ -1095,7 +1182,7 @@ function MMPE:OpenConfig()
 end
 
 function MMPE:OnUpdate(elapsed)
-    self.currentPullUpdateTimer = self.currentPullUpdateTimer + elapsed * 1000 -- Not using milliseconds in 2016? WutFace
+    self.currentPullUpdateTimer = self.currentPullUpdateTimer + elapsed * 1000
     if self.currentPullUpdateTimer >= self:GetSetting("nameplateUpdateRate") then
         self.currentPullUpdateTimer = 0
         self:UpdateCurrentPullEstimate()
