@@ -139,8 +139,8 @@ end
 
 function MMPE:DebugPrint(...)
     if self:GetSetting('debug') then
-        if(ViragDevTool and ViragDevTool.AddData) then
-            ViragDevTool:AddData({ ... }, "MMPE DebugPrint")
+        if(DevTool and DevTool.AddData) then
+            DevTool:AddData({ ... }, "MMPE DebugPrint")
         else
             self:Print(...)
         end
@@ -167,7 +167,7 @@ end
 
 function MMPE:GetSetting(setting)
     if (not setting or self.DB.settings[setting] == nil) then
-        self:PrintWarning("MPP attempted to get missing setting: " .. setting or "nil")
+        self:PrintWarning("MPP attempted to get missing setting: " .. (setting or "nil"))
         return
     end
     return self.DB.settings[setting]
@@ -175,7 +175,7 @@ end
 
 function MMPE:SetSetting(setting, value)
     if (not setting or self.DB.settings[setting] == nil) then
-        MMPE:PrintWarning("MPP attempted to set missing setting: " .. setting or "nil")
+        self:PrintWarning("MPP attempted to set missing setting: " .. (setting or "nil"))
         return
     end
     self.DB.settings[setting] = value
