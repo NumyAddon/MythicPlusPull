@@ -23,7 +23,6 @@ local UnitThreatSituation = _G.UnitThreatSituation
 local UnitPlayerControlled = _G.UnitPlayerControlled
 local UnitAffectingCombat = _G.UnitAffectingCombat
 local C_NamePlate = _G.C_NamePlate
-local InterfaceOptionsFrame_OpenToCategory = _G.InterfaceOptionsFrame_OpenToCategory
 local IsControlKeyDown = _G.IsControlKeyDown
 local StaticPopup_Show = _G.StaticPopup_Show
 local StaticPopupDialogs = _G.StaticPopupDialogs
@@ -1177,8 +1176,7 @@ function MMPE:InitConfig()
 end
 
 function MMPE:OpenConfig()
-    InterfaceOptionsFrame_OpenToCategory(self.configCategory);
-    InterfaceOptionsFrame_OpenToCategory(self.configCategory);
+    Settings.OpenToCategory(self.configCategory);
 end
 
 function MMPE:OnUpdate(elapsed)
