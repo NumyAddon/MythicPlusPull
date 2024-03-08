@@ -11,6 +11,7 @@
 
 
 Libs\embeds.xml
+locale\locale.xml
 
 MythicPlusPullReEstimated.lua
 
