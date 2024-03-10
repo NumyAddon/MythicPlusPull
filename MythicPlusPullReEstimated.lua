@@ -997,7 +997,6 @@ function MMPE:InitConfig()
                                 type = "toggle",
                                 name = L["Enable Nameplate Text"],
                                 desc = L["Adds the % info to the enemy nameplates"],
-                                descStyle = "inline",
                             },
                             nameplateTextColor = {
                                 order = increment(),
@@ -1056,7 +1055,7 @@ function MMPE:InitConfig()
                                         order = increment(),
                                         type = "description",
                                         name = mdtLoaded and L["Disabled when MythicDungeonTools is loaded"] or L["Allows addons and WAs that use MythicDungeonTools for % info to work with this addon instead."],
-                                        width = "double",
+                                        width = "full",
                                     },
                                     enableMdtEmulation = {
                                         order = increment(),
