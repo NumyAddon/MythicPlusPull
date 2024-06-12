@@ -16,6 +16,7 @@ locale\locale.xml
 
 MythicPlusPullReEstimated.lua
 
+Data\WarWithin.lua
 Data\Dragonflight.lua
 Data\Shadowlands.lua
 Data\BFA.lua
