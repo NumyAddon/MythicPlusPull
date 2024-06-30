@@ -42,10 +42,10 @@ do_import() {
   esac
 }
 
-echo
-
 for namespace in "${!locale_files[@]}"; do
-  lua .github/scripts/find-locale-strings.lua "${namespace_root[$namespace]}" "${locale_files[$namespace]}"
+echo
+  echo "Finding strings for $namespace..."
+  lua .github/scripts/find-locale-strings.lua "${locale_files[$namespace]}" ${namespace_root[$namespace]}
   do_import "$namespace" "${locale_files[$namespace]}"
 done
 
