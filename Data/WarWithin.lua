@@ -5,9 +5,9 @@ tinsert(ns.data, data)
 
 function data:GetPatchVersion()
     return {
-        timestamp = 1718197165,
-        version = '11.0.0',
-        build = 55087,
+        timestamp = 1720351840,
+        version = '11.0.2',
+        build = 55399,
     }
 end
 
@@ -45,25 +45,25 @@ function data:GetNPCData()
         [214350] = { ["name"] = "Turned Speaker", ["count"] = 3 },
         [214761] = { ["name"] = "Nightfall Ritualist", ["count"] = 12 },
         [214762] = { ["name"] = "Nightfall Commander", ["count"] = 12 },
-        [214840] = { ["name"] = "Engorged Crawler", ["count"] = 5 },
-        [216293] = { ["name"] = "Trilling Attendant", ["count"] = 7 },
+        [214840] = { ["name"] = "Engorged Crawler", ["count"] = 4 },
+        [216293] = { ["name"] = "Trilling Attendant", ["count"] = 4 },
         [216328] = { ["name"] = "Unstable Test Subject", ["count"] = 20 },
         [216329] = { ["name"] = "Congealed Droplet", ["count"] = 1 },
-        [216333] = { ["name"] = "Bloodstained Assistant", ["count"] = 5 },
+        [216333] = { ["name"] = "Bloodstained Assistant", ["count"] = 7 },
         [216336] = { ["name"] = "Starved Crawler", ["count"] = 1 },
         [216337] = { ["name"] = "Bloodworker", ["count"] = 1 },
-        [216338] = { ["name"] = "Hulking Bloodguard", ["count"] = 15 },
+        [216338] = { ["name"] = "Hulking Bloodguard", ["count"] = 20 },
         [216339] = { ["name"] = "Sureki Unnaturaler", ["count"] = 6 },
-        [216340] = { ["name"] = "Sentry Stagshell", ["count"] = 5 },
+        [216340] = { ["name"] = "Sentry Stagshell", ["count"] = 7 },
         [216341] = { ["name"] = "Jabbing Flyer", ["count"] = 2 },
         [216342] = { ["name"] = "Assistant Unnaturaler", ["count"] = 3 },
         [216363] = { ["name"] = "Reinforced Drone", ["count"] = 3 },
-        [216364] = { ["name"] = "Blood Overseer", ["count"] = 10 },
+        [216364] = { ["name"] = "Blood Overseer", ["count"] = 14 },
         [216365] = { ["name"] = "Winged Carrier", ["count"] = 3 },
-        [217039] = { ["name"] = "Nerubian Hauler", ["count"] = 18 },
-        [217531] = { ["name"] = "Ixin", ["count"] = 11 },
-        [217533] = { ["name"] = "Atik", ["count"] = 11 },
-        [218324] = { ["name"] = "Nakt", ["count"] = 11 },
+        [217039] = { ["name"] = "Nerubian Hauler", ["count"] = 35 },
+        [217531] = { ["name"] = "Ixin", ["count"] = 12 },
+        [217533] = { ["name"] = "Atik", ["count"] = 12 },
+        [218324] = { ["name"] = "Nakt", ["count"] = 12 },
         [219984] = { ["name"] = "Xeph'itik", ["count"] = 16 },
         [220003] = { ["name"] = "Eye of the Queen", ["count"] = 20 },
         [220193] = { ["name"] = "Sureki Venomblade", ["count"] = 10 },
@@ -82,5 +82,6 @@ function data:GetNPCData()
         [223253] = { ["name"] = "Bloodstained Webmage", ["count"] = 7 },
         [223357] = { ["name"] = "Sureki Conscript", ["count"] = 3 },
         [223844] = { ["name"] = "Covert Webmancer", ["count"] = 14 },
+        [224962] = { ["name"] = "Cursedforge Mender", ["count"] = 5 },
     }
 end

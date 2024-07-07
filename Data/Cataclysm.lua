@@ -5,9 +5,9 @@ tinsert(ns.data, data)
 
 function data:GetPatchVersion()
     return {
-        timestamp = 1718197165,
-        version = '11.0.0',
-        build = 55087,
+        timestamp = 1720351840,
+        version = '11.0.2',
+        build = 55399,
     }
 end
 
@@ -51,10 +51,10 @@ function data:GetNPCData()
         [224219] = { ["name"] = "Twilight Earthcaller", ["count"] = 7 },
         [224221] = { ["name"] = "Twilight Overseer", ["count"] = 10 },
         [224240] = { ["name"] = "Twilight Decapitator", ["count"] = 5 },
-        [224249] = { ["name"] = "Twilight Lavabender", ["count"] = 12 },
+        [224249] = { ["name"] = "Twilight Lavabender", ["count"] = 15 },
         [224271] = { ["name"] = "Twilight Warlock", ["count"] = 5 },
         [224276] = { ["name"] = "Twilight Enforcer", ["count"] = 5 },
-        [224609] = { ["name"] = "Twilight Destroyer", ["count"] = 25 },
+        [224609] = { ["name"] = "Twilight Destroyer", ["count"] = 22 },
         [224853] = { ["name"] = "Mutated Hatchling", ["count"] = 1 },
     }
 end
