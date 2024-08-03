@@ -107,7 +107,20 @@ local MDTEmulated = {
     end,
     GetCurrentPreset = function() end, -- some WA uses this for some reason /shrug
     IsPresetTeeming = function() return false; end, -- used together with GetCurrentPreset
+    zoneIdToDungeonIdx = {},
+    dungeonTotalCount = {},
 };
+do
+    -- some addons use these internals, while they probably shouldn't.. we'll just hardcode a dungeonIndex of 1
+    setmetatable(MDTEmulated.zoneIdToDungeonIdx, {__index = function(_, key)
+        if key == C_Map.GetBestMapForUnit("player") then return 1; end
+    end});
+    setmetatable(MDTEmulated.dungeonTotalCount, {__index = function(_, key)
+        if key ~= 1 then return; end
+        local maxCount = MMPE:GetMaxQuantity();
+        return { normal = maxCount, teeming = maxCount, teemingEnabled = true };
+    end});
+end
 
 --
 -- GENERAL ADDON UTILITY
