@@ -3,8 +3,6 @@ local name, ns = ...
 --- @class MMPE
 local MMPE = ns.addon
 
-local L = LibStub('AceLocale-3.0'):GetLocale(name)
-
 --- @class MPPECountTracker: Frame
 local countTracker = CreateFrame('Frame');
 countTracker.count = 0
@@ -12,42 +10,56 @@ countTracker.recentlyKilled = {}
 
 MMPE.countTracker = countTracker
 
-countTracker:SetScript('OnEvent', function(self, event, ...) self[event](self, ...) end)
-countTracker:RegisterEvent('PLAYER_ENTERING_WORLD')
-countTracker:RegisterEvent('PLAYER_LEAVING_WORLD')
-countTracker:RegisterEvent('CHALLENGE_MODE_START')
+--[[
+This file mostly existed as a workaround for not having any count information available in the API.
+This has been resolved by blizzard, so most of the functionality has been disabled.
+It has been left for posterity, since I might find it useful in the future.
+--]]
+
+--countTracker:SetScript('OnEvent', function(self, event, ...) self[event](self, ...) end)
+--countTracker:RegisterEvent('PLAYER_ENTERING_WORLD')
+--countTracker:RegisterEvent('PLAYER_LEAVING_WORLD')
+--countTracker:RegisterEvent('CHALLENGE_MODE_START')
 
 function countTracker:PLAYER_ENTERING_WORLD()
     self:UpdateRegisteredEvents()
-    self:GuardCountAgainstScenarioInfo()
+    self:RefreshInfo()
 end
 function countTracker:PLAYER_LEAVING_WORLD()
     self:UpdateRegisteredEvents()
 end
 function countTracker:CHALLENGE_MODE_START()
     self:UpdateRegisteredEvents()
-    self:GuardCountAgainstScenarioInfo()
+    self:RefreshInfo()
 end
 
-function countTracker:GuardCountAgainstScenarioInfo()
+function countTracker:RefreshInfo()
     local info = MMPE:GetProgressInfo()
     if info then
-        -- there's a bug/feature in TWW, that C_ScenarioInfo.GetCriteriaInfo.quantity reports the % instead of raw quantity count :/
-        -- this math does mean we lose quite a lot of precision
-        local estimatedCountMin = math.floor(info.totalQuantity * (info.quantity / 100))
-        local estimatedCountMax = math.ceil(info.totalQuantity * ((info.quantity + 1) / 100))
+        if info.quantityString then
+            self.count = tonumber((info.quantityString:gsub('%%', '')))
 
-        local trackedCount = self.count
-        if trackedCount < estimatedCountMin or trackedCount > estimatedCountMax then
-            MMPE:DebugPrint('force updating count to', estimatedCountMin, '. old count:', trackedCount, 'estimatedMin:', estimatedCountMin, 'estimatedMax:', estimatedCountMax)
-            self.count = estimatedCountMin
+            return self.count
+        else
+            MMPE:Print('error, C_ScenarioInfo.GetCriteriaInfo.quantityString not found')
+            -- there was an issue in TWW, that C_ScenarioInfo.GetCriteriaInfo.quantity reports the % instead of raw quantity count, and .quantityString didn't exist yet
+            -- this math does mean we lose quite a lot of precision
+            local estimatedCountMin = math.floor(info.totalQuantity * (info.quantity / 100))
+            local estimatedCountMax = math.ceil(info.totalQuantity * ((info.quantity + 1) / 100))
+
+            local trackedCount = self.count
+            if trackedCount < estimatedCountMin or trackedCount > estimatedCountMax then
+                MMPE:DebugPrint('force updating count to', estimatedCountMin, '. old count:', trackedCount, 'estimatedMin:', estimatedCountMin, 'estimatedMax:', estimatedCountMax)
+                self.count = estimatedCountMin
+            end
+
+            return self.count
         end
-
-        return self.count
     end
 end
 
 function countTracker:UpdateRegisteredEvents()
+    if true then return end -- disabled now that we have proper count info again. the workaround code is left in place for future reference
     if MMPE:IsMythicPlus(true) then
         MMPE:DebugPrint('MMPE: Listening for combat events')
         self:RegisterEvent('COMBAT_LOG_EVENT_UNFILTERED')

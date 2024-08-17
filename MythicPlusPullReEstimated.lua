@@ -41,17 +41,18 @@ _G['MMPE'] = MMPE
 --
 -- Public API
 --
+MPP_API = {};
 --- @param npcID number
 --- @return number? rawCount
-function MMPE:GetNpcCount(npcID)
+function MPP_API:GetNpcCount(npcID)
     return MMPE:GetValue(npcID)
 end
 
---- Returns progress and pull count information. This information is updated on a timer (roughly 5x per second)
+--- Returns progress and pull count information. Pull count information is updated on a timer (roughly 5x per second)
 --- @return number? currentCount # this is a best effort number, since blizzard's API does not return this data anymore; may return 0 instead of nil
 --- @return number? maxCount # total count required for completion, can be used to calculate progress %
 --- @return number? pullCount # total count of NPCs in the current pull
-function MMPE:GetProgress()
+function MPP_API:GetProgress()
     return MMPE:GetCurrentQuantity(), MMPE:GetMaxQuantity(), MMPE:GetPulledProgress()
 end
 
@@ -172,7 +173,7 @@ function MMPE:GetNPCID(guid)
 end
 
 function MMPE:IsValidTarget(unit)
-    if UnitCanAttack("player", unit) and not UnitIsDead(unit) then
+    if UnitCanAttack("player", unit) then
         return true
     end
 end
@@ -220,7 +221,7 @@ function MMPE:GetCurrentQuantity()
     if self.simulationActive then return self.simulationCurrent end
     local info = self:GetProgressInfo()
     if info then
-        self.countTracker:GuardCountAgainstScenarioInfo()
+        self.countTracker:RefreshInfo()
 
         return self.countTracker.count
     end
