@@ -5,7 +5,7 @@ tinsert(ns.data, data)
 
 function data:GetPatchVersion()
     return {
-        timestamp = 1726594067,
+        timestamp = 1726697067,
         version = '11.0.2',
         build = 56625,
     }
@@ -65,6 +65,8 @@ function data:GetNPCData()
         [217531] = { ["name"] = "Ixin", ["count"] = 12 },
         [217533] = { ["name"] = "Atik", ["count"] = 12 },
         [218324] = { ["name"] = "Nakt", ["count"] = 12 },
+        [219983] = { ["name"] = "Hollows Resident", ["count"] = 20 },
+        [219984] = { ["name"] = "Xeph'itik", ["count"] = 8 },
         [220003] = { ["name"] = "Eye of the Queen", ["count"] = 20 },
         [220193] = { ["name"] = "Sureki Venomblade", ["count"] = 10 },
         [220195] = { ["name"] = "Sureki Silkbinder", ["count"] = 10 },
