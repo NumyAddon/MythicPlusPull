@@ -679,7 +679,7 @@ function MMPE:UpdateNameplateValue(unit)
             message = message .. self:GetSetting("nameplateTextFormat") --[[@as string]]
             local placeholderReplacements = {
                 ['%$percent%$'] = string.format("%.2f", estProg),
-                ['%$count%$'] = estProg,
+                ['%$count%$'] = count,
             };
             for placeholder, replacement in pairs(placeholderReplacements) do
                 message = string.gsub(message, placeholder, replacement);
