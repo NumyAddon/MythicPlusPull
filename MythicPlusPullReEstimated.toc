@@ -8,7 +8,7 @@
 ## SavedVariables: MMPEDB
 ## X-Curse-Project-ID: 431246
 ## X-Wago-ID: anKWEqNE
-## OptionalDeps: MythicDungeonTools
+## OptionalDeps: MythicDungeonTools,TidyPlates
 
 
 Libs\embeds.xml
