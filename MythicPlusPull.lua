@@ -96,7 +96,6 @@ MPP.ns = ns
 
 MPP.loaded = false
 MPP.previousQuantity = 0
-MPP.currentPullUpdateTimer = 0
 --- @type table<string, FontString>
 MPP.activeNameplates = {}
 
@@ -147,8 +146,7 @@ function MPP:OnInitialize()
     self:RegisterEvent("NAME_PLATE_UNIT_REMOVED", function(_, unit) self:RemoveNameplateText(unit) end)
     self:RegisterEvent("SCENARIO_CRITERIA_UPDATE");
 
-    self.frame = CreateFrame("FRAME")
-    self.frame:SetScript("OnUpdate", function(_, elapsed) self:OnUpdate(elapsed) end)
+    C_Timer.NewTicker(0.2, function() self:DoUpdate() end)
 
     TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Unit, function(tooltip) self:OnUnitTooltip(tooltip) end)
 
@@ -168,6 +166,10 @@ function MPP:OnInitialize()
     self:RegisterChatCommand('mppe', openConfig);
 
     self.loaded = true
+
+    if NumyProfiler then
+        NumyProfiler:WrapModules('MythicPlusPull', 'Core', self);
+    end
 end
 
 function MPP:CheckMdtEmulation()
@@ -180,13 +182,14 @@ function MPP:CheckMdtEmulation()
     end
 end
 
-function MPP:OnUpdate(elapsed)
-    self.currentPullUpdateTimer = self.currentPullUpdateTimer + elapsed
-    if (self.currentPullUpdateTimer * 1000) >= self:GetSetting("nameplateUpdateRate") then
-        self.currentPullUpdateTimer = 0
-        self:UpdateCurrentPullEstimate()
-        self:UpdateNameplateValues()
+function MPP:DoUpdate()
+    if not self:IsMythicPlus() then
+        self.currentPullFrame:Hide()
+
+        return
     end
+    self:UpdateCurrentPullEstimate()
+    self:UpdateNameplateValues()
     self:UpdateNameplates()
 end
 

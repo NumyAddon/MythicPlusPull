@@ -24,8 +24,6 @@ MPP.defaultSettings = {
     pullFrameTextFormat = L["Current pull:"] .. ' $current%$ + $pull%$ = $estimated%$',
     pullFrameTextScale = 1.0,
 
-    nameplateUpdateRate = 200, -- Rate (in milliseconds) at which we update the progress we get from the current pull, as estimated by active name plates you're in combat with. Also the update rate of getting new values for nameplate text overlay if enabled.
-
     offsetx = 0, -- extra offset for nameplate text
     offsety = 0,
 
