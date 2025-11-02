@@ -27,7 +27,6 @@ locale\locale.xml
 
 MythicPlusPull.lua
 Config.lua
-CountTracker.lua
 
 Data\WarWithin.lua
 Data\Dragonflight.lua
