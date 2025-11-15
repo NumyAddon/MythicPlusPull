@@ -545,8 +545,12 @@ function MPP:CreateNameplateText(unit)
     if self.activeNameplates[unit] then -- This should never happen
         self:RemoveNameplateText(unit)
     end
+    --- @type Frame?
     local nameplate = nameplateAccessor(unit)
     if nameplate then
+        if not nameplate:IsVisible() then
+            nameplate = C_NamePlate.GetNamePlateForUnit(unit)
+        end
         self.activeNameplates[unit] = self.fontStringPool:Acquire()
         self.activeNameplates[unit]:SetParent(nameplate)
         self.activeNameplates[unit]:SetText("+?%")
