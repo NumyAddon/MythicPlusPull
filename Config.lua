@@ -458,9 +458,10 @@ function MPP:InitConfig()
 
     self.configCategory = "Mythic Plus Pull"
     LibStub("AceConfig-3.0"):RegisterOptionsTable(self.configCategory, options)
-    LibStub("AceConfigDialog-3.0"):AddToBlizOptions(self.configCategory)
+    local _, categoryID = LibStub("AceConfigDialog-3.0"):AddToBlizOptions(self.configCategory)
+    self.categoryID = categoryID
 end
 
 function MPP:OpenConfig()
-    Settings.OpenToCategory(self.configCategory);
+    Settings.OpenToCategory(self.categoryID);
 end
