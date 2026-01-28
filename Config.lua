@@ -456,12 +456,16 @@ function MPP:InitConfig()
         },
     }
 
-    self.configCategory = "Mythic Plus Pull"
-    LibStub("AceConfig-3.0"):RegisterOptionsTable(self.configCategory, options)
-    local _, categoryID = LibStub("AceConfigDialog-3.0"):AddToBlizOptions(self.configCategory)
+    self.configPanelName = "Mythic Plus Pull"
+    LibStub("AceConfig-3.0"):RegisterOptionsTable(self.configPanelName, options)
+    local _, categoryID = LibStub("AceConfigDialog-3.0"):AddToBlizOptions(self.configPanelName)
     self.categoryID = categoryID
 end
 
 function MPP:OpenConfig()
+    if C_SettingsUtil and C_SettingsUtil.OpenSettingsPanel and InCombatLockdown() then
+        LibStub("AceConfigDialog-3.0"):Open(self.configPanelName);
+        return;
+    end
     Settings.OpenToCategory(self.categoryID);
 end
