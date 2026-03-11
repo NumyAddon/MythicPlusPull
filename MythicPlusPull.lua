@@ -9,8 +9,8 @@ end
 
 local DIFFICULTY_MYTHIC_PLUS = 8
 
---- @class MythicPlusPull: AceAddon, AceConsole-3.0, AceEvent-3.0
-local MPP = LibStub('AceAddon-3.0'):NewAddon(name, 'AceConsole-3.0', 'AceEvent-3.0');
+--- @class MythicPlusPull: AceAddon, AceConsole-3.0, NumyAceEvent-3.0
+local MPP = LibStub('AceAddon-3.0'):NewAddon(name, 'AceConsole-3.0', 'NumyAceEvent-3.0');
 
 local L = LibStub('AceLocale-3.0'):GetLocale(name)
 local LibGetFrame = LibStub('LibGetFrame-1.0');
