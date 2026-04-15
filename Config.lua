@@ -11,10 +11,6 @@ MPP.version = C_AddOns.GetAddOnMetadata(name, "Version") or "unknown"
 MPP.defaultSettings = {
     enabled = true,
 
-    autoLearnScores = 'newOnly',
-    inconclusiveDataThreshold = 100, -- Mobs killed within this span of time (in milliseconds) will not be processed since we might not get the criteria update fast enough to know which mob gave what progress. Well, that's the theory anyway.
-    maxTimeSinceKill = 600, -- Lag tolerance between a mob dying and the progress criteria updating, in milliseconds.
-
     enableTooltip = true,
     includeCountInTooltip = true,
     tooltipColor = "82E0FF",
@@ -40,12 +36,6 @@ MPP.defaultSettings = {
         ["offX"] = 400,
         ["offY"] = 300,
     },
-
-    debug = false,
-    debugNewNPCScores = false,
-
-    enableMdtEmulation = true,
-    debugCriteriaEvents = false,
 }
 
 local function SetFramePoint(frame, pointInfo)
@@ -234,13 +224,14 @@ function MPP:InitConfig()
                                 type = "description",
                                 name = L['The following placeholders are available:'] .. '\n' ..
                                     '    - $current$ ' .. L['The current count of mobs killed.'] .. '\n' ..
-                                    '    - $pull$ ' .. L['The count of mobs pulled.'] .. '\n' ..
-                                    '    - $estimated$ ' .. L['The estimated count after all pulled mobs are killed.'] .. '\n' ..
+                                    GRAY_FONT_COLOR:WrapTextInColorCode('    - $pull$ ' .. L['The count of mobs pulled.']) .. '\n' ..
+                                    GRAY_FONT_COLOR:WrapTextInColorCode('    - $estimated$ ' .. L['The estimated count after all pulled mobs are killed.']) .. '\n' ..
                                     '    - $required$ ' .. L['The required count of mobs to reach 100%%.'] .. '\n' ..
                                     '    - $current%$ ' .. L['The current percentage of mobs killed.'] .. '\n' ..
-                                    '    - $pull%$ ' .. L['The percentage of mobs pulled.'] .. '\n' ..
-                                    '    - $estimated%$ ' .. L['The estimated percentage after all pulled mobs are killed.'] .. '\n' ..
-                                    '    - $required%$ ' .. L['A long way of writing 100%%.'],
+                                    GRAY_FONT_COLOR:WrapTextInColorCode('    - $pull%$ ' .. L['The percentage of mobs pulled.']) .. '\n' ..
+                                    GRAY_FONT_COLOR:WrapTextInColorCode('    - $estimated%$ ' .. L['The estimated percentage after all pulled mobs are killed.']) .. '\n' ..
+                                    '    - $required%$ ' .. L['A long way of writing 100%%.'] .. '\n' ..
+                                    'Placeholders in ' .. GRAY_FONT_COLOR:WrapTextInColorCode('gray') .. ' are temporarily unavailable in Midnight, until Blizzard adds the required APIs.',
                             },
                             resetTextFormat = {
                                 order = increment(),
@@ -355,101 +346,6 @@ function MPP:InitConfig()
                                 bigStep = 1,
                             },
                         },
-                    },
-                    mdtEmulation = {
-                        order = increment(),
-                        type = "group",
-                        inline = true,
-                        name = L["MDT Emulation"],
-                        args = {
-                            mdtEmulationDescription = {
-                                order = increment(),
-                                type = "description",
-                                name = mdtLoaded
-                                    and L["Disabled when MythicDungeonTools is loaded"]
-                                    or L["Allows addons and WAs that use MythicDungeonTools for % info to work with this addon instead."],
-                                width = "full",
-                            },
-                            enableMdtEmulation = {
-                                order = increment(),
-                                type = "toggle",
-                                name = L["Enable MDT Emulation"],
-                                desc = "",
-                                set = function(info, value)
-                                    self:SetSetting(info[#info], value)
-                                    self:CheckMdtEmulation()
-                                end,
-                                disabled = mdtLoaded,
-                            },
-                        },
-                    },
-                },
-            },
-            devOptions = {
-                order = increment(),
-                type = "group",
-                name = L["Developer Options"],
-                args = {
-                    debug = {
-                        order = increment(),
-                        type = "toggle",
-                        name = L["Debug"],
-                        desc = L["Enable/Disable debug prints"],
-                    },
-                    debugNewNPCScores = {
-                        order = increment(),
-                        type = "toggle",
-                        name = L["Debug New NPC Scores"],
-                        desc = L["Enable/Disable debug prints for new NPC scores"],
-                    },
-                    npcDataPatchVersion = {
-                        order = increment(),
-                        type = "description",
-                        name = function()
-                            return string.format(
-                                L["NPC data patch version: %s, build %d (ts %d)"],
-                                self.npcDataPatchVersionInfo.version,
-                                self.npcDataPatchVersionInfo.build,
-                                self.npcDataPatchVersionInfo.timestamp
-                            );
-                        end,
-                    },
-                    simulationActive = {
-                        order = increment(),
-                        type = "toggle",
-                        name = L["Simulation Mode"],
-                        desc = L["Enable/Disable Simulation Mode"],
-                        width = "double",
-                        get = function(info) return self.simulationActive end,
-                        set = function(info, value) self.simulationActive = value end,
-                    },
-                    simulationMax = {
-                        order = increment(),
-                        type = "range",
-                        name = L["Simulation Required Points"],
-                        desc = L["Simulated number of 'points' required to complete the run"],
-                        softMin = 1,
-                        softMax = 100,
-                        bigStep = 1,
-                        get = function(info) return self.simulationMax end,
-                        set = function(info, value) self.simulationMax = value end,
-                    },
-                    simulationCurrent = {
-                        order = increment(),
-                        type = "range",
-                        name = L["Simulation Current Points"],
-                        desc = L["Simulated number of 'points' currently earned"],
-                        softMin = 1,
-                        softMax = 100,
-                        bigStep = 1,
-                        get = function(info) return self.simulationCurrent end,
-                        set = function(info, value) self.simulationCurrent = value end,
-                    },
-                    debugCriteriaEvents = {
-                        order = increment(),
-                        type = "toggle",
-                        name = L["Debug Criteria Events"],
-                        desc = L["Enable/Disable debug prints for criteria events, ignores the Debug Print setting"],
                     },
                 },
             },

@@ -1,12 +1,6 @@
 local name, ns = ...
 ns.data = {}
 
-if select(4, GetBuildInfo()) >= 120000 then
-    print('Mythic Plus Pull currently does not work in 12.0 and later. This may change depending on Blizzard.')
-
-    return
-end
-
 local DIFFICULTY_MYTHIC_PLUS = 8
 
 --- @class MythicPlusPull: AceAddon, AceConsole-3.0, NumyAceEvent-3.0
@@ -19,53 +13,6 @@ local LibGetFrame = LibStub('LibGetFrame-1.0');
 _G.MythicPlusPull = MPP;
 if not _G.MPP then _G.MPP = MPP; end
 --@end-debug@
-
---
--- Public API
---
---- @class MPP_API
-MPP_API = {};
---- @param npcID number
---- @return number? rawCount
-function MPP_API:GetNpcCount(npcID)
-    return MPP:GetCountByNpcID(npcID)
-end
-
---- Returns progress and pull count information. Pull count information is updated on a timer (roughly 5x per second)
---- @return number? currentCount # total count already cleared
---- @return number? maxCount # total count required for completion
---- @return number? pullCount # total count of NPCs in the current pull
-function MPP_API:GetProgress()
-    return MPP:GetCurrentCount(), MPP:GetTotalCountRequired(), MPP:GetCurrentPullCount()
-end
-
---
--- Emulated MDT API
---
-local MDTEmulated = {
-    GetEnemyForces = function(_, npcID)
-        local count = MPP:GetCountByNpcID(npcID);
-        if count and count > 0 then
-            local maxCount = MPP:GetTotalCountRequired();
-            return count, maxCount, maxCount, count;
-        end
-    end,
-    GetCurrentPreset = function() end, -- some WA uses this for some reason /shrug
-    IsPresetTeeming = function() return false; end, -- used together with GetCurrentPreset
-    zoneIdToDungeonIdx = {},
-    dungeonTotalCount = {},
-};
-do
-    -- some addons use these internals, while they probably shouldn't.. we'll just hardcode a dungeonIndex of 1
-    setmetatable(MDTEmulated.zoneIdToDungeonIdx, {__index = function(_, key)
-        if key == C_Map.GetBestMapForUnit("player") then return 1; end
-    end});
-    setmetatable(MDTEmulated.dungeonTotalCount, {__index = function(_, key)
-        if key ~= 1 then return; end
-        local maxCount = MPP:GetTotalCountRequired();
-        return { normal = maxCount, teeming = maxCount, teemingEnabled = true };
-    end});
-end
 
 local nameplateAccessor = function(unit)
     return LibGetFrame.GetUnitNameplate(unit);
@@ -98,11 +45,6 @@ MPP.loaded = false
 MPP.previousQuantity = 0
 --- @type table<string, FontString>
 MPP.activeNameplates = {}
-
-MPP.simulationActive = false
-MPP.simulationMax = 220
-MPP.simulationCurrent = 28
-MPP.simulationMapID = 234 -- upper kara
 
 MPP.warnings = {}
 
@@ -144,18 +86,15 @@ function MPP:OnInitialize()
 
     self:RegisterEvent("NAME_PLATE_UNIT_ADDED", function(_, unit) self:OnAddNameplate(unit) end)
     self:RegisterEvent("NAME_PLATE_UNIT_REMOVED", function(_, unit) self:RemoveNameplateText(unit) end)
-    self:RegisterEvent("SCENARIO_CRITERIA_UPDATE");
 
     C_Timer.NewTicker(0.2, function() self:DoUpdate() end)
 
     TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Unit, function(tooltip) self:OnUnitTooltip(tooltip) end)
 
     self:VerifyDB()
-    self:FillNpcCountCache()
     self:CreatePullFrame()
 
     self:InitConfig()
-    self:CheckMdtEmulation()
 
     local openConfig = function() self:OpenConfig() end
     self:RegisterChatCommand('mythicplusprogress', openConfig);
@@ -172,16 +111,6 @@ function MPP:OnInitialize()
     end
 end
 
-function MPP:CheckMdtEmulation()
-    if C_AddOns.IsAddOnLoaded("MythicDungeonTools") then return end
-
-    if self:GetSetting('enableMdtEmulation') then
-        _G['MDT'] = _G['MDT'] or MDTEmulated
-    elseif _G['MDT'] == MDTEmulated then
-        _G['MDT'] = nil
-    end
-end
-
 function MPP:DoUpdate()
     if not self:IsMythicPlus() then
         self.currentPullFrame:Hide()
@@ -193,31 +122,13 @@ function MPP:DoUpdate()
     self:UpdateNameplates()
 end
 
-function MPP:SCENARIO_CRITERIA_UPDATE(_, criteriaID)
-    if not criteriaID or not self:GetSetting('debugCriteriaEvents') or not self:IsMythicPlus(true) then return end
-
-    local mapID = self:GetCurrentMapID()
-    local info = mapID and self.criteriaDebugData[mapID] and self.criteriaDebugData[mapID][criteriaID]
-    if not info then return end
-
-    self:Print('Criteria update for', criteriaID, 'should give count', info.count, '; associated npcID:', info.npcID)
-end
-
-function MPP:DebugPrint(...)
-    if self:GetSetting('debug') then
-        if (_G.DevTool and _G.DevTool.AddData) then
-            _G.DevTool:AddData({ ... }, "MMPE DebugPrint")
-        end
-        self:Print(...)
-    end
-end
-
 function MPP:HasWarned(message)
     for _, warning in pairs(self.warnings) do
         if warning == message then
             return true
         end
     end
+
     return false
 end
 
@@ -225,8 +136,10 @@ function MPP:PrintWarning(message)
     if not self:HasWarned(message) then
         self:Print(message)
         table.insert(self.warnings, message)
+
         return true
     end
+
     return false
 end
 
@@ -254,43 +167,6 @@ function MPP:VerifyDB()
     self:VerifySettings()
 end
 
-function MPP:FillNpcCountCache()
-    self.npcData = {}
-    self.dungeonOverrides = {}
-    self.criteriaDebugData = {}
-
-    local newPatchVersionInfo = { timestamp = 0 }
-    for _, dataProvider in pairs(ns.data) do
-        for npcID, npcData in pairs(dataProvider:GetNPCData()) do
-            self.npcData[npcID] = npcData.count
-        end
-        if dataProvider.GetDungeonOverrides then
-            self.dungeonOverrides = Mixin(self.dungeonOverrides, dataProvider:GetDungeonOverrides())
-        end
-        if dataProvider.GetDebugData then
-            self.criteriaDebugData = Mixin(self.criteriaDebugData, dataProvider:GetDebugData())
-        end
-
-        local patchVersionInfo = dataProvider:GetPatchVersion()
-        if newPatchVersionInfo.timestamp < patchVersionInfo.timestamp then
-            newPatchVersionInfo = patchVersionInfo
-        end
-    end
-    self.npcDataPatchVersionInfo = newPatchVersionInfo
-end
-
---- @param unit UnitToken
---- @return number? npcID
-function MPP:GetUnitCreatureID(unit)
-    local guid = unit and UnitGUID(unit)
-    if guid == nil then return nil end
-
-    local targetType, _, _, _, _, npcID = strsplit("-", guid)
-    if (targetType == "Creature" or targetType == "Vehicle") and npcID then
-        return tonumber(npcID)
-    end
-end
-
 function MPP:IsValidTarget(unit)
     return UnitCanAttack("player", unit)
 end
@@ -300,35 +176,28 @@ function MPP:GetNumberOfScenarioSteps()
     return select(3, C_Scenario.GetStepInfo()) or 0
 end
 
-function MPP:IsDungeonFinished(ignoreSimulation)
-    if not ignoreSimulation and self.simulationActive then return false end
-
+function MPP:IsDungeonFinished()
     return self:GetNumberOfScenarioSteps() < 1
 end
 
-function MPP:IsMythicPlus(ignoreSimulation)
-    if not ignoreSimulation and self.simulationActive then return true end
-
+function MPP:IsMythicPlus()
     local difficulty = select(3, GetInstanceInfo()) or -1
 
-    return difficulty == DIFFICULTY_MYTHIC_PLUS and not self:IsDungeonFinished(ignoreSimulation)
+    return difficulty == DIFFICULTY_MYTHIC_PLUS and not self:IsDungeonFinished()
 end
 
 --- @return ScenarioCriteriaInfo? criteriaInfo
 function MPP:GetProgressCriteriaInfo()
-    if self:IsMythicPlus() then
-        local numSteps = self:GetNumberOfScenarioSteps()
-        if numSteps > 0 then
-            local info = C_ScenarioInfo.GetCriteriaInfo(numSteps)
+    if not self:IsMythicPlus() then return nil end
+    local numSteps = self:GetNumberOfScenarioSteps()
+    if numSteps > 0 then
+        local info = C_ScenarioInfo.GetCriteriaInfo(numSteps)
 
-            return info.isWeightedProgress and info or nil
-        end
+        return info.isWeightedProgress and info or nil
     end
 end
 
 function MPP:GetTotalCountRequired()
-    if self.simulationActive then return self.simulationMax end
-
     local info = self:GetProgressCriteriaInfo()
     if info then
         return info.totalQuantity
@@ -338,8 +207,6 @@ function MPP:GetTotalCountRequired()
 end
 
 function MPP:GetCurrentCount()
-    if self.simulationActive then return self.simulationCurrent end
-
     local info = self:GetProgressCriteriaInfo()
     if info and info.quantityString then
         return tonumber((info.quantityString:gsub('%%', '')))
@@ -348,80 +215,49 @@ function MPP:GetCurrentCount()
     return 0
 end
 
---- @return number countPercent # a float from 0-100
-function MPP:GetCountPercent()
-    local quantity = self:GetCurrentCount() or 0
-    local maxQuantity = self:GetTotalCountRequired() or 1
-    local progress = (quantity / maxQuantity) * 100
-
-    return progress
-end
-
-function MPP:GetCurrentMapID()
-    if self.simulationActive then return self.simulationMapID end
-
-    return C_ChallengeMode.GetActiveChallengeMapID()
-end
-
+--- @param unit UnitToken
 --- @return number? count
-function MPP:GetCountByNpcID(npcID)
-    local mapID = self:GetCurrentMapID()
-    if (mapID and self.dungeonOverrides[mapID] and self.dungeonOverrides[mapID][npcID] and self.dungeonOverrides[mapID][npcID].count) then
-        return self.dungeonOverrides[mapID][npcID].count
-    end
-
-    local count = self.npcData[npcID]
-
-    return count or (self.simulationActive and 3) or nil
-end
-
---- @return number? percent # a float from 0-100
---- @return number? count
---- @return number? requiredCount
-function MPP:GetEstimatedProgress(npcID)
-    local npcValue = self:GetCountByNpcID(npcID)
-    local maxQuantity = self:GetTotalCountRequired()
-    if npcValue and maxQuantity then
-        return (npcValue / maxQuantity) * 100, npcValue, maxQuantity
-    end
+--- @return number? countPercent
+--- @return string? countPercentString
+function MPP:GetUnitCount(unit)
+    return nil, nil, '?%'
+    -- return C_Pony.GetCountByUnit(unit) -- @todo: update once new API is documented
 end
 
 ---
 --- TOOLTIPS
 ---
+--- @param unit UnitToken
 function MPP:ShouldAddToTooltip(unit)
     return self.loaded and self:GetSetting("enabled") and self:GetSetting("enableTooltip") and self:IsMythicPlus() and self:IsValidTarget(unit)
 end
 
-function MPP:GetTooltipMessage(npcID)
+--- @param unit UnitToken
+function MPP:GetTooltipMessage(unit)
     local message = "|cFF" .. self:GetSetting("tooltipColor") .. L["M+Progress:"] .. " "
-    local estimatedProgress, count, maxCount = self:GetEstimatedProgress(npcID)
-    if not estimatedProgress then
-        return message .. L["No record."]
-    end
-    if estimatedProgress == 0 then
+    local count, _, countPercentString = self:GetUnitCount(unit)
+    if not countPercentString then
         return message .. L["No Progress."]
     end
-    local mobsLeft = (maxCount - self:GetCurrentCount()) / count
+    local requiredCount = self:GetTotalCountRequired()
     if self:GetSetting('includeCountInTooltip') then
-        message = string.format("%s%.2f%% %i/%i (%i left)", message, estimatedProgress, count, maxCount, math.ceil(mobsLeft))
+        message = string.format("%s%.2f %i/%i", message, countPercentString, count, requiredCount)
     else
-        message = string.format("%s%.2f%% (%i left)", message, estimatedProgress, math.ceil(mobsLeft))
+        message = string.format("%s%.2f", message, countPercentString)
     end
 
     return message
 end
 
+--- @param tooltip GameTooltip
 function MPP:OnUnitTooltip(tooltip)
-    local unit = select(2, TooltipUtil.GetDisplayedUnit(tooltip))
-    if not unit then return end
+    --- @type UnitToken?
+    local unit = select(2, TooltipUtil.GetDisplayedUnit(tooltip)) -- @todo: if needed, can hardcode to "mouseover"
+    if not unit or not self:ShouldAddToTooltip(unit) then return end
 
-    local npcID = self:GetUnitCreatureID(unit)
-    if not npcID or not self:ShouldAddToTooltip(unit) then return end
-
-    local tooltipMessage = self:GetTooltipMessage(npcID)
+    local tooltipMessage = self:GetTooltipMessage(unit)
     if tooltipMessage then
-        tooltip:AddDoubleLine(tooltipMessage)
+        tooltip:AddLine(tooltipMessage)
         tooltip:Show()
     end
 end
@@ -455,46 +291,25 @@ end
 ---
 --- NAMEPLATES
 ---
-function MPP:IsUnitPulled(unit)
-    local threat = UnitThreatSituation("player", unit) or -1 -- Is nil if we're not on their aggro table, so make it -1 instead.
-
-    return self:IsValidTarget(unit) and (threat >= 0 or UnitPlayerControlled(unit .. "target"))
-end
-
---- @return UnitToken.nameplate[] pulledUnits
-function MPP:GetPulledUnits()
-    local pulledUnits = {}
-    for _, nameplate in pairs(C_NamePlate.GetNamePlates()) do
-        if nameplate.UnitFrame.unitExists then
-            if self:IsUnitPulled(nameplate.UnitFrame.displayedUnit) then
-                tinsert(pulledUnits, nameplate.UnitFrame.displayedUnit)
-            end
-        end
-    end
-
-    return pulledUnits
-end
-
---- @return number currentPullCount
+--- @return number currentPullCount # @todo: might be nil?
+--- @return number currentPullPercent
+--- @return string currentPullPercentString
+--- @return number estimatedCount # @todo: might be nil?
+--- @return number estimatedPercent
+--- @return string estimatedPercentString
 function MPP:GetCurrentPullCount()
-    local pulledUnits = self:GetPulledUnits()
-    local estimatedProgress = 0
-    for _, unit in pairs(pulledUnits) do
-        local npcID = self:GetUnitCreatureID(unit)
-        if npcID then
-            estimatedProgress = estimatedProgress + (self:GetCountByNpcID(npcID) or 0)
-        end
-    end
-
-    return estimatedProgress
+    return 0, 0, '?%', 0, 0, '?%'
+    --return C_Pony.GetCurrentPullCount() -- @todo: update once new API is documented
 end
 
-function MPP:ShouldShowCurrentPullEstimate(hasCount)
+--- @return boolean shouldShow
+--- @return boolean hideIfNoCount
+function MPP:ShouldShowCurrentPullEstimate()
     if self:GetSetting("enabled") and self:GetSetting("enablePullEstimate") and self:IsMythicPlus() and not self:IsDungeonFinished() then
-        return hasCount or not self:GetSetting("pullEstimateCombatOnly")
+        return true, self:GetSetting("pullEstimateCombatOnly")
     end
 
-    return false
+    return false, false
 end
 
 function MPP:SetCurrentPullEstimateLabel(s)
@@ -503,45 +318,59 @@ function MPP:SetCurrentPullEstimateLabel(s)
     self.currentPullFrame:SetHeight(self.currentPullString:GetStringHeight())
 end
 
+--- Secret safe placeholder replacer
+--- @param formatString string
+--- @param replacements table<string, string> # values are allowed to contain secrets
+--- @return string # likely a secret string
+function MPP:ReplacePlaceholders(formatString, replacements)
+    local placeholderOrder = {}
+    for x in string.gmatch(formatString, "%%%$[^%$]+%%%$") do
+        table.insert(placeholderOrder, x)
+    end
+    formatString = string.gsub(formatString, "%%%$[^%$]+%%%$", "%%s")
+    local replacementValues = {}
+    for _, placeholder in ipairs(placeholderOrder) do
+        table.insert(replacementValues, replacements[placeholder] or placeholder)
+    end
+
+    return formatString:format(unpack(replacementValues))
+end
+
 function MPP:UpdateCurrentPullEstimate()
-    local estimatedCount = self:GetCurrentPullCount()
-    if not self:ShouldShowCurrentPullEstimate(estimatedCount > 0) then
+    local pullCount, _, pullPercentString, estimatedCount, _, estimatedPercentString = self:GetCurrentPullCount()
+    local shouldShow, hideIfNoCount = self:ShouldShowCurrentPullEstimate()
+    if not shouldShow or (hideIfNoCount and not pullCount) then
         self.currentPullFrame:Hide()
 
         return
     end
+    self.currentPullFrame:SetAlpha(1)
+    if hideIfNoCount then
+        self.currentPullFrame:SetAlpha(pullCount)
+    end
 
     self.currentPullFrame:Show()
-    local message
-    local maxCount = self:GetTotalCountRequired()
+    local requiredCount = self:GetTotalCountRequired()
     local currentCount = self:GetCurrentCount()
-    local totalCount = (estimatedCount + currentCount)
-    if estimatedCount == 0 then
-        message = L["No recorded mobs pulled or nameplates inactive."]
-    else
-        message = self:GetSetting('pullFrameTextFormat'); --[[@as string]]
-        local percentString = '%.2f%%%%';
-        local placeholderReplacements = {
-            ['%$current%$'] = currentCount,
-            ['%$pull%$'] = estimatedCount,
-            ['%$estimated%$'] = totalCount,
-            ['%$required%$'] = maxCount,
-            ['%$current%%%$'] = percentString:format((currentCount / maxCount) * 100),
-            ['%$pull%%%$'] = percentString:format((estimatedCount / maxCount) * 100),
-            ['%$estimated%%%$'] = percentString:format((totalCount / maxCount) * 100),
-            ['%$required%%%$'] = percentString:format(100),
-        };
-        for placeholder, replacement in pairs(placeholderReplacements) do
-            message = string.gsub(message, placeholder, replacement);
-        end
-    end
+
+    local formatString = self:GetSetting('pullFrameTextFormat'); --[[@as string]]
+    local percentString = '%.2f%%%%';
+    local placeholderReplacements = {
+        ['%$current%$'] = currentCount,
+        ['%$pull%$'] = pullCount,
+        ['%$estimated%$'] = estimatedCount,
+        ['%$required%$'] = requiredCount,
+        ['%$current%%%$'] = percentString:format((currentCount / requiredCount) * 100),
+        ['%$pull%%%$'] = pullPercentString,
+        ['%$estimated%%%$'] = estimatedPercentString,
+        ['%$required%%%$'] = percentString:format(100),
+    };
+    local message = self:ReplacePlaceholders(formatString, placeholderReplacements)
+
     self:SetCurrentPullEstimateLabel(message)
 end
 
 function MPP:CreateNameplateText(unit)
-    local npcID = self:GetUnitCreatureID(unit)
-    if not npcID then return end
-
     if self.activeNameplates[unit] then -- This should never happen
         self:RemoveNameplateText(unit)
     end
@@ -566,25 +395,20 @@ function MPP:RemoveNameplateText(unit)
 end
 
 function MPP:UpdateNameplateValue(unit)
-    local npcID = self:GetUnitCreatureID(unit)
-    if npcID then
-        local estProg, count = self:GetEstimatedProgress(npcID)
-        if count and count > 0 then
-            local message = "|c" .. self:GetSetting("nameplateTextColor")
-            message = message .. self:GetSetting("nameplateTextFormat") --[[@as string]]
-            local placeholderReplacements = {
-                ['%$percent%$'] = string.format("%.2f", estProg),
-                ['%$count%$'] = count,
-            };
-            for placeholder, replacement in pairs(placeholderReplacements) do
-                message = string.gsub(message, placeholder, replacement);
-            end
+    local count, _, countPercentString = self:GetUnitCount(unit)
+    if count then
+        local message = "|c" .. self:GetSetting("nameplateTextColor")
+        local placeholderReplacements = {
+            ['%$percent%$'] = countPercentString,
+            ['%$count%$'] = count,
+        };
+        local formatString = self:GetSetting("nameplateTextFormat") --[[@as string]]
+        message = message .. self:ReplacePlaceholders(formatString, placeholderReplacements)
 
-            self.activeNameplates[unit]:SetText(message)
-            self.activeNameplates[unit]:Show()
+        self.activeNameplates[unit]:SetText(message)
+        self.activeNameplates[unit]:Show()
 
-            return true
-        end
+        return true
     end
     if self.activeNameplates[unit] then -- If mob dies, a new nameplate is created but not shown, and this ui widget will then not exist.
         self.activeNameplates[unit]:SetText("")
@@ -608,7 +432,6 @@ function MPP:UpdateNameplatePosition(unit)
         self.activeNameplates[unit]:SetPoint("LEFT", self.activeNameplates[unit]:GetParent(), "RIGHT", offsetx, offsety)
     else
         self:RemoveNameplateText(unit)
-        self:DebugPrint("Unit", unit, "does not seem to exist. Why are we trying to update it?")
     end
 end
 
