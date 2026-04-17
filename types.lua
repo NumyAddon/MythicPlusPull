@@ -7,7 +7,6 @@
 ---|"maxTimeSinceKill"
 ---|"enableTooltip"
 ---|"includeCountInTooltip"
----|"tooltipColor"
 ---|"enablePullEstimate"
 ---|"pullEstimateCombatOnly"
 ---|"pullFrameTextFormat"

@@ -41,6 +41,7 @@ end
 ns.addon = MPP
 MPP.ns = ns
 
+MPP.exampleDisplayActive = false
 MPP.loaded = false
 MPP.previousQuantity = 0
 --- @type table<string, FontString>
@@ -111,7 +112,14 @@ function MPP:OnInitialize()
     end
 end
 
-function MPP:DoUpdate()
+function MPP:DoUpdate(fullUpdate)
+    if fullUpdate then
+        for _, plate in ipairs(C_NamePlate.GetNamePlates()) do
+            local unit = plate.UnitFrame and plate.UnitFrame.unit
+            self:OnAddNameplate(unit)
+        end
+        self:UpdateNameplates()
+    end
     if not self:IsMythicPlus() then
         self.currentPullFrame:Hide()
 
@@ -177,10 +185,14 @@ function MPP:GetNumberOfScenarioSteps()
 end
 
 function MPP:IsDungeonFinished()
+    if self.exampleDisplayActive then return false end
+
     return self:GetNumberOfScenarioSteps() < 1
 end
 
 function MPP:IsMythicPlus()
+    if self.exampleDisplayActive then return true end
+
     local difficulty = select(3, GetInstanceInfo()) or -1
 
     return difficulty == DIFFICULTY_MYTHIC_PLUS and not self:IsDungeonFinished()
@@ -189,6 +201,7 @@ end
 --- @return ScenarioCriteriaInfo? criteriaInfo
 function MPP:GetProgressCriteriaInfo()
     if not self:IsMythicPlus() then return nil end
+
     local numSteps = self:GetNumberOfScenarioSteps()
     if numSteps > 0 then
         local info = C_ScenarioInfo.GetCriteriaInfo(numSteps)
@@ -198,6 +211,8 @@ function MPP:GetProgressCriteriaInfo()
 end
 
 function MPP:GetTotalCountRequired()
+    if self.exampleDisplayActive then return 120 end
+
     local info = self:GetProgressCriteriaInfo()
     if info then
         return info.totalQuantity
@@ -207,6 +222,8 @@ function MPP:GetTotalCountRequired()
 end
 
 function MPP:GetCurrentCount()
+    if self.exampleDisplayActive then return 42 end
+
     local info = self:GetProgressCriteriaInfo()
     if info and info.quantityString then
         return tonumber((info.quantityString:gsub('%%', '')))
@@ -220,8 +237,14 @@ end
 --- @return number? countPercent
 --- @return string? countPercentString
 function MPP:GetUnitCount(unit)
-    return nil, nil, '?%'
-    -- return C_Pony.GetCountByUnit(unit) -- @todo: update once new API is documented
+    if self.exampleDisplayActive then return 10, 0.0833, '8.33' end
+
+    if C_ScenarioInfo.GetUnitCriteriaProgressValues then
+        -- @todo: confirm signature
+        return C_ScenarioInfo.GetUnitCriteriaProgressValues(unit)
+    end
+
+    return nil, nil, '?'
 end
 
 ---
@@ -234,16 +257,16 @@ end
 
 --- @param unit UnitToken
 function MPP:GetTooltipMessage(unit)
-    local message = "|cFF" .. self:GetSetting("tooltipColor") .. L["M+Progress:"] .. " "
+    local message = "|cFF82E0FF" .. L["M+Progress:"] .. " "
     local count, _, countPercentString = self:GetUnitCount(unit)
     if not countPercentString then
         return message .. L["No Progress."]
     end
     local requiredCount = self:GetTotalCountRequired()
     if self:GetSetting('includeCountInTooltip') then
-        message = string.format("%s%.2f %i/%i", message, countPercentString, count, requiredCount)
+        message = string.format("%s%s%% %i/%i", message, countPercentString, count, requiredCount)
     else
-        message = string.format("%s%.2f", message, countPercentString)
+        message = string.format("%s%s%%", message, countPercentString)
     end
 
     return message
@@ -251,8 +274,7 @@ end
 
 --- @param tooltip GameTooltip
 function MPP:OnUnitTooltip(tooltip)
-    --- @type UnitToken?
-    local unit = select(2, TooltipUtil.GetDisplayedUnit(tooltip)) -- @todo: if needed, can hardcode to "mouseover"
+    local unit = "mouseover"
     if not unit or not self:ShouldAddToTooltip(unit) then return end
 
     local tooltipMessage = self:GetTooltipMessage(unit)
@@ -298,13 +320,16 @@ end
 --- @return number estimatedPercent
 --- @return string estimatedPercentString
 function MPP:GetCurrentPullCount()
-    return 0, 0, '?%', 0, 0, '?%'
+    return 0, 0, '?', 0, 0, '?'
     --return C_Pony.GetCurrentPullCount() -- @todo: update once new API is documented
 end
 
 --- @return boolean shouldShow
 --- @return boolean hideIfNoCount
 function MPP:ShouldShowCurrentPullEstimate()
+    if self:GetSetting("hidePullEstimateFrameWhenApiUnavailable") then
+        return false, false
+    end
     if self:GetSetting("enabled") and self:GetSetting("enablePullEstimate") and self:IsMythicPlus() and not self:IsDungeonFinished() then
         return true, self:GetSetting("pullEstimateCombatOnly")
     end
@@ -324,10 +349,11 @@ end
 --- @return string # likely a secret string
 function MPP:ReplacePlaceholders(formatString, replacements)
     local placeholderOrder = {}
-    for x in string.gmatch(formatString, "%%%$[^%$]+%%%$") do
+    for x in string.gmatch(formatString, "%$[^%$]+%$") do
         table.insert(placeholderOrder, x)
     end
-    formatString = string.gsub(formatString, "%%%$[^%$]+%%%$", "%%s")
+    formatString = string.gsub(formatString, "%%", "%%%%")
+    formatString = string.gsub(formatString, "%$[^%$]+%$", "%%s")
     local replacementValues = {}
     for _, placeholder in ipairs(placeholderOrder) do
         table.insert(replacementValues, replacements[placeholder] or placeholder)
@@ -354,16 +380,16 @@ function MPP:UpdateCurrentPullEstimate()
     local currentCount = self:GetCurrentCount()
 
     local formatString = self:GetSetting('pullFrameTextFormat'); --[[@as string]]
-    local percentString = '%.2f%%%%';
+    local percentString = '%.2f%%';
     local placeholderReplacements = {
-        ['%$current%$'] = currentCount,
-        ['%$pull%$'] = pullCount,
-        ['%$estimated%$'] = estimatedCount,
-        ['%$required%$'] = requiredCount,
-        ['%$current%%%$'] = percentString:format((currentCount / requiredCount) * 100),
-        ['%$pull%%%$'] = pullPercentString,
-        ['%$estimated%%%$'] = estimatedPercentString,
-        ['%$required%%%$'] = percentString:format(100),
+        ['$current$'] = currentCount,
+        ['$pull$'] = pullCount,
+        ['$estimated$'] = estimatedCount,
+        ['$required$'] = requiredCount,
+        ['$current%$'] = percentString:format((currentCount / requiredCount) * 100),
+        ['$pull%$'] = pullPercentString .. '%',
+        ['$estimated%$'] = estimatedPercentString .. '%',
+        ['$required%$'] = percentString:format(100),
     };
     local message = self:ReplacePlaceholders(formatString, placeholderReplacements)
 
@@ -399,8 +425,8 @@ function MPP:UpdateNameplateValue(unit)
     if count then
         local message = "|c" .. self:GetSetting("nameplateTextColor")
         local placeholderReplacements = {
-            ['%$percent%$'] = countPercentString,
-            ['%$count%$'] = count,
+            ['$percent$'] = countPercentString,
+            ['$count$'] = count,
         };
         local formatString = self:GetSetting("nameplateTextFormat") --[[@as string]]
         message = message .. self:ReplacePlaceholders(formatString, placeholderReplacements)
