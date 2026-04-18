@@ -7,9 +7,10 @@ if not MPP then return end
 local L = LibStub('AceLocale-3.0'):GetLocale(name)
 
 MPP.version = C_AddOns.GetAddOnMetadata(name, "Version") or "unknown"
---- @type table<MMPE_Setting, any>
+--- @enum (key) MMPE_Setting
 MPP.defaultSettings = {
-    enabled = true,
+    enableInDelves = true,
+    enableInMythicPlus = true,
 
     enableTooltip = true,
     includeCountInTooltip = true,
@@ -66,6 +67,8 @@ function MPP:SetSetting(setting, value)
         return
     end
     self.DB.settings[setting] = value
+
+    self:FullUpdate()
 
     return value
 end
@@ -146,8 +149,28 @@ function MPP:InitConfig()
                 get = function() return self.exampleDisplayActive end,
                 set = function(info, value)
                     self.exampleDisplayActive = value
-                    self:DoUpdate(true)
+                    self:ToggleFunctionality()
                 end,
+            },
+            activities = {
+                order = increment(),
+                type = "group",
+                name = L["Activities"],
+                inline = true,
+                args = {
+                    enableInMythicPlus = {
+                        order = increment(),
+                        type = "toggle",
+                        name = L["Enable in Mythic+"],
+                        desc = L["Enable the addon in Mythic+ dungeons."],
+                    },
+                    enableInDelves = {
+                        order = increment(),
+                        type = "toggle",
+                        name = L["Enable in Delves"],
+                        desc = L["Enable the addon in Delves. Only works for delves that have a progress bar objective."],
+                    },
+                },
             },
             tooltip = {
                 order = increment(),

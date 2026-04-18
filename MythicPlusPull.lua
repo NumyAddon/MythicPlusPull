@@ -2,6 +2,7 @@ local name, ns = ...
 ns.data = {}
 
 local DIFFICULTY_MYTHIC_PLUS = 8
+local DIFFICULTY_DELVES = 208
 
 --- @class MythicPlusPull: AceAddon, AceConsole-3.0, NumyAceEvent-3.0
 local MPP = LibStub('AceAddon-3.0'):NewAddon(name, 'AceConsole-3.0', 'NumyAceEvent-3.0');
@@ -85,10 +86,12 @@ function MPP:OnInitialize()
     end
     self.fontStringPool = CreateObjectPool(init, reset) --[[@as ObjectPool<FontString>]]
 
-    self:RegisterEvent("NAME_PLATE_UNIT_ADDED", function(_, unit) self:OnAddNameplate(unit) end)
-    self:RegisterEvent("NAME_PLATE_UNIT_REMOVED", function(_, unit) self:RemoveNameplateText(unit) end)
-
-    C_Timer.NewTicker(0.2, function() self:DoUpdate() end)
+    local function deferToggle()
+        RunNextFrame(function() self:ToggleFunctionality() end)
+    end
+    self:RegisterEvent("SCENARIO_UPDATE", deferToggle)
+    self:RegisterEvent("PLAYER_ENTERING_WORLD", deferToggle)
+    deferToggle()
 
     TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Unit, function(tooltip) self:OnUnitTooltip(tooltip) end)
 
@@ -112,18 +115,38 @@ function MPP:OnInitialize()
     end
 end
 
-function MPP:DoUpdate(fullUpdate)
-    if fullUpdate then
+function MPP:ToggleFunctionality()
+    local isActive = self:IsActiveScenario()
+    if isActive == self.wasActive then
+        --self:Print('Already', isActive and 'active' or 'inactive');
+        return
+    end
+    --self:Print((isActive and 'Enabling' or 'Disabling') .. ' functionality.')
+    if isActive then
         for _, plate in ipairs(C_NamePlate.GetNamePlates()) do
             local unit = plate.UnitFrame and plate.UnitFrame.unit
             self:OnAddNameplate(unit)
         end
-        self:UpdateNameplates()
-    end
-    if not self:IsMythicPlus() then
+        self:RegisterEvent("NAME_PLATE_UNIT_ADDED", function(_, unit) self:OnAddNameplate(unit) end)
+        self:RegisterEvent("NAME_PLATE_UNIT_REMOVED", function(_, unit) self:RemoveNameplateText(unit) end)
+        self:RegisterEvent("SCENARIO_CRITERIA_UPDATE", function() self:UpdateCurrentPullEstimate() end)
+    else
         self.currentPullFrame:Hide()
+        self:UnregisterEvent("NAME_PLATE_UNIT_ADDED")
+        self:UnregisterEvent("NAME_PLATE_UNIT_REMOVED")
+        self:UnregisterEvent("SCENARIO_CRITERIA_UPDATE")
+    end
+    self:FullUpdate()
+    self.wasActive = isActive
+end
 
-        return
+function MPP:FullUpdate()
+    local isActive = self:IsActiveScenario()
+    if isActive then
+        for _, plate in ipairs(C_NamePlate.GetNamePlates()) do
+            local unit = plate.UnitFrame and plate.UnitFrame.unit
+            self:OnAddNameplate(unit)
+        end
     end
     self:UpdateCurrentPullEstimate()
     self:UpdateNameplateValues()
@@ -190,23 +213,27 @@ function MPP:IsDungeonFinished()
     return self:GetNumberOfScenarioSteps() < 1
 end
 
-function MPP:IsMythicPlus()
+function MPP:IsActiveScenario()
     if self.exampleDisplayActive then return true end
 
     local difficulty = select(3, GetInstanceInfo()) or -1
 
-    return difficulty == DIFFICULTY_MYTHIC_PLUS and not self:IsDungeonFinished()
+    return
+        (difficulty == DIFFICULTY_MYTHIC_PLUS and self:GetSetting('enableInMythicPlus') and not self:IsDungeonFinished())
+        or (difficulty == DIFFICULTY_DELVES and self:GetSetting('enableInDelves'))
 end
 
 --- @return ScenarioCriteriaInfo? criteriaInfo
 function MPP:GetProgressCriteriaInfo()
-    if not self:IsMythicPlus() then return nil end
+    if not self:IsActiveScenario() then return nil end
 
     local numSteps = self:GetNumberOfScenarioSteps()
-    if numSteps > 0 then
-        local info = C_ScenarioInfo.GetCriteriaInfo(numSteps)
+    for index = numSteps, 1, -1 do
+        local info = C_ScenarioInfo.GetCriteriaInfo(index)
 
-        return info.isWeightedProgress and info or nil
+        if info.isWeightedProgress then
+            return info
+        end
     end
 end
 
@@ -226,7 +253,7 @@ function MPP:GetCurrentCount()
 
     local info = self:GetProgressCriteriaInfo()
     if info and info.quantityString then
-        return tonumber((info.quantityString:gsub('%%', '')))
+        return tonumber((info.quantityString:match('%d+')))
     end
 
     return 0
@@ -252,7 +279,7 @@ end
 ---
 --- @param unit UnitToken
 function MPP:ShouldAddToTooltip(unit)
-    return self.loaded and self:GetSetting("enabled") and self:GetSetting("enableTooltip") and self:IsMythicPlus() and self:IsValidTarget(unit)
+    return self.loaded and self:GetSetting("enableTooltip") and self:IsActiveScenario() and self:IsValidTarget(unit)
 end
 
 --- @param unit UnitToken
@@ -330,7 +357,7 @@ function MPP:ShouldShowCurrentPullEstimate()
     if self:GetSetting("hidePullEstimateFrameWhenApiUnavailable") then
         return false, false
     end
-    if self:GetSetting("enabled") and self:GetSetting("enablePullEstimate") and self:IsMythicPlus() and not self:IsDungeonFinished() then
+    if self:GetSetting("enablePullEstimate") and self:IsActiveScenario() then
         return true, self:GetSetting("pullEstimateCombatOnly")
     end
 
@@ -364,8 +391,9 @@ end
 
 function MPP:UpdateCurrentPullEstimate()
     local pullCount, _, pullPercentString, estimatedCount, _, estimatedPercentString = self:GetCurrentPullCount()
+    local requiredCount = self:GetTotalCountRequired()
     local shouldShow, hideIfNoCount = self:ShouldShowCurrentPullEstimate()
-    if not shouldShow or (hideIfNoCount and not pullCount) then
+    if not shouldShow or (hideIfNoCount and not pullCount) or requiredCount == 0 then
         self.currentPullFrame:Hide()
 
         return
@@ -376,7 +404,6 @@ function MPP:UpdateCurrentPullEstimate()
     end
 
     self.currentPullFrame:Show()
-    local requiredCount = self:GetTotalCountRequired()
     local currentCount = self:GetCurrentCount()
 
     local formatString = self:GetSetting('pullFrameTextFormat'); --[[@as string]]
@@ -462,7 +489,7 @@ function MPP:UpdateNameplatePosition(unit)
 end
 
 function MPP:ShouldShowNameplateTexts()
-    return self:GetSetting("enabled") and self:GetSetting("enableNameplateText") and self:IsMythicPlus() and not self:IsDungeonFinished()
+    return self:GetSetting("enableNameplateText") and self:IsActiveScenario()
 end
 
 function MPP:OnAddNameplate(unit)
