@@ -220,7 +220,7 @@ function MPP:IsActiveScenario()
 
     return
         (difficulty == DIFFICULTY_MYTHIC_PLUS and self:GetSetting('enableInMythicPlus') and not self:IsDungeonFinished())
-        or (difficulty == DIFFICULTY_DELVES and self:GetSetting('enableInDelves'))
+        -- or (difficulty == DIFFICULTY_DELVES and self:GetSetting('enableInDelves'))
 end
 
 --- @return ScenarioCriteriaInfo? criteriaInfo
