@@ -9,7 +9,7 @@ local L = LibStub('AceLocale-3.0'):GetLocale(name)
 MPP.version = C_AddOns.GetAddOnMetadata(name, "Version") or "unknown"
 --- @enum (key) MMPE_Setting
 MPP.defaultSettings = {
-    enableInDelves = true,
+    --enableInDelves = true,
     enableInMythicPlus = true,
 
     enableTooltip = true,
@@ -152,26 +152,26 @@ function MPP:InitConfig()
                     self:ToggleFunctionality()
                 end,
             },
-            activities = {
-                order = increment(),
-                type = "group",
-                name = L["Activities"],
-                inline = true,
-                args = {
-                    enableInMythicPlus = {
-                        order = increment(),
-                        type = "toggle",
-                        name = L["Enable in Mythic+"],
-                        desc = L["Enable the addon in Mythic+ dungeons."],
-                    },
-                    enableInDelves = {
-                        order = increment(),
-                        type = "toggle",
-                        name = L["Enable in Delves"],
-                        desc = L["Enable the addon in Delves. Only works for delves that have a progress bar objective."],
-                    },
-                },
-            },
+            --activities = {
+            --    order = increment(),
+            --    type = "group",
+            --    name = L["Activities"],
+            --    inline = true,
+            --    args = {
+            --        enableInMythicPlus = {
+            --            order = increment(),
+            --            type = "toggle",
+            --            name = L["Enable in Mythic+"],
+            --            desc = L["Enable the addon in Mythic+ dungeons."],
+            --        },
+            --        enableInDelves = {
+            --            order = increment(),
+            --            type = "toggle",
+            --            name = L["Enable in Delves"],
+            --            desc = L["Enable the addon in Delves. Only works for delves that have a progress bar objective."],
+            --        },
+            --    },
+            --},
             tooltip = {
                 order = increment(),
                 type = "group",
