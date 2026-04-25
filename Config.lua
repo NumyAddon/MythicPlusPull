@@ -50,12 +50,20 @@ local function SetFramePoint(frame, pointInfo)
     );
 end
 
+local function debugPrint(...)
+    --@debug@
+    print('MPP:', ...)
+    --@end-debug@
+end
+
 --- @param setting MMPE_Setting
 function MPP:GetSetting(setting)
     if (not setting or self.DB.settings[setting] == nil) then
-        self:PrintWarning(L["MPP attempted to get missing setting:"] .. " " .. (setting or "nil"))
+        debugPrint("MPP attempted to get missing setting:", setting)
+
         return
     end
+
     return self.DB.settings[setting]
 end
 
@@ -63,7 +71,8 @@ end
 --- @param value any
 function MPP:SetSetting(setting, value)
     if (not setting or self.DB.settings[setting] == nil) then
-        self:PrintWarning(L["MPP attempted to set missing setting:"] .. " " .. (setting or "nil"))
+        debugPrint("MPP attempted to set missing setting:", setting)
+
         return
     end
     self.DB.settings[setting] = value

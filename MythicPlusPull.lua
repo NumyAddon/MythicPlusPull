@@ -354,6 +354,7 @@ end
 --- @return boolean shouldShow
 --- @return boolean hideIfNoCount
 function MPP:ShouldShowCurrentPullEstimate()
+    if self.exampleDisplayActive then return true, true end
     if self:GetSetting("hidePullEstimateFrameWhenApiUnavailable") then
         return false, false
     end
@@ -366,8 +367,6 @@ end
 
 function MPP:SetCurrentPullEstimateLabel(s)
     self.currentPullString:SetText(s)
-    self.currentPullFrame:SetWidth(self.currentPullString:GetStringWidth())
-    self.currentPullFrame:SetHeight(self.currentPullString:GetStringHeight())
 end
 
 --- Secret safe placeholder replacer
