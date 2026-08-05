@@ -110,8 +110,8 @@ function MPP:OnInitialize()
 
     self.loaded = true
 
-    if NumyProfiler then
-        NumyProfiler:WrapModules('MythicPlusPull', 'Core', self);
+    if NumyFunctionProfiler then
+        NumyFunctionProfiler:WrapModules('MythicPlusPull', 'Core', self);
     end
 end
 
