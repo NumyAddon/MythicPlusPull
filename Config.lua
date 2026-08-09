@@ -4,7 +4,7 @@ local name, ns = ...
 local MPP = ns.addon
 if not MPP then return end
 
-local L = LibStub('AceLocale-3.0'):GetLocale(name)
+local L = ns.L
 
 MPP.version = C_AddOns.GetAddOnMetadata(name, "Version") or "unknown"
 --- @enum (key) MMPE_Setting
