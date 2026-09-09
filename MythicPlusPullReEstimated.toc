@@ -11,7 +11,7 @@
 ## SavedVariables: MMPEDB
 ## X-Curse-Project-ID: 431246
 ## X-Wago-ID: anKWEqNE
-## OptionalDeps: MythicDungeonTools,TidyPlates
+## OptionalDeps: MythicDungeonTools,TidyPlates,Platynator
 ## Category-enUS: Dungeons & Raids
 ## Category-deDE: Dungeons & Schlachtzüge
 ## Category-esES: Mazmorras y bandas

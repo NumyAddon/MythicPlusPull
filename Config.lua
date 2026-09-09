@@ -7,7 +7,7 @@ if not MPP then return end
 local L = ns.L
 
 MPP.version = C_AddOns.GetAddOnMetadata(name, "Version") or "unknown"
---- @enum (key) MMPE_Setting
+--- @enum (key) MPP_Setting
 MPP.defaultSettings = {
     --enableInDelves = true,
     enableInMythicPlus = true,
@@ -56,7 +56,7 @@ local function debugPrint(...)
     --@end-debug@
 end
 
---- @param setting MMPE_Setting
+--- @param setting MPP_Setting
 function MPP:GetSetting(setting)
     if (not setting or self.DB.settings[setting] == nil) then
         debugPrint("MPP attempted to get missing setting:", setting)
@@ -67,7 +67,7 @@ function MPP:GetSetting(setting)
     return self.DB.settings[setting]
 end
 
---- @param setting MMPE_Setting
+--- @param setting MPP_Setting
 --- @param value any
 function MPP:SetSetting(setting, value)
     if (not setting or self.DB.settings[setting] == nil) then
@@ -82,7 +82,7 @@ function MPP:SetSetting(setting, value)
     return value
 end
 
---- @param setting MMPE_Setting
+--- @param setting MPP_Setting
 function MPP:ToggleSetting(setting)
     return self:SetSetting(setting, not self:GetSetting(setting))
 end
@@ -148,7 +148,6 @@ function MPP:InitConfig()
                 name = L["Reset to defaults"],
                 desc = L["Reset to defaults"],
                 func = function() self:VerifySettings(true) end,
-                --width = "double",
             },
             exampleDisplay = {
                 order = increment(),
@@ -161,26 +160,6 @@ function MPP:InitConfig()
                     self:ToggleFunctionality()
                 end,
             },
-            --activities = {
-            --    order = increment(),
-            --    type = "group",
-            --    name = L["Activities"],
-            --    inline = true,
-            --    args = {
-            --        enableInMythicPlus = {
-            --            order = increment(),
-            --            type = "toggle",
-            --            name = L["Enable in Mythic+"],
-            --            desc = L["Enable the addon in Mythic+ dungeons."],
-            --        },
-            --        enableInDelves = {
-            --            order = increment(),
-            --            type = "toggle",
-            --            name = L["Enable in Delves"],
-            --            desc = L["Enable the addon in Delves. Only works for delves that have a progress bar objective."],
-            --        },
-            --    },
-            --},
             tooltip = {
                 order = increment(),
                 type = "group",
@@ -233,7 +212,7 @@ function MPP:InitConfig()
                         desc = L["Lock the frame in place"],
                         set = function(info, value)
                             set(info, value)
-                            self.currentPullFrame:EnableMouse(not value)
+                            self.currentPullFrame.DragFrame:EnableMouse(not value)
                         end,
                     },
                     reset = {

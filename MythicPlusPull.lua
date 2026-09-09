@@ -2,7 +2,6 @@ local name, ns = ...
 ns.data = {}
 
 local DIFFICULTY_MYTHIC_PLUS = 8
-local DIFFICULTY_DELVES = 208
 
 --- @class MythicPlusPull: AceAddon, AceConsole-3.0, NumyAceEvent-3.0
 local MPP = LibStub('AceAddon-3.0'):NewAddon(name, 'AceConsole-3.0', 'NumyAceEvent-3.0');
@@ -27,6 +26,21 @@ do
                 local plate = defaultAccessor(unit);
 
                 return plate and plate.extended or plate;
+            end,
+        },
+        {
+            addonName = 'Platynator',
+            nameplateAccessor = function(unit)
+                local plate = C_NamePlate.GetNamePlateForUnit(unit);
+                if not plate then return; end
+
+                for _, child in ipairs({plate:GetChildren()}) do
+                    if child:GetFrameStrata() == 'MEDIUM' and child:GetSourceLocation():match('Platynator') then
+                        return child;
+                    end
+                end
+
+                return plate;
             end,
         },
     };
@@ -118,23 +132,34 @@ end
 function MPP:ToggleFunctionality()
     local isActive = self:IsActiveScenario()
     if isActive == self.wasActive then
-        --self:Print('Already', isActive and 'active' or 'inactive');
         return
     end
-    --self:Print((isActive and 'Enabling' or 'Disabling') .. ' functionality.')
     if isActive then
         for _, plate in ipairs(C_NamePlate.GetNamePlates()) do
             local unit = plate.UnitFrame and plate.UnitFrame.unit
             self:OnAddNameplate(unit)
         end
-        self:RegisterEvent("NAME_PLATE_UNIT_ADDED", function(_, unit) self:OnAddNameplate(unit) end)
-        self:RegisterEvent("NAME_PLATE_UNIT_REMOVED", function(_, unit) self:RemoveNameplateText(unit) end)
-        self:RegisterEvent("SCENARIO_CRITERIA_UPDATE", function() self:UpdateCurrentPullEstimate() end)
+        self:RegisterEvent("NAME_PLATE_UNIT_ADDED", function(_, unit)
+            self:OnAddNameplate(unit)
+            self:CalculatePull()
+        end)
+        self:RegisterEvent("NAME_PLATE_UNIT_REMOVED", function(_, unit)
+            self:RemoveNameplateText(unit)
+            self:CalculatePull()
+        end)
+        self:RegisterEvent("SCENARIO_CRITERIA_UPDATE", function()
+            self:CalculatePull()
+        end)
+        self:RegisterEvent("UNIT_THREAT_LIST_UPDATE", function()
+            self:CalculatePull()
+        end)
+        self:CalculatePull()
     else
         self.currentPullFrame:Hide()
         self:UnregisterEvent("NAME_PLATE_UNIT_ADDED")
         self:UnregisterEvent("NAME_PLATE_UNIT_REMOVED")
         self:UnregisterEvent("SCENARIO_CRITERIA_UPDATE")
+        self:UnregisterEvent("UNIT_THREAT_LIST_UPDATE")
     end
     self:FullUpdate()
     self.wasActive = isActive
@@ -148,7 +173,7 @@ function MPP:FullUpdate()
             self:OnAddNameplate(unit)
         end
     end
-    self:UpdateCurrentPullEstimate()
+    self:CalculatePull()
     self:UpdateNameplateValues()
     self:UpdateNameplates()
 end
@@ -218,9 +243,7 @@ function MPP:IsActiveScenario()
 
     local difficulty = select(3, GetInstanceInfo()) or -1
 
-    return
-        (difficulty == DIFFICULTY_MYTHIC_PLUS and self:GetSetting('enableInMythicPlus') and not self:IsDungeonFinished())
-        -- or (difficulty == DIFFICULTY_DELVES and self:GetSetting('enableInDelves'))
+    return difficulty == DIFFICULTY_MYTHIC_PLUS and not self:IsDungeonFinished()
 end
 
 --- @return ScenarioCriteriaInfo? criteriaInfo
@@ -266,12 +289,7 @@ end
 function MPP:GetUnitCount(unit)
     if self.exampleDisplayActive then return 10, 0.0833, '8.33' end
 
-    if C_ScenarioInfo.GetUnitCriteriaProgressValues then
-        -- @todo: confirm signature
-        return C_ScenarioInfo.GetUnitCriteriaProgressValues(unit)
-    end
-
-    return nil, nil, '?'
+    return C_ScenarioInfo.GetUnitCriteriaProgressValues(unit)
 end
 
 ---
@@ -317,24 +335,29 @@ end
 function MPP:CreatePullFrame()
     self.currentPullFrame = CreateFrame("frame", nil, UIParent)
     SetFramePoint(self.currentPullFrame, self.DB.settings.pullFramePoint)
-    self.currentPullFrame:EnableMouse(not self:GetSetting("lockPullFrame"))
     self.currentPullFrame:SetMovable(true)
-    self.currentPullFrame:RegisterForDrag("LeftButton")
-    self.currentPullFrame:SetScript("OnDragStart", function(frame)
-        if self.DB.settings.lockPullFrame then return end
-        frame:StartMoving()
-    end)
-    self.currentPullFrame:SetScript("OnDragStop", function(frame)
-        frame:StopMovingOrSizing()
-        self.DB.settings.pullFramePoint = GetAbsoluteFramePosition(frame)
-    end)
-    self.currentPullFrame:SetWidth(50)
-    self.currentPullFrame:SetHeight(50)
+    self.currentPullFrame:SetWidth(100)
+    self.currentPullFrame:SetHeight(30)
     self.currentPullFrame:SetScale(self:GetSetting("pullFrameTextScale"))
 
+    local dragFrame = CreateFrame("Frame", nil, self.currentPullFrame)
+    self.currentPullFrame.DragFrame = dragFrame
+    dragFrame:EnableMouse(not self:GetSetting("lockPullFrame"))
+    dragFrame:RegisterForDrag("LeftButton")
+    dragFrame:SetScript("OnDragStart", function()
+        if self.DB.settings.lockPullFrame then return end
+        self.currentPullFrame:StartMoving()
+    end)
+    dragFrame:SetScript("OnDragStop", function()
+        self.currentPullFrame:StopMovingOrSizing()
+        self.DB.settings.pullFramePoint = GetAbsoluteFramePosition(self.currentPullFrame)
+    end)
+
     self.currentPullString = self.currentPullFrame:CreateFontString(nil, "BACKGROUND", "GameFontHighlightLarge")
-    self.currentPullString:SetPoint("CENTER");
+    self.currentPullString:SetPoint("CENTER")
     self.currentPullString:SetText("")
+
+    dragFrame:SetAllPoints(self.currentPullString)
 end
 
 ---
@@ -354,7 +377,7 @@ end
 --- @return boolean shouldShow
 --- @return boolean hideIfNoCount
 function MPP:ShouldShowCurrentPullEstimate()
-    if self.exampleDisplayActive then return true, true end
+    if self.exampleDisplayActive then return true, false end
     if self:GetSetting("hidePullEstimateFrameWhenApiUnavailable") then
         return false, false
     end
@@ -388,18 +411,20 @@ function MPP:ReplacePlaceholders(formatString, replacements)
     return formatString:format(unpack(replacementValues))
 end
 
-function MPP:UpdateCurrentPullEstimate()
-    local pullCount, _, pullPercentString, estimatedCount, _, estimatedPercentString = self:GetCurrentPullCount()
+function MPP:UpdateCurrentPullEstimate(pullCount, estimatedCount, pullPercentString, estimatedPercentString)
+    if self.exampleDisplayActive then
+        pullCount = 10
+        estimatedCount = pullCount + self:GetCurrentCount()
+        local requiredCount = self:GetTotalCountRequired()
+        pullPercentString = string.format("%.2f", (pullCount / requiredCount) * 100)
+        estimatedPercentString = string.format("%.2f", (estimatedCount / requiredCount) * 100)
+    end
     local requiredCount = self:GetTotalCountRequired()
     local shouldShow, hideIfNoCount = self:ShouldShowCurrentPullEstimate()
     if not shouldShow or (hideIfNoCount and not pullCount) or requiredCount == 0 then
         self.currentPullFrame:Hide()
 
         return
-    end
-    self.currentPullFrame:SetAlpha(1)
-    if hideIfNoCount then
-        self.currentPullFrame:SetAlpha(pullCount)
     end
 
     self.currentPullFrame:Show()
@@ -409,12 +434,12 @@ function MPP:UpdateCurrentPullEstimate()
     local percentString = '%.2f%%';
     local placeholderReplacements = {
         ['$current$'] = currentCount,
-        ['$pull$'] = pullCount,
-        ['$estimated$'] = estimatedCount,
+        ['$pull$'] = pullCount or 0,
+        ['$estimated$'] = estimatedCount or 0,
         ['$required$'] = requiredCount,
         ['$current%$'] = percentString:format((currentCount / requiredCount) * 100),
-        ['$pull%$'] = pullPercentString .. '%',
-        ['$estimated%$'] = estimatedPercentString .. '%',
+        ['$pull%$'] = (pullPercentString or '?') .. '%',
+        ['$estimated%$'] = (estimatedPercentString or '?') .. '%',
         ['$required%$'] = percentString:format(100),
     };
     local message = self:ReplacePlaceholders(formatString, placeholderReplacements)
@@ -433,6 +458,7 @@ function MPP:CreateNameplateText(unit)
             nameplate = C_NamePlate.GetNamePlateForUnit(unit)
         end
         self.activeNameplates[unit] = self.fontStringPool:Acquire()
+        self.activeNameplates[unit]:SetJustifyH("LEFT")
         self.activeNameplates[unit]:SetParent(nameplate)
         self.activeNameplates[unit]:SetText("+?%")
         self.activeNameplates[unit]:SetScale(self:GetSetting('nameplateTextScale'))
@@ -510,4 +536,140 @@ function MPP:UpdateNameplates()
             self:RemoveNameplateText(unit)
         end
     end
+end
+
+function MPP:IsUnitPulled(unit)
+    local threat = UnitThreatSituation("player", unit) or -1 -- Is nil if we're not on their aggro table, so make it -1 instead.
+
+    return self:IsValidTarget(unit) and (threat >= 0 or UnitPlayerControlled(unit .. "target"))
+end
+
+--- @return UnitTokenNamePlate[] pulledUnits
+function MPP:GetPulledUnits()
+    local pulledUnits = {}
+    for _, nameplate in pairs(C_NamePlate.GetNamePlates()) do
+        if nameplate.UnitFrame.unitExists then
+            if self:IsUnitPulled(nameplate.UnitFrame.displayedUnit) then
+                tinsert(pulledUnits, nameplate.UnitFrame.displayedUnit)
+            end
+        end
+    end
+
+    return pulledUnits
+end
+
+--- @class MPP_statusBarPool
+MPP.statusBarPool = {
+    index = 0,
+    --- @type table<number, StatusBar>
+    pool = {},
+    --- @param self MPP_statusBarPool
+    Acquire = function(self)
+        self.index = self.index + 1
+        if self.pool[self.index] then
+            return self.pool[self.index]
+        end
+        local bar = CreateFrame("StatusBar")
+        bar:SetAlpha(0)
+        self.pool[self.index] = bar
+
+        return bar
+    end,
+    --- @param self MPP_statusBarPool
+    ReleaseAll = function(self)
+        for i = 1, self.index do
+            if self.pool[i] then
+                local bar = self.pool[i]
+                bar:Hide()
+                bar:ClearAllPoints()
+                bar:SetValue(0)
+            end
+        end
+        self.index = 0
+    end,
+}
+
+MPP.percentCalculators = {}
+function MPP:GetPercentCalculator(totalCount)
+    if totalCount == 0 then return end
+    if not self.percentCalculators[totalCount] then
+        local abbrevConfig = {
+            config = CreateAbbreviateConfig({
+                {
+                    breakpoint = 0.00001,
+                    abbreviation = "",
+                    significandDivisor = totalCount / 10000,
+                    fractionDivisor = 100,
+                    abbreviationIsGlobal = false,
+                },
+            }),
+        }
+        self.percentCalculators[totalCount] = abbrevConfig
+    end
+
+    return self.percentCalculators[totalCount]
+end
+
+--- @return string? pullCount
+--- @return string? estimatedCount
+--- @return string? pullPercent
+--- @return string? estimatedPercent
+function MPP:CalculatePull()
+    local pulledUnits = self:GetPulledUnits()
+    local totalCount = self:GetTotalCountRequired()
+    if not next(pulledUnits) or totalCount == 0 then
+        self:UpdateCurrentPullEstimate(nil, nil, nil, nil)
+        return
+    end
+
+    local currentCount = self:GetCurrentCount()
+    self.statusBarPool:ReleaseAll()
+    local mainBar = self.statusBarPool:Acquire()
+    mainBar:SetSize(totalCount, 10)
+    mainBar:SetPoint("LEFT")
+    mainBar:SetStatusBarTexture("Interface/TargetingFrame/UI-StatusBar")
+    mainBar:SetMinMaxValues(0, totalCount)
+    mainBar:SetValue(0)
+    mainBar:Show()
+
+    local prevBar = mainBar:GetStatusBarTexture()
+    for _, unit in pairs(pulledUnits) do
+        local count = self:GetUnitCount(unit)
+        if count then
+            local bar = self.statusBarPool:Acquire()
+            bar:SetSize(totalCount, 10)
+            bar:SetPoint("LEFT", prevBar, "RIGHT", 0, 0)
+            bar:SetStatusBarTexture("Interface/TargetingFrame/UI-StatusBar")
+            bar:SetMinMaxValues(0, totalCount)
+            bar:SetValue(count)
+            bar:Show()
+            prevBar = bar:GetStatusBarTexture()
+        end
+    end
+    local currentCountBar = self.statusBarPool:Acquire()
+    currentCountBar:SetSize(totalCount, 10)
+    currentCountBar:SetPoint("LEFT", prevBar, "RIGHT", 0, 0)
+    currentCountBar:SetStatusBarTexture("Interface/TargetingFrame/UI-StatusBar")
+    currentCountBar:SetMinMaxValues(0, totalCount)
+    currentCountBar:SetValue(currentCount)
+    currentCountBar:Show()
+
+    RunNextFrame(function()
+        RunNextFrame(function()
+            if #pulledUnits ~= #self:GetPulledUnits() then return end
+            local pullCount = prevBar:GetRight()
+            local estimatedTotal = currentCountBar:GetStatusBarTexture():GetRight()
+
+            local percentCalculator = self:GetPercentCalculator(totalCount)
+            local pullPercent = AbbreviateNumbers(pullCount, percentCalculator)
+            local estimatedPercent = AbbreviateNumbers(estimatedTotal, percentCalculator)
+
+            self:UpdateCurrentPullEstimate(
+                C_StringUtil.RoundToNearestString(pullCount),
+                C_StringUtil.RoundToNearestString(estimatedTotal),
+                pullPercent,
+                estimatedPercent
+            )
+        end)
+    end)
 end
