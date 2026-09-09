@@ -238,15 +238,29 @@ function MPP:InitConfig()
                         type = "description",
                         name = L['The following placeholders are available:'] .. '\n' ..
                             '    - $current$ ' .. L['The current count of mobs killed.'] .. '\n' ..
-                            GRAY_FONT_COLOR:WrapTextInColorCode('    - $pull$ ' .. L['The count of mobs pulled.']) .. '\n' ..
-                            GRAY_FONT_COLOR:WrapTextInColorCode('    - $estimated$ ' .. L['The estimated count after all pulled mobs are killed.']) .. '\n' ..
+                            '    - $pull$ ' .. L['The count of mobs pulled.'] .. '\n' ..
+                            '    - $estimated$ ' .. L['The estimated count after all pulled mobs are killed.'] .. '\n' ..
                             '    - $required$ ' .. L['The required count of mobs to reach 100%%.'] .. '\n' ..
                             '    - $current%$ ' .. L['The current percentage of mobs killed.'] .. '\n' ..
-                            GRAY_FONT_COLOR:WrapTextInColorCode('    - $pull%$ ' .. L['The percentage of mobs pulled.']) .. '\n' ..
-                            GRAY_FONT_COLOR:WrapTextInColorCode('    - $estimated%$ ' .. L['The estimated percentage after all pulled mobs are killed.']) .. '\n' ..
-                            '    - $required%$ ' .. L['A long way of writing 100%%.'] .. '\n' ..
-                            'Placeholders in ' .. GRAY_FONT_COLOR:WrapTextInColorCode('gray') .. ' are temporarily unavailable in Midnight, until Blizzard adds the required APIs.',
+                            '    - $pull%$ ' .. L['The percentage of mobs pulled.'] .. '\n' ..
+                            '    - $estimated%$ ' .. L['The estimated percentage after all pulled mobs are killed.'] .. '\n' ..
+                            '    - $required%$ ' .. L['A long way of writing 100%%.']
                     },
+--                     ------------ if blizzard bricks my math workaround:
+--                     pullFrameTextFormatDescription = {
+--                         order = increment(),
+--                         type = "description",
+--                         name = L['The following placeholders are available:'] .. '\n' ..
+--                             '    - $current$ ' .. L['The current count of mobs killed.'] .. '\n' ..
+--                             GRAY_FONT_COLOR:WrapTextInColorCode('    - $pull$ ' .. L['The count of mobs pulled.']) .. '\n' ..
+--                             GRAY_FONT_COLOR:WrapTextInColorCode('    - $estimated$ ' .. L['The estimated count after all pulled mobs are killed.']) .. '\n' ..
+--                             '    - $required$ ' .. L['The required count of mobs to reach 100%%.'] .. '\n' ..
+--                             '    - $current%$ ' .. L['The current percentage of mobs killed.'] .. '\n' ..
+--                             GRAY_FONT_COLOR:WrapTextInColorCode('    - $pull%$ ' .. L['The percentage of mobs pulled.']) .. '\n' ..
+--                             GRAY_FONT_COLOR:WrapTextInColorCode('    - $estimated%$ ' .. L['The estimated percentage after all pulled mobs are killed.']) .. '\n' ..
+--                             '    - $required%$ ' .. L['A long way of writing 100%%.'] .. '\n' ..
+--                             'Placeholders in ' .. GRAY_FONT_COLOR:WrapTextInColorCode('gray') .. ' are temporarily unavailable in Midnight, until Blizzard adds the required APIs.',
+--                     },
                     resetTextFormat = {
                         order = increment(),
                         type = "execute",
