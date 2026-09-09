@@ -378,9 +378,9 @@ end
 --- @return boolean hideIfNoCount
 function MPP:ShouldShowCurrentPullEstimate()
     if self.exampleDisplayActive then return true, false end
-    if self:GetSetting("hidePullEstimateFrameWhenApiUnavailable") then
-        return false, false
-    end
+--     if self:GetSetting("hidePullEstimateFrameWhenApiUnavailable") then
+--         return false, false
+--     end
     if self:GetSetting("enablePullEstimate") and self:IsActiveScenario() then
         return true, self:GetSetting("pullEstimateCombatOnly")
     end
